@@ -14,6 +14,11 @@ spectacular/
 │                                  #   own marketplace (D-4, D-24; install flow in README)
 ├── skills/<name>/SKILL.md         # the seven skills (D-8: no plain commands)
 ├── agents/repo-reader.md          # the one subagent
+├── templates/                     # workspace artifact templates (brief, prd, adr,
+│                                  #   story, task, change-proposal, contract,
+│                                  #   overview, workspace-claude) — single source
+│                                  #   of each artifact's shape; added S-5 on
+│                                  #   Vladimir's feedback. No epic template (D-19).
 ├── scripts/                       # docs generator only in v0.1, python3 stdlib
 │                                  #   (lint + CI deferred — D-24)
 ├── docs/                          # published docs (R-7), partly generated (P-6)
@@ -90,6 +95,22 @@ Story body: goal, acceptance criteria (mapped from the PRD), **Acceptance log**
 it is derived from task files' `story:` links (P-2).
 Task body: description, verification (how "done" is checked — Karpathy #4), **Learnings**
 (appended by implement on completion; feeds later capsules — A2).
+
+Adopted document standards (S-5 research round, ratified 2026-08-03 — D-25):
+ADRs follow MADR 4.0 section structure (spectacular front matter and status
+vocabulary kept); PRD requirements are FR-NNN with must/should/could priorities,
+PRD ACs in EARS form ("WHEN …, THE SYSTEM SHALL …") naming the FRs they verify;
+story Goal is the Connextra line, story ACs are Given/When/Then test scripts
+mapped from PRD ACs (INVEST as plan's sanity check); task Verification is
+structured preconditions/steps/expected; the brief opens with Moore's
+positioning statement and init's interview absorbs three SVPG
+opportunity-assessment questions (alternatives, why now, success measure);
+architecture/overview.md is created from a C4-lite template. DoR/DoD are
+UNIFORM process rules — defined once in the workspace CLAUDE.md template for
+both stories and tasks, enforced by plan (writes only ready items) and
+implement (checks ready before start, walks done at close), never duplicated
+into per-item files; the item-specific part of "done" remains the story's ACs
+and the task's Verification. All artifact shapes live in templates/ only.
 
 ## Cross-cutting mechanics
 

@@ -1,0 +1,5 @@
+{
+  "name": "spectacular",
+  "description": "AI-assisted SDLC for multi-repo products: brief → PRDs → decisions → stories and tasks → implementation → acceptance, with all state derived from artifact files.",
+  "version": "0.1.0"
+}

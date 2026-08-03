@@ -17,10 +17,12 @@ Open Claude Code in this repo and paste:
 
 > Read design/STATE.md end to end, then design/spec.md — together they are the
 > complete design context for the spectacular plugin. Follow STATE.md's "Ways of
-> working". Design is complete; execute the next entry in the Session plan
-> (S-5: build the tracer bullet per spec.md). Do not
-> re-derive settled Decisions and do not re-explore ../speck or ../speculation
-> beyond what this file records. Before the session ends, update STATE.md.
+> working". The v0.1 build (S-5) is complete on disk; the next entry in the
+> Session plan is S-6 (dogfood), which runs in the PILOT's directory, not this
+> repo — in this repo the remaining work is processing whatever S-5 review
+> feedback or pilot retro observations Vladimir brings. Do not re-derive settled
+> Decisions and do not re-explore ../speck or ../speculation beyond what this
+> file records. Before the session ends, update STATE.md.
 
 ## Ways of working (from Vladimir's brief)
 
@@ -338,6 +340,21 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   during private development; it becomes structural at the publication gate. S-5
   build order revised: scaffold + manifests → skills in lifecycle order →
   repo-reader → docs generator + README last.
+- D-25 (2026-08-03) Document standards adopted after the S-5 research round,
+  ratified by Vladimir with one amendment. Adopted: MADR 4.0 structure for
+  ADRs (our front matter/status vocabulary kept); FR-NNN requirements with
+  must/should/could priorities and EARS ACs in PRDs; Connextra goal +
+  Given/When/Then AC test scripts in stories (INVEST as plan's check); Moore
+  positioning opener in the brief + three SVPG opportunity-assessment
+  questions in init's interview; C4-lite overview template. Amendment
+  (Vladimir): story AND task acceptance/verification must be repeatable test
+  scripts with explicit steps (story ACs = GWT; task Verification =
+  preconditions/steps/expected), and DoR/DoD adopted — resolved as UNIFORM
+  definitions for both stories and tasks, stated once in the workspace
+  CLAUDE.md template and enforced by plan/implement, never duplicated per
+  item (per-item variability already lives in ACs/Verification). Kept
+  without external standard (none exists / already framework-adopted): task
+  format, change proposal (OpenSpec A1), contract.
 - D-23 (2026-08-03, resolves OQ-13) Spec review: all "(stated)" mechanics in
   design/spec.md ratified as written, with two changes: (a) the personal-name
   denylist is kept, but as a committed CI grep (see D-12 revision); (b) the
@@ -393,9 +410,14 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
 - S-4.5 (2026-08-03): pre-build audit — OQ queue confirmed empty; D-4 install path
   verified against current CC docs; five pre-build notes appended to spec.md
   (unratified). ✓ done
-- S-5: build the tracer bullet: plugin scaffold + manifests, seven skills,
-  repo-reader, docs generator + README. No lint/CI (D-24). Pilot specifics arrive
-  only at dogfood time (D-13). ← next
+- S-5 (2026-08-03): build the tracer bullet: plugin scaffold + manifests, seven
+  skills, repo-reader, docs generator + README. No lint/CI (D-24). ✓ done —
+  built and self-checked; awaiting Vladimir's review + first commit of shipped
+  content (commit protocol).
+- S-6: dogfood — install the plugin from this repo, run the tracer bullet end to
+  end on the pilot (specifics arrive in-chat — D-13; "release" meaning asked
+  there — OQ-7). Runs in the pilot's own directories, NOT in this repo; this
+  repo only receives retro-driven fixes afterwards. ← next
 
 ## Session log
 
@@ -473,3 +495,65 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   the trigger), P-3 annotated (enforcement deferred), spec.md updated throughout
   (layout, lint/docs section, acceptance mechanics, ratification record, build
   order). S-5 next: scaffold + manifests → skills → repo-reader → docs + README.
+- S-5 2026-08-03 (autonomous session): v0.1 built per spec.md in the D-24 order.
+  On disk: .claude-plugin/plugin.json + marketplace.json (v0.1.0); seven skills
+  under skills/<name>/SKILL.md; agents/repo-reader.md; scripts/generate-docs.py
+  (stdlib, fails loudly on skills↔lifecycle mismatch); docs/commands.md
+  (generated); docs/models.md (hand-maintained per D-14); README.md (install/
+  update incl. credential-helper gotcha; references both docs files per D-24).
+  Self-checked all five deferred lint rules manually: denylist clean; only the
+  seven real commands mentioned anywhere; every SKILL.md ends in "## Next step";
+  docs regenerate identically; both manifests parse. Build-level choices for
+  Vladimir's review (all within ratified spec, none contradicting a D-number):
+  (a) Karpathy guidelines ship inside the workspace CLAUDE.md template at
+  skills/init/workspace-claude-md.md — init cannot read design/ since it is
+  excluded at release; (b) the themed constellation example (D-23) lives in
+  init's naming step, v0.1's only naming-conventions doc; (c) marketplace
+  owner.name is the impersonal "spectacular maintainers" (D-12a); (d)
+  repo-reader is structurally read-only via tools: Read/Glob/Grep; (e) change
+  references follow per-type numbering: change-NNN → changes/NNN-<slug>/
+  proposal.md. Nothing committed — commit message suggested in-chat per the
+  commit protocol. Next: Vladimir reviews the diff and commits; then S-6
+  dogfood on the pilot.
+- S-5 (cont.) 2026-08-03: Vladimir's build review, five points. (1) No
+  repo-creation command — confirmed intentional: plan creates code repos in its
+  breakdown (D-10/R-6; repos exist only because a task needs a home). (2+4)
+  templates/ dir added to shipped layout (spec.md layout updated): brief, prd,
+  adr, story, task, change-proposal, contract + workspace-claude.md (moved from
+  skills/init/, renamed per feedback). Artifact shapes now live ONLY in
+  templates/ — skills reference ${CLAUDE_PLUGIN_ROOT}/templates/*, no inline
+  format blocks left to drift. No epic template (D-19 machinery deferred).
+  (3) marketplace.json owner.name → "oswalth" (Vladimir's explicit ask;
+  narrows D-12a impersonality for this one functional field). (5) Temporary
+  README section on local-checkout usage, verified against current CC docs:
+  --plugin-dir + /reload-plugins recommended; local marketplace add needs ./
+  prefix; installed copies live in ~/.claude/plugins/cache so local edits need
+  marketplace update or reinstall; claude plugin validate. Marked for removal
+  at publication. Still nothing committed.
+- S-5 (cont. 2) 2026-08-03: Vladimir asked where the templates came from —
+  answer: distilled from spec.md (D-15…D-22), not from any proven external
+  standard — and requested research into industry-proven formats. Two research
+  passes (product docs; engineering docs) against primary sources. Findings:
+  MADR 4.0 (2024) is the living markdown-ADR standard and maps 1:1 to decide's
+  flow; EARS ("WHEN … THE SYSTEM SHALL …", Rolls-Royce 2009) is the emerging
+  cross-tool AC syntax for AI-consumed specs (AWS Kiro et al.); spec-kit's
+  FR-NNN numbered requirements + measurable SC pattern is the AI-era PRD
+  consensus; Connextra story line + INVEST are near-universal; Moore's
+  positioning statement and SVPG's opportunity-assessment questions fit the
+  brief/interview; task formats are genuinely non-standardized (ours already
+  matches Wake's SMART guidance); arc42 is ceremony for this scale, C4
+  levels 1–2 fit a minimal overview. Proposals P1–P6 presented in-chat
+  (MADR-align ADR; EARS ACs; FR-NNN+MoSCoW in PRDs; Moore line + SVPG
+  questions in brief/init; Connextra story goal; new templates/overview.md).
+  UNRATIFIED — awaiting Vladimir's approve/challenge; nothing applied,
+  nothing committed.
+- S-5 (cont. 3) 2026-08-03: Vladimir ratified P1–P6 with one amendment
+  (structured, step-by-step testable ACs for stories AND tasks; DoR/DoD) →
+  D-25 recorded and applied. Templates rewritten (adr → MADR 4.0; prd →
+  FR-NNN + EARS; story → Connextra + GWT scripts; task → structured
+  Verification; brief + Positioning; overview.md new); workspace-claude.md
+  gains the uniform DoR/DoD section; skills updated (init interview + brief
+  positioning; prd FR/EARS rules; plan Connextra/GWT/INVEST + DoR framing;
+  implement DoR check + DoD walk; decide MADR + overview template). spec.md
+  synced (layout comment; "Adopted document standards" paragraph). Full
+  verification sweep re-run. Awaiting Vladimir's commit.
