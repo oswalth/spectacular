@@ -2,8 +2,9 @@
 
 Drafted 2026-08-01 from the decisions in design/STATE.md (D-1…D-22). STATE.md stays the
 decision log; this file holds the skill-level detail needed to build the tracer bullet.
-Mechanics tagged **(stated)** were proposed, not explicitly ratified — veto them during
-spec review (OQ-13). Everything else traces to a D-number.
+Mechanics tagged **(stated)** were Claude-proposed and ratified in the 2026-08-03 spec
+review (OQ-13 → D-23); the tag now only marks provenance. Everything else traces to a
+D-number.
 
 ## Plugin repo layout (this repo)
 
@@ -15,7 +16,8 @@ spectacular/
 ├── scripts/                       # lint + docs-sync, python3 stdlib only (stated)
 ├── docs/                          # published docs (R-7), partly generated (P-6)
 ├── README.md                      # install / update from private GitHub repo (D-4)
-└── design/                        # design zone — gitignored, never ships (D-12)
+└── design/                        # design zone — committed during development,
+                                   #   excluded from the released history (D-12 rev, OQ-14)
 ```
 
 Skills are invoked as `/spectacular:<name>`.
@@ -52,8 +54,10 @@ init runs `git init` and makes the initial commit.
 
 - Front matter: `workspace:` (relative path back — R-2 bidirectional, OpenSpec-Stores
   style), `name:` (registry name), `merge_flow: pr | local-rebase` (D-21; owner picks at
-  creation; git history stays linear either way — PRs rebase-merged, local merges via
-  rebase + fast-forward).
+  creation; git history stays linear either way and task branches are ALWAYS squashed —
+  gh squash-merge on `pr`, squash + rebase + fast-forward on `local-rebase`. One task =
+  exactly one mainline commit, message starting with the task reference: `task-012: …`
+  — D-21 as amended).
 - Body: stack, commands (build / test / run), conventions. (speck's proven contract
   content, rewritten fresh — D-3.)
 
@@ -161,7 +165,8 @@ Runs in a code repo; finds the workspace via `contract.md`.
 Flow: select task (argument, or: this repo's tasks with status todo, deps done) →
 compile the JIT capsule → task `in-progress` (story too, if first) → goal-driven loop
 (Karpathy #4: define verification first, loop until it passes) → branch per task →
-mainline per `merge_flow`, history linear → task `done` + append Learnings → if that
+squash to one commit (`task-NNN: …`) → mainline per `merge_flow`, history linear →
+task `done` + append Learnings → if that
 was the story's last task: announce *awaiting acceptance* and print the AC checklist
 for the human tester.
 A discovered architecture/spec problem becomes `changes/<id>/proposal.md` (draft) —
@@ -193,6 +198,12 @@ Read-only. Input: repo path + a specific question. Output: findings relevant to 
 question (architecture, capabilities, integration points). Never writes. Dispatched by
 prd / decide / plan.
 
+Deferred, design settled (see STATE.md Deferred): a commit-hash-keyed cache at
+`<code-repo>/.spectacular/summary.md` — repo-reader stamps its findings with the HEAD
+hash it read; on the next dispatch, HEAD unchanged → reuse, changed → re-derive from
+the diff since the stamp. Mechanically invalidated, never discipline-maintained.
+Build trigger: retro observations of repeated costly scans.
+
 ## Lint and docs (P-3, P-6, D-12) **(stated except where D-numbered)**
 
 Public lint, ships in `scripts/`, runs in CI (GitHub Actions):
@@ -203,9 +214,11 @@ Public lint, ships in `scripts/`, runs in CI (GitHub Actions):
 4. Docs-sync — generated docs match `skills/` on disk; the model table has exactly one
    row per shipped skill (R-8).
 
-Private denylist (D-12b): `design/denylist.txt` (gitignored: wardx, gdansk, speck,
-speculation, pilot name once known, …) + `design/check-private.sh` run via a locally
-installed pre-push hook (`design/install-hooks.sh`, one-time). Cannot ship, by design.
+5. Personal-name denylist (D-12 as revised, D-23) — `design/denylist.txt` (committed
+   with the design zone; pilot name added at dogfood time) grepped case-insensitively
+   against shipped files only. The rule skips silently when the file is absent — which
+   is exactly the state of the released repo, since design/ is excluded at release.
+   No local hooks.
 
 Docs (R-7): README (hand-written: install/update from the private GitHub repo,
 quickstart) + `docs/commands.md` generated from SKILL.md front matter, ordered by
@@ -213,9 +226,13 @@ lifecycle (init → prd → decide → plan → implement → next → retro) + 
 the hand-maintained recommended-model table (single source for R-8/D-14; lint rule 4
 keeps it honest; reviewed at every retro).
 
-Placeholder vocabulary (D-12a allowlist, extensible): product **acme**; workspace
-**acme-product**; repos **acme-api**, **acme-web**, **acme-mobile**, **acme-infra**;
-people **alex**, **sam**.
+Placeholder vocabulary (D-12a allowlist, extensible; two-path per D-23): generic
+examples use the descriptive set — product **acme**; workspace **acme-product**; repos
+**acme-api**, **acme-web**, **acme-mobile**, **acme-infra**; people **alex**, **sam** —
+the default path, since the D-11 naming step is optional. The naming-conventions docs
+alone use a themed worked example demonstrating groups-then-theme: product **acme**,
+theme constellations — **orion** (api), **lyra** (web), **vega** (mobile), **atlas**
+(infra). Both sets are allowlisted.
 
 ## Tracer bullet — definition of done (P-1)
 

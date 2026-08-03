@@ -15,8 +15,9 @@ conversation.
 
 Open Claude Code in this repo and paste:
 
-> Read design/STATE.md end to end — it is the complete design context for the
-> spectacular plugin. Follow its "Ways of working". Continue the design discussion
+> Read design/STATE.md end to end, then design/spec.md — together they are the
+> complete design context for the spectacular plugin. Follow STATE.md's "Ways of
+> working". Continue the design discussion
 > from the "Open questions" section, highest-leverage question first. Do not
 > re-derive settled Decisions and do not re-explore ../speck or ../speculation
 > beyond what this file records. Before the session ends, update STATE.md.
@@ -159,6 +160,12 @@ Scripts + CI: lint (P-3, layers per D-12) and docs-sync (P-6). No plain commands
 - Epic machinery (semantics settled in D-19): plan's epic-trigger check firing on the
   pilot for the first time is the build trigger. Until then no epic files, no epic:
   fields in use.
+- Repo-summary cache for repo-reader (design settled 2026-08-03; recorded in
+  spec.md): commit-hash-keyed cache at <code-repo>/.spectacular/summary.md —
+  findings stamped with the HEAD hash read; reused on match, re-derived from the
+  diff on mismatch; never discipline-maintained (that would be stored state
+  vulnerable to drift, contra P-2). Trigger: retro observations of repeated costly
+  repo-reader scans on the pilot.
 - Task-level model recommendation: plan could stamp a recommended model per
   story/task based on the task's own complexity. Vladimir's explicit concern,
   deliberately deferred — needs research on model↔task-type fit plus real
@@ -233,6 +240,13 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   personal-name denylist (wardx, gdansk, speck, speculation, pilot name once known,
   …) living in the design zone and run locally before every push — it cannot ship,
   because committing the denylist would itself leak the names.
+  Revised 2026-08-03 (with D-23): version control starts immediately and the design
+  zone IS committed during development, to track session-to-session iterations. The
+  no-leak guarantee moves from gitignore to the release procedure — the released
+  v0.1 history must contain no design-zone bytes; exact mechanics parked as OQ-14.
+  The denylist is therefore now a committed design-zone file (design/denylist.txt)
+  checked by a plain CI grep over shipped files only — no local hooks; it vanishes
+  at release with the rest of design/, so it still never ships.
 - D-13 (2026-07-31, supersedes OQ-11's "record the pilot" intent) Pilot details never
   enter the spectacular repo at all — not even the design zone. The plugin design is
   project-blind; pilot specifics are provided in conversation only at dogfood time,
@@ -289,11 +303,22 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   `pr` (via gh) or `local-rebase`. Git history stays linear either way (rebase-based;
   Vladimir's explicit preference). implement always branches per task, then follows
   the contract.
+  Amended 2026-08-03: always squash — one task = exactly one mainline commit
+  (gh squash-merge on pr; squash + rebase + fast-forward locally). The squashed
+  commit message starts with the task reference (task-NNN: …), anchoring R-2
+  linkage in mainline history.
 - D-22 (2026-08-01) Story "done" is set only by explicit human acceptance: when all
   tasks are done the story is derived-awaiting-acceptance; QA/PO tests the whole
   story's ACs; sign-off flips done and logs PASS in the story's Acceptance log. On
   FAIL: log it, then plan's re-plan mode (gated) diagnoses via repo-reader and
   proposes reopening tasks and/or new fix tasks. Loop until PASS.
+- D-23 (2026-08-03, resolves OQ-13) Spec review: all "(stated)" mechanics in
+  design/spec.md ratified as written, with two changes: (a) the personal-name
+  denylist is kept, but as a committed CI grep (see D-12 revision); (b) the
+  placeholder vocabulary is two-path — descriptive acme-* names in generic examples
+  (the default, conventions-skipped path), plus a themed worked example (acme +
+  constellations: orion/lyra/vega/atlas) used only in the naming-conventions docs.
+  Both sets allowlisted.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -317,11 +342,13 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
 - OQ-11 Superseded by D-13: pilot details are deliberately withheld from this repo;
   Vladimir provides them in-chat when the tracer bullet first runs.
 - OQ-12 resolved → D-14.
-- OQ-13 Spec review: design/spec.md contains mechanics tagged "(stated)" that were
-  proposed but not explicitly ratified (approval-gate mechanic, JIT capsule recipe,
-  change-apply-on-approval, lazy dir creation, lint/docs implementation details,
-  placeholder vocabulary, next reading front matter only). Vladimir reviews and
-  vetoes/ratifies before the tracer bullet build starts.
+- OQ-13 resolved → D-23 (spec review, 2026-08-03).
+- OQ-14 Release mechanics for v0.1 (deliberately decided at release time — not
+  blocking): fresh published repo receiving one clean v0.1 commit (keeps private
+  iteration history; airtight against design-zone leakage) vs same-repo orphan
+  squash + force-push (one repo, but destroys the iteration history and
+  force-pushed-away commits can linger fetchable on GitHub for a while). Trigger:
+  tracer bullet complete and release near.
 
 ## Session plan
 
@@ -331,9 +358,10 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
 - S-3 (2026-07-31…2026-08-01): specify each v0.1 skill, artifact formats, directory
   layout, next-step graph, docs + lint strategy, model table. ✓ done — output is
   design/spec.md; open remainder is the spec review (OQ-13).
-- S-4: review spec.md (OQ-13), then build the tracer bullet: plugin scaffold, seven
-  skills, repo-reader, lint + docs scripts, CI. Pilot specifics arrive only at
-  dogfood time (D-13). ← next
+- S-4 (2026-08-03): spec review — Vladimir's five notes processed → git started,
+  D-12/D-21 revised, D-23, OQ-14 opened, repo-cache deferral recorded. ✓ done
+- S-5: build the tracer bullet: plugin scaffold, seven skills, repo-reader, lint +
+  docs scripts, CI. Pilot specifics arrive only at dogfood time (D-13). ← next
 
 ## Session log
 
@@ -374,3 +402,15 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   cross-cutting mechanics, lint/docs strategy, placeholder vocabulary, tracer-bullet
   definition of done. New OQ-13: review the "(stated)" mechanics in spec.md before
   building. Next session: S-4.
+- S-4 2026-08-03 (spec review): Vladimir's five review notes processed. Git started
+  immediately — design zone committed from now on (D-12 revised; the no-leak
+  guarantee moved to the release procedure; release mechanics parked as OQ-14 with
+  trade-offs recorded there). The resume prompt now names spec.md explicitly (the
+  gap behind note 2 — STATE.md referenced it internally but the paste-in prompt
+  didn't). Repo-summary suggestion challenged and settled as a deferred
+  commit-hash-keyed cache (Deferred section) — mechanical invalidation instead of
+  discipline-maintained updates. D-21 amended: always squash, task reference leads
+  the mainline commit message. OQ-13 resolved → D-23: all stated mechanics
+  ratified; denylist kept as committed CI grep; placeholder vocabulary two-path
+  (descriptive default + themed naming-conventions example). design/denylist.txt
+  created. Next: S-5, build the tracer bullet.
