@@ -35,7 +35,7 @@ commit at close-out.
 |------|----------|
 | `product/brief.md` | the product brief |
 | `product/prds/` | one PRD per capability, `NNN-<slug>.md` |
-| `product/designs/` | design specs (`NNN-<slug>.md`) + imported design code (`system/`, per-spec folders; git-canonical, with `provenance.md`) |
+| `product/designs/` | design specs (`NNN-<slug>.md`); `system/` holds imported design code + distilled `tokens.json` / `design-language.md` (git-canonical, with `provenance.md`) |
 | `architecture/overview.md` | living architecture overview |
 | `architecture/decisions/` | ADRs, `NNN-<slug>.md` |
 | `delivery/stories/` | user-visible slices of a PRD |

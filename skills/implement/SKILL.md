@@ -24,13 +24,16 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    - the task file;
    - its story: goal + the ACs this task serves;
    - the slice of the PRD those ACs come from;
-   - the design spec sections the task's Design references name (`design-NNN`)
-     plus any imported design code they point at (`product/designs/system/`,
-     the spec's own folder) — read imported code from the workspace directly;
-     pull Figma frames through the connected design-tool MCP when one is
-     available; otherwise ask the owner to confirm visuals from the links
-     before building UI. Imported design code is reference for look and
-     feel — translate it to this repo's stack and idioms, never paste it in;
+   - the design spec sections the task's Design references name (`design-NNN`);
+     for any UI task additionally the distilled design system when present —
+     `product/designs/system/tokens.json` and `design-language.md` ALWAYS
+     ride in the capsule, and generated UI references tokens, never invented
+     values. Open the raw imported design code only when a specific
+     component's look needs it; pull Figma frames through the connected
+     design-tool MCP when one is available; otherwise ask the owner to
+     confirm visuals from the links before building UI. Imported design code
+     is reference for look and feel — translate it to this repo's stack and
+     idioms, never paste it in;
    - `architecture/overview.md` and ADRs touching this repo;
    - this repo's `contract.md` (stack, commands, conventions);
    - the Learnings sections of this story's already-done tasks.

@@ -48,6 +48,10 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    owner intends. The owner picks `merge_flow` at creation (`pr` needs a remote
    and `gh`; `local-rebase` needs neither). Append the repo to the registry.
    History stays linear either way, and task branches are always squashed.
+   For a UI repo, when `product/designs/system/tokens.json` exists: the
+   contract's conventions name it as the theme source, and the repo's first
+   UI task is a theme bootstrap — materialize the tokens into the repo's
+   stack (CSS variables/Tailwind, or the platform theme).
 6. **Epic-trigger check.** Epics do not exist in v0.1. If any of these fires,
    say so explicitly and recommend recording it with
    `/spectacular:retro "epic trigger fired: …"` — that firing is the build

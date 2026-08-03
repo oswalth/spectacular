@@ -7,6 +7,18 @@ version with no section requires no workspace changes.
 Hand-maintained; every release that changes workspace-facing behavior adds a
 section here.
 
+## 0.5.0
+
+- `CLAUDE.md`: update the `product/designs/` Layout row to the wording in
+  `templates/workspace-claude.md` (adds the distilled `tokens.json` /
+  `design-language.md`).
+- Workspaces with imported design code: **distill it** — run
+  `/spectacular:design` for the relevant PRD (its import step now distills),
+  or ask a workspace session to distill the imported code in
+  `product/designs/system/` into `tokens.json` and `design-language.md` per
+  the plugin's templates. UI repo contracts gain the tokens pointer and a
+  theme-bootstrap first task at plan time.
+
 ## 0.4.0
 
 - `CLAUDE.md`: update the `product/designs/` Layout row to the wording in

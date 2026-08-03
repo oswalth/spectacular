@@ -1,0 +1,43 @@
+{
+  "$description": "Design tokens distilled from imported design code — the single cross-platform source of visual truth. Primitive values carry the raw decisions; SEMANTIC aliases carry the meaning AI generation keys on. Each repo materializes these into its stack (CSS variables / Tailwind config / SwiftUI / Compose / Flutter theme) via a theme-bootstrap task; generated UI references tokens, never invented values.",
+  "color": {
+    "primitive": {
+      "<name>": "#RRGGBB"
+    },
+    "semantic": {
+      "surface.page": "{color.primitive.<name>}",
+      "surface.raised": "{color.primitive.<name>}",
+      "text.body": "{color.primitive.<name>}",
+      "text.muted": "{color.primitive.<name>}",
+      "accent.interactive": "{color.primitive.<name>}",
+      "border.default": "{color.primitive.<name>}"
+    }
+  },
+  "typography": {
+    "font": {
+      "ui": "<family>",
+      "reading": "<family>",
+      "mono": "<family>"
+    },
+    "scale": {
+      "body": "<size>/<line-height>",
+      "heading-1": "<size>/<line-height>",
+      "caption": "<size>/<line-height>"
+    }
+  },
+  "space": {
+    "unit": "<px>",
+    "scale": ["<xs>", "<s>", "<m>", "<l>", "<xl>"]
+  },
+  "radius": {
+    "<name>": "<px>"
+  },
+  "elevation": {
+    "<name>": "<shadow>"
+  },
+  "motion": {
+    "duration.fast": "<ms>",
+    "duration.base": "<ms>",
+    "easing.standard": "<curve>"
+  }
+}

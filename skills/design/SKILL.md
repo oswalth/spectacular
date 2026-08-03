@@ -33,6 +33,23 @@ procedure. Import source-only — no dependency installs, no build outputs.
 provenance map, fetch only what changed, show the owner the diff, overwrite
 on approval, update provenance — never silently.
 
+**Distill after import.** Raw design code is reference — it is NOT what
+keeps AI-generated UI consistent. From the imported code derive, gated with
+the owner, two small artifacts beside it in `system/`:
+
+- `tokens.json` from `${CLAUDE_PLUGIN_ROOT}/templates/design-tokens.json` —
+  primitive values (color, type scale, spacing, radii, elevation, motion)
+  plus **semantic** aliases (`surface.page`, `text.reading`): the
+  cross-platform source each repo materializes into its stack via a
+  theme-bootstrap task.
+- `design-language.md` from
+  `${CLAUDE_PLUGIN_ROOT}/templates/design-language.md` — one page of rules
+  (typography roles, color usage, component anatomy, do/don'ts), compact
+  enough to ride in every UI task's capsule.
+
+Re-distill on every refresh. The raw code stays for provenance and
+component-detail lookups.
+
 ## Precondition
 
 The target PRD has `status: approved` — design specs refine an agreed
@@ -53,8 +70,9 @@ capability, not a moving one. Otherwise refuse and point at `/spectacular:prd`.
    product-wide code, the spec's own folder for its screens), write
    `provenance.md`, and record the source in the spec's `sources:`. Use the
    available integration to read the source (Claude Design via the design
-   tool access in Claude Code; plain files otherwise). If an import already
-   exists, this step is the gated **refresh** instead.
+   tool access in Claude Code; plain files otherwise), then **distill** per
+   the convention above. If an import already exists, this step is the gated
+   **refresh** instead — re-distill after.
 4. **Clarify pass.** At most 5 questions, propose-then-ask: which flows are in
    scope, platform conventions (iOS/Android/web divergence), which states are
    worth specifying per screen, and what is deliberately left undesigned.

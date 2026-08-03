@@ -1,6 +1,6 @@
 ---
 name: upgrade
-description: Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Approved truth is only ever amended via changes/.
+description: Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Equal versions run the drift scan as a verification pass. Approved truth is only ever amended via changes/.
 ---
 
 # /spectacular:upgrade — align a workspace with the plugin
@@ -16,8 +16,12 @@ Runs **in a workspace** (profile.md present); otherwise refuse.
 
 1. **Compare versions.** Read the pin from `.spectacular/profile.md` and the
    installed version from `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json`.
-   Equal → nothing to do, say so and stop. Pin *newer* than installed → the
-   plugin itself is behind: recommend updating the plugin, stop.
+   Equal → **verification mode**: skip step 2 (no migration items) and run
+   the drift scan anyway — a workspace migrated by hand can claim the right
+   pin while missing pieces; this is how that gets caught. Report a clean
+   scan in one line and stop; findings follow the normal gated flow (steps
+   4–6, no pin change). Pin *newer* than installed → the plugin itself is
+   behind: recommend updating the plugin, stop.
 2. **Collect migration items** from
    `${CLAUDE_PLUGIN_ROOT}/docs/upgrades.md`: every version section after the
    pin, up to the installed version, in order.

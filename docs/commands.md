@@ -39,4 +39,4 @@ Capture process friction cheaply or review it — one-line append for a single o
 
 ## `/spectacular:upgrade`
 
-Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Approved truth is only ever amended via changes/.
+Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Equal versions run the drift scan as a verification pass. Approved truth is only ever amended via changes/.

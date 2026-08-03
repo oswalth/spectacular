@@ -36,6 +36,12 @@ Open Claude Code in this repo and paste:
 6. Commit protocol (added 2026-08-03): Claude never commits or pushes on its own.
    Flow: make changes → suggest a commit message → Vladimir reviews the diff and
    approves or challenges → commit (and push) only on his explicit ask.
+7. Repo boundary (added 2026-08-03): sessions in this repo never MODIFY
+   project/workspace repos — suggestion-only (name the plugin skill to run
+   there, or give precise manual steps). Reading them for analysis stays
+   allowed. Enforced structurally by the PreToolUse hook in
+   .claude/settings.json + .claude/hooks/repo-boundary.py (blocks outside
+   Write/Edit/NotebookEdit and mutating Bash referencing outside paths).
 
 ## Requirements (given in the brief — challengeable, but not to be silently dropped)
 
@@ -508,6 +514,27 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   trigger: when design code becomes a build-time dependency consumed by
   multiple repos (a real component library), it graduates to a dedicated
   sibling repo under frozen family U. → v0.4.0.
+  D-32 amended (2026-08-03, Vladimir-ratified → v0.4.1): equal pin and
+  installed version no longer dead-end — upgrade runs the drift scan as a
+  verification pass (hand-migrated workspaces can claim the right pin while
+  missing pieces); findings follow the normal gated flow, no pin change.
+- D-36 (2026-08-03) Distill imported design code; raw code stays. Vladimir
+  challenged design-code HTML in the workspace as the consistency
+  mechanism; a web-research round (design-token/AI-agent practice)
+  confirmed the split: raw imported code is provenance + component-detail
+  reference, while AI-generation consistency comes from two small distilled
+  artifacts in product/designs/system/ — tokens.json (primitive + SEMANTIC
+  tokens; the cross-platform source each repo materializes via a
+  theme-bootstrap first task) and design-language.md (one page of rules
+  riding in every UI task's capsule). design's import step distills and
+  re-distills on refresh, gated; implement's capsule always carries the
+  distilled pair for UI tasks and opens raw code only on component demand;
+  plan names the tokens source in UI repo contracts and proposes the theme
+  bootstrap. Templates shipped: design-tokens.json, design-language.md.
+  Both forks Vladimir-ratified (adopt distillation; keep raw code).
+  No per-screen wireframes required — screen structure comes from PRD ACs +
+  design-spec flows; final screens are Figma artifacts only where the owner
+  chooses. → v0.5.0.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -790,3 +817,32 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   provenance.md; pin → 0.4.0; CLAUDE.md row reworded. New Deferred entry:
   dedicated design-system repo (family U) with a build-time-dependency
   trigger. Nothing committed — messages suggested per the protocol.
+- S-6 (cont. 4) 2026-08-03: v0.4.0 committed on Vladimir's explicit ask
+  (plugin: one commit; pilot: four logical units drawing the missing git
+  lines). Plan review — Vladimir challenged the next-steps plan; outcomes:
+  bare change-NNN references must be spelled out (they are the two brief
+  amendment proposals in the pilot's changes/); NEW BOUNDARY — sessions in
+  this repo never modify project repos again, suggestions only (skills
+  first, precise manual steps as fallback); his "design already produced
+  decision 001" clarified via question round → he meant adr-001 from
+  decide, so the two plan-blocking ADRs (mobile framework, backend stack)
+  stand; upgrade's equal-version dead-end fixed as verification mode (D-32
+  amended → v0.4.1). Design-truth workflow stated by Vladimir: Claude
+  Design code = exploratory reference for component look; FINAL screen
+  designs will be created as artifacts in Figma (the design-spec sources) —
+  matches D-35's reference-not-truth stance; workspace-side wording tweak
+  suggested to him, not applied (boundary). v0.4.1 uncommitted — message
+  suggested per protocol.
+- S-6 (cont. 5) 2026-08-03: Two Vladimir points. (1) The repo boundary made
+  STRUCTURAL — Ways of working #7 recorded; PreToolUse hook added
+  (.claude/settings.json + .claude/hooks/repo-boundary.py) blocking
+  Write/Edit/NotebookEdit outside this repo and mutating Bash referencing
+  outside paths (reads stay allowed); pipe-tested 9/9 scenarios; arms after
+  /hooks or a session restart (settings file created mid-session). (2) He
+  challenged workspace-stored design-code HTML as the consistency
+  mechanism; web research → D-36 distillation convention applied
+  (design/implement/plan skills, two new templates, upgrades.md 0.5.0
+  section, workspace-claude designs row) → v0.5.0. Pilot-side to run by
+  Vladimir there: distill direction-01 via /spectacular:design prd-001 (or
+  a direct distill ask), per upgrades.md 0.5.0. Uncommitted (v0.4.1 +
+  v0.5.0 + hook) — message suggested per protocol.

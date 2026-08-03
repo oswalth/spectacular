@@ -10,7 +10,9 @@ interviewing, deepened decide, brief capability sketch, content-aware retro. The
 feedback round (same day, D-31…D-34 → v0.3.0) adds: retro challenges observations, the
 design stage (design specs + /spectacular:design), /spectacular:upgrade + upgrade
 notes, and the MCP posture (GitHub MCP deferred). D-35 (same day → v0.4.0) adds
-design-code import: workspace-resident, git-canonical, provenance-tracked.
+design-code import: workspace-resident, git-canonical, provenance-tracked. D-36
+(same day → v0.5.0) adds distillation: imported design code yields tokens.json +
+design-language.md, the artifacts that actually keep AI-generated UI consistent.
 
 ## Plugin repo layout (this repo)
 
@@ -57,7 +59,8 @@ Skills are invoked as `/spectacular:<name>`.
 │   └── designs/                   # design truth (D-34, D-35)
 │       ├── NNN-<slug>.md          #   design specs: owner-authored UX as truth
 │       ├── NNN-<slug>/            #   one spec's imported screen prototypes
-│       └── system/                #   product-wide imported design code
+│       └── system/                #   product-wide imported design code +
+│                                  #   distilled tokens.json / design-language.md
 │                                  #   (each import dir carries provenance.md)
 ├── architecture/
 │   ├── overview.md            # living overview; created from template on first use
@@ -157,6 +160,12 @@ and the task's Verification. All artifact shapes live in templates/ only.
   procedure). External tool = authoring surface; refresh = gated structural diff.
   Imported code is reference — implement translates to each repo's stack, never
   pastes. Escalation to a dedicated family-U repo has a written trigger (Deferred).
+  Distillation (D-36): after import (and every refresh) design derives, gated,
+  system/tokens.json (primitive + semantic tokens; each UI repo materializes them
+  via a theme-bootstrap first task, contract names the source — plan) and
+  system/design-language.md (one-page rules); implement's UI-task capsule always
+  carries the distilled pair and opens raw code only on component demand.
+  Templates: design-tokens.json, design-language.md.
 - **Acceptance flow (D-22):** all tasks done → story is *awaiting acceptance* (derived);
   `next` names it and lists the ACs to test. A human (QA/PO) tests the whole story;
   explicit sign-off flips `done` + logs PASS — a manual edit of the story file, no
@@ -298,8 +307,10 @@ to installed → drift-scan workspace files against current templates (CLAUDE.md
 sections; conventions.md vs the frozen taxonomy; .spectacular files) → propose the
 migration set split by ownership (plugin-owned scaffolding: direct gated edits;
 approved truth: changes/ proposals, concrete defects only — conformance alone never
-rewrites approved truth) → apply, bump pin → one proposed commit. Not its job:
-validating upgraded skills — the next lifecycle stage does that.
+rewrites approved truth) → apply, bump pin → one proposed commit. Equal versions run
+the drift scan as a verification pass (D-32 as amended: hand-migrated workspaces can
+claim the right pin while missing pieces; findings follow the gated flow, no pin
+change). Not its job: validating upgraded skills — the next lifecycle stage does that.
 Next: `/spectacular:next`.
 
 ## Subagent: repo-reader — sonnet
