@@ -10,10 +10,12 @@ D-number.
 
 ```
 spectacular/
-├── .claude-plugin/plugin.json     # manifest
+├── .claude-plugin/                # plugin.json + marketplace.json — the repo is its
+│                                  #   own marketplace (D-4, D-24; install flow in README)
 ├── skills/<name>/SKILL.md         # the seven skills (D-8: no plain commands)
 ├── agents/repo-reader.md          # the one subagent
-├── scripts/                       # lint + docs-sync, python3 stdlib only (stated)
+├── scripts/                       # docs generator only in v0.1, python3 stdlib
+│                                  #   (lint + CI deferred — D-24)
 ├── docs/                          # published docs (R-7), partly generated (P-6)
 ├── README.md                      # install / update from private GitHub repo (D-4)
 └── design/                        # design zone — committed during development,
@@ -96,7 +98,9 @@ Task body: description, verification (how "done" is checked — Karpathy #4), **
   files are the interface. `next` surfaces lingering drafts.
 - **Acceptance flow (D-22):** all tasks done → story is *awaiting acceptance* (derived);
   `next` names it and lists the ACs to test. A human (QA/PO) tests the whole story;
-  explicit sign-off flips `done` + logs PASS. On FAIL: log the failure, then `plan`
+  explicit sign-off flips `done` + logs PASS — a manual edit of the story file, no
+  dedicated skill in v0.1; `next` prints exactly what to edit (D-24). On FAIL: log
+  the failure, then `plan`
   re-plan mode — diagnose (repo-reader on suspect repos), propose reopening task(s)
   and/or new fix tasks, gate, apply. Reopened tasks make the story mechanically leave
   awaiting-acceptance. Loop until PASS.
@@ -204,27 +208,37 @@ hash it read; on the next dispatch, HEAD unchanged → reuse, changed → re-der
 the diff since the stamp. Mechanically invalidated, never discipline-maintained.
 Build trigger: retro observations of repeated costly scans.
 
-## Lint and docs (P-3, P-6, D-12) **(stated except where D-numbered)**
+## Lint and docs (P-3, P-6, D-12; enforcement deferred — D-24)
 
-Public lint, ships in `scripts/`, runs in CI (GitHub Actions):
+v0.1 ships NO lint scripts and NO CI (D-24): Vladimir is the only user, tests
+everything himself, and the commit protocol (STATE.md Ways of working #6) puts his
+review in front of every commit — that review is the interim guard. The five designed
+rules below are deferred as a block; written trigger: the repo is published beyond
+private personal use. Kept here as the spec of what gets built when the trigger fires:
 1. Placeholder allowlist — example names in shipped files must come from the fixed
-   vocabulary below (D-12a).
+   vocabulary below (D-12a). (Until the trigger, Vladimir eyeballs example names at
+   review time — D-24 note 2.)
 2. No-vapor — every `/spectacular:<name>` mention in shipped files must exist in `skills/`.
 3. Footer — every SKILL.md ends with a "Next step" section (R-5).
 4. Docs-sync — generated docs match `skills/` on disk; the model table has exactly one
    row per shipped skill (R-8).
-
 5. Personal-name denylist (D-12 as revised, D-23) — `design/denylist.txt` (committed
    with the design zone; pilot name added at dogfood time) grepped case-insensitively
    against shipped files only. The rule skips silently when the file is absent — which
    is exactly the state of the released repo, since design/ is excluded at release.
-   No local hooks.
+   No local hooks. Until the trigger: checked manually as part of the release
+   procedure (OQ-14).
 
-Docs (R-7): README (hand-written: install/update from the private GitHub repo,
-quickstart) + `docs/commands.md` generated from SKILL.md front matter, ordered by
-lifecycle (init → prd → decide → plan → implement → next → retro) + `docs/models.md` —
-the hand-maintained recommended-model table (single source for R-8/D-14; lint rule 4
-keeps it honest; reviewed at every retro).
+Docs (R-7): README (hand-written: quickstart + install/update from the private GitHub
+repo per the verified flow — `/plugin marketplace add owner/repo`, `/plugin install
+spectacular@<marketplace>`, `/plugin marketplace update <marketplace>`; note the
+private-repo gotcha: background auto-update needs a credential helper — `gh auth
+setup-git` or an ssh-agent-loaded key) + `docs/commands.md` generated from SKILL.md
+front matter (`name`, `description`, `argument-hint`), ordered by lifecycle (init →
+prd → decide → plan → implement → next → retro) + `docs/models.md` — the
+hand-maintained recommended-model table (single source for R-8/D-14; reviewed at
+every retro). README must reference every file under `docs/` — no docs file may live
+unreferenced by README (D-24).
 
 Placeholder vocabulary (D-12a allowlist, extensible; two-path per D-23): generic
 examples use the descriptive set — product **acme**; workspace **acme-product**; repos
@@ -233,6 +247,28 @@ the default path, since the D-11 naming step is optional. The naming-conventions
 alone use a themed worked example demonstrating groups-then-theme: product **acme**,
 theme constellations — **orion** (api), **lyra** (web), **vega** (mobile), **atlas**
 (infra). Both sets are allowlisted.
+
+## Pre-build notes — ratification record (2026-08-03, D-24)
+
+The five S-4.5 pre-build notes were reviewed by Vladimir; surviving mechanics are
+folded into the sections above. Outcomes:
+
+1. Marketplace manifest — approved (plugin layout; README install/update flow with
+   the credential-helper gotcha, see "Lint and docs" docs paragraph). The
+   marketplace.json fields verified against CC docs: `name`, `owner.name`,
+   `plugins: [{name, source: "./"}]`.
+2. Placeholder-allowlist lint — removed from v0.1; Vladimir eyeballs example names at
+   review time. The same feedback introduced the commit protocol (STATE.md Ways of
+   working #6).
+3. Acceptance recording as a manual story-file edit — approved (folded into the
+   acceptance-flow mechanics). Trigger for more machinery: retro friction (P-4).
+4. Docs generation from `name`/`description`/`argument-hint` frontmatter — approved
+   (the `model:` field exists and stays deliberately unused — D-14), plus the new
+   rule: README references every file under docs/.
+5. Lint + CI as a whole — deferred to publication (D-24; see "Lint and docs" and
+   STATE.md Deferred). S-5 build order: scaffold + manifests → skills in lifecycle
+   order (init → prd → decide → plan → implement → next → retro) → repo-reader →
+   docs generator + generated docs + README last (they need the skills on disk).
 
 ## Tracer bullet — definition of done (P-1)
 

@@ -17,8 +17,8 @@ Open Claude Code in this repo and paste:
 
 > Read design/STATE.md end to end, then design/spec.md — together they are the
 > complete design context for the spectacular plugin. Follow STATE.md's "Ways of
-> working". Continue the design discussion
-> from the "Open questions" section, highest-leverage question first. Do not
+> working". Design is complete; execute the next entry in the Session plan
+> (S-5: build the tracer bullet per spec.md). Do not
 > re-derive settled Decisions and do not re-explore ../speck or ../speculation
 > beyond what this file records. Before the session ends, update STATE.md.
 
@@ -30,6 +30,9 @@ Open Claude Code in this repo and paste:
    (think before coding · simplicity first · surgical changes · goal-driven execution).
 4. Plan for context rot: this file is the mechanism.
 5. This directory is the plugin repo.
+6. Commit protocol (added 2026-08-03): Claude never commits or pushes on its own.
+   Flow: make changes → suggest a commit message → Vladimir reviews the diff and
+   approves or challenges → commit (and push) only on his explicit ask.
 
 ## Requirements (given in the brief — challengeable, but not to be silently dropped)
 
@@ -153,7 +156,8 @@ Skills (user-facing, main session; each ends with a justified next step — R-5)
 
 Subagents: repo-reader — reads a code repo, reports architecture/capabilities relevant
 to a stated question; dispatched by prd/decide/plan. Nothing else in v0.1.
-Scripts + CI: lint (P-3, layers per D-12) and docs-sync (P-6). No plain commands at all.
+Scripts: docs generator only (P-6). Lint + CI deferred to publication (D-24). No plain
+commands at all.
 
 ## Deferred, with triggers (P-4 discipline)
 
@@ -175,6 +179,12 @@ Scripts + CI: lint (P-3, layers per D-12) and docs-sync (P-6). No plain commands
   pilot proves the greenfield path.
 - Full plugin-evolution loop (R-3) beyond retro's append mode. Trigger: first
   accumulated retro observations from the pilot.
+- Lint + CI (all five designed rules kept in spec.md "Lint and docs": placeholder
+  allowlist, no-vapor, footer, docs-sync, denylist grep). Deferred by D-24 —
+  Vladimir tests everything himself for now; the commit protocol (Ways of working
+  #6) is the interim guard, and the denylist is checked manually as part of the
+  release procedure (OQ-14). Trigger: the repo is published beyond private
+  personal use (team share or public).
 
 ## Reference: lean AI-assisted SDLC order (corrected)
 
@@ -247,6 +257,9 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   The denylist is therefore now a committed design-zone file (design/denylist.txt)
   checked by a plain CI grep over shipped files only — no local hooks; it vanishes
   at release with the rest of design/, so it still never ships.
+  Amended 2026-08-03 (D-24): the CI grep, like all lint/CI, is deferred to
+  publication; until then the denylist file stays committed and is checked manually
+  at release time.
 - D-13 (2026-07-31, supersedes OQ-11's "record the pilot" intent) Pilot details never
   enter the spectacular repo at all — not even the design zone. The plugin design is
   project-blind; pilot specifics are provided in conversation only at dogfood time,
@@ -312,6 +325,19 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   story's ACs; sign-off flips done and logs PASS in the story's Acceptance log. On
   FAIL: log it, then plan's re-plan mode (gated) diagnoses via repo-reader and
   proposes reopening tasks and/or new fix tasks. Loop until PASS.
+- D-24 (2026-08-03) S-4.5 pre-build notes ratified with changes. Approved: marketplace
+  manifest (note 1); acceptance sign-off as a manual story-file edit, no dedicated
+  skill (note 3); docs generation from name/description/argument-hint plus a new
+  rule — README must reference every file under docs/, none may live unreferenced
+  (note 4). Changed: the placeholder-allowlist lint is removed from v0.1 (note 2 —
+  Vladimir eyeballs example names at review time); ALL lint and CI are deferred
+  (note 5, see Deferred) with the written trigger "published beyond private personal
+  use" — Vladimir tests everything himself until then. Interim structural guard: the
+  commit protocol (Ways of working #6) puts human review in front of every commit.
+  This consciously relaxes the post-mortem's "discipline must be structural" lesson
+  during private development; it becomes structural at the publication gate. S-5
+  build order revised: scaffold + manifests → skills in lifecycle order →
+  repo-reader → docs generator + README last.
 - D-23 (2026-08-03, resolves OQ-13) Spec review: all "(stated)" mechanics in
   design/spec.md ratified as written, with two changes: (a) the personal-name
   denylist is kept, but as a committed CI grep (see D-12 revision); (b) the
@@ -326,7 +352,8 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   pilot, every stage crude; no stage gets deepened until the whole pipeline has run.
 - P-2 State is derived from artifacts, never stored.
 - P-3 Structurally honest: lint/CI forbids naming non-existent commands, requires
-  next-step footers, and bans pilot/project names in plugin content.
+  next-step footers, and bans pilot/project names in plugin content. (Enforcement
+  deferred to publication — D-24; interim guard is the commit protocol.)
 - P-4 Nothing enters the plugin that real use has not required.
 - P-5 The plugin owns the process model; each workspace owns only its profile and a
   plugin-version pin.
@@ -334,6 +361,9 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   drift.
 
 ## Open questions
+
+Queue empty as of S-4.5 (2026-08-03): every remaining item below is parked with a
+written trigger that has not fired. Nothing here blocks S-5 — go to the Session plan.
 
 - OQ-1…OQ-6, OQ-8…OQ-10 resolved → D-1…D-11; karpathy guidelines captured in
   design/karpathy-guidelines.md.
@@ -360,8 +390,12 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   design/spec.md; open remainder is the spec review (OQ-13).
 - S-4 (2026-08-03): spec review — Vladimir's five notes processed → git started,
   D-12/D-21 revised, D-23, OQ-14 opened, repo-cache deferral recorded. ✓ done
-- S-5: build the tracer bullet: plugin scaffold, seven skills, repo-reader, lint +
-  docs scripts, CI. Pilot specifics arrive only at dogfood time (D-13). ← next
+- S-4.5 (2026-08-03): pre-build audit — OQ queue confirmed empty; D-4 install path
+  verified against current CC docs; five pre-build notes appended to spec.md
+  (unratified). ✓ done
+- S-5: build the tracer bullet: plugin scaffold + manifests, seven skills,
+  repo-reader, docs generator + README. No lint/CI (D-24). Pilot specifics arrive
+  only at dogfood time (D-13). ← next
 
 ## Session log
 
@@ -414,3 +448,28 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   ratified; denylist kept as committed CI grep; placeholder vocabulary two-path
   (descriptive default + themed naming-conventions example). design/denylist.txt
   created. Next: S-5, build the tracer bullet.
+- S-4.5 2026-08-03 (autonomous session): The resume prompt pointed at Open questions,
+  but the queue is empty — OQ-7 (dogfood time) and OQ-14 (release time) are parked
+  with unfired triggers and were deliberately NOT re-opened. Ran the pre-build audit
+  of spec.md instead. D-4 feasibility verified against current Claude Code docs
+  (code.claude.com/docs/en/plugin-marketplaces.md): a private repo doubles as its own
+  marketplace via .claude-plugin/marketplace.json; add/install/update commands
+  confirmed; private-repo auth rides the user's gh/SSH credentials; one gotcha
+  (background auto-update needs a credential helper) goes in the README. Five
+  build-level gaps resolved as spec.md "Pre-build notes" — Claude-proposed and
+  UNRATIFIED: marketplace manifest added to layout; lint rule 1 scans code
+  spans/fences only (rule 5 keeps full-text coverage); D-22 sign-off is a manual
+  story-file edit, no new skill; docs generate from name/description/argument-hint
+  frontmatter (model: field confirmed to exist and deliberately unused per D-14);
+  S-5 build order puts lint + CI before any skill. Resume prompt rewritten to point
+  at S-5. Nothing was ratified this session; Vladimir nods through or challenges the
+  notes when S-5 starts.
+- S-4.5 (cont.) 2026-08-03: Vladimir ratified the five pre-build notes with changes
+  → D-24. Notes 1/3/4 approved (note 4 adds: README must reference every docs/
+  file); note 2's allowlist lint removed from v0.1; note 5 defers ALL lint + CI,
+  trigger: publication beyond private personal use. New Ways of working #6 — the
+  commit protocol (no unprompted commits; suggest message → Vladimir reviews →
+  commit/push only on explicit ask). D-12 amended (denylist checked manually until
+  the trigger), P-3 annotated (enforcement deferred), spec.md updated throughout
+  (layout, lint/docs section, acceptance mechanics, ratification record, build
+  order). S-5 next: scaffold + manifests → skills → repo-reader → docs + README.
