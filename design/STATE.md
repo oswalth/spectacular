@@ -17,12 +17,13 @@ Open Claude Code in this repo and paste:
 
 > Read design/STATE.md end to end, then design/spec.md — together they are the
 > complete design context for the spectacular plugin. Follow STATE.md's "Ways of
-> working". The v0.1 build (S-5) is complete on disk; the next entry in the
-> Session plan is S-6 (dogfood), which runs in the PILOT's directory, not this
-> repo — in this repo the remaining work is processing whatever S-5 review
-> feedback or pilot retro observations Vladimir brings. Do not re-derive settled
-> Decisions and do not re-explore ../speck or ../speculation beyond what this
-> file records. Before the session ends, update STATE.md.
+> working". The v0.2.0 build (S-6 retro round, D-26…D-30) is complete on disk;
+> S-6 dogfood is IN PROGRESS in the pilot's directory, not this repo — the
+> pilot has run init → PRD map → one developed PRD → one ADR; plan → implement
+> → acceptance remain. In this repo the remaining work is processing whatever
+> review feedback or pilot retro observations Vladimir brings. Do not re-derive
+> settled Decisions and do not re-explore ../speck or ../speculation beyond
+> what this file records. Before the session ends, update STATE.md.
 
 ## Ways of working (from Vladimir's brief)
 
@@ -179,8 +180,20 @@ commands at all.
   implement cost/quality exist.
 - Brownfield onboarding (per D-6). Trigger: a real existing-product need after the
   pilot proves the greenfield path.
-- Full plugin-evolution loop (R-3) beyond retro's append mode. Trigger: first
-  accumulated retro observations from the pilot.
+- Full plugin-evolution loop (R-3) — trigger FIRED 2026-08-03 (first pilot
+  observations processed in the S-6 retro round). The loop now runs in its
+  manual v0.2 form: retro review mode executed in the plugin repo under the
+  commit protocol (D-30c). Dedicated machinery (automated handoff ingestion,
+  reload prompting) stays deferred; new trigger: the manual form hurts, or the
+  plugin gains a second user.
+- GitHub MCP (D-33): no current need — sibling layout reads across repos on
+  disk; merge_flow: pr rides the gh CLI. Trigger: first remote-only repo, a
+  collaborator without local siblings, or CI-status needs.
+- Dedicated design-system repo (D-35, frozen family U): imported design code
+  stays workspace-resident reference material. Trigger: it becomes a
+  build-time dependency consumed by multiple repos (a real component
+  library FE/mobile import at build), or its size/tooling makes the
+  workspace unwieldy.
 - Lint + CI (all five designed rules kept in spec.md "Lint and docs": placeholder
   allowlist, no-vapor, footer, docs-sync, denylist grep). Deferred by D-24 —
   Vladimir tests everything himself for now; the commit protocol (Ways of working
@@ -362,6 +375,139 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   (the default, conventions-skipped path), plus a themed worked example (acme +
   constellations: orion/lyra/vega/atlas) used only in the naming-conventions docs.
   Both sets allowlisted.
+- D-26 (2026-08-03, S-6 retro round) Workspace commit protocol: Ways of working
+  #6 extends to every workspace. Skills never commit unprompted; each unit of
+  work ends with a proposed commit message, committed only on explicit owner
+  approval; the protocol lives in the workspace CLAUDE.md template so ad-hoc
+  sessions inherit it. Unit-of-work grain: scaffold · approved brief · PRD-map
+  stubs · each developed PRD (plus change proposals it opened) · each ADR with
+  its overview update · each plan batch · each retro review's applied fixes.
+  Exception: implement's code-repo commit stays mechanical (D-21 — one task =
+  one squashed mainline commit IS the unit); its workspace status/Learnings
+  edits get a proposed workspace commit at close-out. Root cause fixed: v0.1
+  init explicitly instructed two autonomous commits while no other skill
+  committed at all — wrong in both directions (dogfood observations 2 and 7).
+- D-27 (2026-08-03, amends D-11 and D-23) Frozen naming-family taxonomy: the
+  letter→family mapping is plugin-owned and product-independent, shipped as
+  templates/naming-families.md — 16 families (A app services · B browser apps ·
+  C client apps · D data · E integrations · F foundations · G governance, always
+  the workspace repo · H hosting · I identity · J jobs · M machine intelligence
+  · O observability · P platform · Q quality · S schemas · T tooling) plus
+  reserved K/L/N/R/U/V/W/X/Y/Z, with family decision rules, a not-a-family list,
+  and codename rules including a theme-viability check (every activated letter
+  needs 5–10 candidates under the theme, or the theme is disqualified).
+  Modeled on the enterprise repo-naming convention Vladimir supplied in-chat.
+  Products no longer DEFINE groups — they ACTIVATE families and pick a theme;
+  D-11's groups-first mechanics are superseded to that extent (optionality,
+  theme-from-product-idea, and owner-supplied pools for later activations
+  stand). Root cause fixed: greedy per-product letter assignment spent a
+  canonical letter on the wrong family on first use (dogfood observation 3).
+  D-23's themed vocabulary extends to letter-matched constellation names:
+  acme-gemini / andromeda / bootes / cassiopeia / hydra (+ musca / mensa /
+  monoceros as M examples), naming-conventions docs only.
+- D-28 (2026-08-03) Propose-then-ask interviewing: init's BA interview and the
+  clarify passes in prd and decide must frame before asking — a short synthesis
+  of what is already known plus a strawman position, then 2–3 questions that
+  reference the frame, then (init, per topic) a mini-summary the owner confirms.
+  Root cause fixed: the v0.1 interview read as an interrogation — bare
+  questions, no context, no suggestions, no summaries (dogfood observation 5).
+- D-29 (2026-08-03) decide gains depth: state the decision's reversal cost up
+  front and scale the whole treatment by it; bounded clarify pass (≤5 questions
+  on what artifacts do not record — unstated preferences, prior experience,
+  effort appetite, owned accounts/subscriptions, risk tolerance); an
+  investigation step (web research on candidates' current state; repo-reader
+  where registered code informs) mandatory for hard-to-reverse decisions;
+  per-option failure modes in the trade-off table for hard-to-reverse
+  decisions; and a no-smuggling rule — any new external dependency a decision
+  introduces is either decided in the ADR or named an explicit follow-up
+  decision. Root cause fixed: v0.1 decide ran name → drivers → options → table
+  straight from artifacts; its first foundational ADR on the pilot was
+  competent but under-investigated, and its consequences slipped an undecided
+  vendor dependency into the overview (dogfood observation 6).
+- D-30 (2026-08-03) Brief depth ladder, brief-delta discipline, retro UX.
+  (a) The brief stays lean, but the template gains a "Product shape
+  (capability sketch)" section — 2–4 lines per capability plus its sharpest
+  open question — and init's gate presents the depth ladder (brief → PRD map →
+  developed PRDs → stories/tasks) so deliberate thinness reads as intentional
+  (dogfood observation 1). (b) prd's clarify pass must open a changes/
+  proposal in the same session when an answer amends the approved brief —
+  clarify answers may not strand brief deltas (two stranded deltas found on
+  the pilot); stub PRDs may carry an optional "Notes for development" section
+  (legalizing observed useful practice). (c) retro modes are chosen by
+  argument CONTENT: one short observation → verbatim append; a multi-item
+  argument → itemized dated entries, confirmed, then review offered; a bare
+  call with no observations → offer interactive capture instead of a dead end
+  (dogfood observation 4). Run inside the plugin repo, review mode IS the
+  plugin-evolution loop.
+- D-31 (2026-08-03) Retro review challenges, never just accepts: observations
+  are symptoms, not verdicts — root-causing may confirm, refine, or overturn
+  them; the reviewer asks when an observation underdetermines the fix,
+  proposes the better option where one exists, and states explicitly when a
+  point stands exactly as written. Prompted by Vladimir's feedback on the
+  first evolution-loop run (his points were accepted wholesale, zero
+  questions asked). Applies equally to the plugin-repo form of the loop.
+- D-32 (2026-08-03) /spectacular:upgrade + shipped upgrade notes: workspaces
+  follow plugin version bumps without re-running lifecycle stages. Mechanics:
+  compare the profile pin to the installed version → walk docs/upgrades.md
+  sections (hand-maintained, one per workspace-affecting release) from pin to
+  installed → drift-scan workspace files against current templates → apply
+  gated fixes split by ownership (plugin-owned scaffolding edited directly;
+  approved truth only via changes/, and only for concrete defects — template
+  conformance alone never rewrites approved truth) → bump the pin → one
+  proposed commit. Explicitly NOT its job: validating that upgraded skills
+  "work" — the next real lifecycle stage does that; re-running completed
+  stages is theater, and amend-only (D-17) forbids it anyway. Ratified via
+  question round (upgrade skill chosen over next-integration and
+  manual-per-retro).
+- D-33 (2026-08-03) GitHub MCP deferred with a written trigger (Vladimir
+  ratified the deferral): under the sibling layout the workspace and code
+  repos already read each other from disk (registry + contract + repo-reader),
+  and merge_flow: pr already rides the gh CLI, so a GitHub MCP adds nothing
+  today. Trigger: first remote-only repo, a collaborator without local
+  siblings, or CI-status needs. Recorded under Deferred. General MCP posture
+  (with D-34): the plugin never ships or configures MCP servers; skills use
+  connected MCPs opportunistically and degrade gracefully without them.
+- D-34 (2026-08-03) Design stage adopted NOW — Vladimir's explicit call over
+  Claude's defer-recommendation, consciously relaxing P-1 (a stage added
+  before the tracer bullet closes; the counterargument was made and overruled
+  by the owner: his UX role and design-driven FE/mobile delivery need design
+  as first-class truth). Shape: design specs are truth artifacts at
+  product/designs/NNN-<slug>.md (status draft|approved; front matter prd:
+  required, sources: design-tool links; reference design-NNN);
+  /spectacular:design RECORDS owner-authored UX — flows, screens with states
+  and source frames, cross-cutting patterns, requirement mapping only where
+  design constrains acceptance — and never generates UX; precondition:
+  approved PRD; a design finding contradicting the PRD opens a changes/
+  proposal. Consumers: plan reads approved design specs, warns when a
+  UI-bearing PRD lacks one (owner may explicitly plan without), stories and
+  tasks carry Design references, the A4 check gains a design-coverage clause,
+  the story DoR gains the designed-UI clause; implement's capsule pulls
+  referenced frames via a connected Figma/design-tool MCP, degrading to
+  owner-confirmed links. Lifecycle position: after prd, before decide.
+  Command set grows to nine (design, upgrade) — v0.3.0.
+- D-35 (2026-08-03) Design-code import is plugin-owned and git-canonical
+  (both forks ratified by Vladimir over per-project-ad-hoc,
+  dedicated-repo-now, and remote-only): ready design code — a Claude Design
+  (claude.ai/design) project, an exported prototype, plain design files —
+  is imported INTO the workspace, because the workspace is the hub every
+  code repo already reads via its contract (FE, mobile, QA get it for
+  free). Placement is two-level: product/designs/system/ for product-wide
+  code (visual directions, foundations, component systems, themes) and
+  product/designs/NNN-<slug>/ for one spec's screen prototypes. Every
+  import directory carries provenance.md (source project id+URL,
+  remote→local file map, import date, viewing notes, refresh procedure).
+  Import is source-only (no deps, no build outputs). After import, git is
+  the canon; the external tool stays the authoring surface; refresh is
+  explicit and gated (structural diff → fetch changed only → owner
+  approves). Imported code is REFERENCE for look and feel — implement
+  translates it to each repo's stack, never pastes it. Mechanics live in
+  /spectacular:design step 3 (import/refresh), reading Claude Design
+  through Claude Code's built-in design-tool access (verified working:
+  read methods need no extra auth on a logged-in session; plan-gated
+  writes exist for a future push-back flow). Escalation deferred with a
+  trigger: when design code becomes a build-time dependency consumed by
+  multiple repos (a real component library), it graduates to a dedicated
+  sibling repo under frozen family U. → v0.4.0.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -417,7 +563,11 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
 - S-6: dogfood — install the plugin from this repo, run the tracer bullet end to
   end on the pilot (specifics arrive in-chat — D-13; "release" meaning asked
   there — OQ-7). Runs in the pilot's own directories, NOT in this repo; this
-  repo only receives retro-driven fixes afterwards. ← next
+  repo only receives retro-driven fixes afterwards. ← IN PROGRESS: the pilot
+  ran init → brief approved → PRD map (6 stubs) → one PRD developed and
+  approved → one foundational ADR; seven friction observations came back and
+  were processed in this repo (retro round, D-26…D-30, v0.2.0). Remaining:
+  plan → implement → ≥1 story through acceptance PASS, on the updated plugin.
 
 ## Session log
 
@@ -557,3 +707,86 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   implement DoR check + DoD walk; decide MADR + overview template). spec.md
   synced (layout comment; "Adopted document standards" paragraph). Full
   verification sweep re-run. Awaiting Vladimir's commit.
+- S-6 2026-08-03 (retro round, this repo): first half of dogfood ran in the
+  pilot workspace (init → brief approved → PRD map → one PRD approved → one
+  ADR — per D-13 no specifics recorded here). Vladimir brought seven friction
+  observations in-chat via /spectacular:retro; each was root-caused against
+  the pilot artifacts and the v0.1 skill texts, plus two findings of Claude's
+  own (clarify answers stranding approved-brief deltas; an ADR consequence
+  smuggling an undecided vendor dependency into the overview). R-3's
+  evolution-loop trigger thereby fired; the loop ran in its manual form under
+  the commit protocol. Fixes recorded as D-26…D-30 and applied: workspace
+  commit protocol everywhere (skills init/prd/decide/plan/implement/retro +
+  workspace-claude.md template); frozen naming-family taxonomy shipped as
+  templates/naming-families.md with init's naming step rewritten to
+  activate-families-then-theme; propose-then-ask interviewing in init/prd/
+  decide; decide deepened (reversal cost, clarify, investigate, failure
+  modes, no-smuggling); brief template + init gate carry the capability
+  sketch and depth ladder; prd opens change proposals for brief deltas and
+  legalizes stub Notes; retro modes made content-aware with interactive
+  capture and the plugin-repo case documented. plugin.json → 0.2.0; docs
+  regenerated; pilot names added to design/denylist.txt (design zone only);
+  manual denylist grep over shipped files clean. Matching workspace-side
+  fixes applied directly in the pilot (conventions rewritten to the frozen
+  taxonomy, profile pin bumped, CLAUDE.md gains the commit protocol, two
+  change proposals opened for the stranded brief deltas, observations marked
+  addressed). Nothing committed in either repo — commit messages suggested
+  in-chat per the protocol. Remaining S-6: plan → implement → acceptance on
+  the pilot with v0.2.0.
+- S-6 (cont.) 2026-08-03: Vladimir's feedback on the retro round, three
+  points. (1) The evolution loop accepted his observations wholesale, zero
+  questions — must clarify/challenge/confirm explicitly → D-31; retro
+  SKILL.md amended, spec.md synced. (2) Open discussion: how a live workspace
+  follows plugin upgrades without re-init — proposed /spectacular:upgrade
+  (per-version upgrade notes + mechanical drift scan; plugin-owned
+  scaffolding edited directly under gate, approved truth only ever amended
+  via changes/; the pin in profile.md is the version anchor), with the
+  counterpoint that upgraded skills are validated by the NEXT lifecycle
+  stage, not by re-running completed ones. (3) Open discussion: MCP posture —
+  GitHub MCP challenged as no-current-need (sibling layout reads across
+  repos on disk; merge_flow: pr already rides the gh CLI; trigger would be a
+  remote-only repo or a second collaborator), Figma MCP acknowledged as a
+  real upcoming need for design-driven FE/mobile tasks; minimal shape
+  proposed (design references in story/task + capsule fetch when connected,
+  plugin never ships MCP config). Decisions pending Vladimir's answers.
+- S-6 (cont. 2) 2026-08-03: Vladimir answered the three forks → D-32 (the
+  /spectacular:upgrade skill, over next-integration and manual-per-retro),
+  D-33 (GitHub MCP deferred with trigger, as recommended), D-34 (FULL design
+  stage now — overruling the defer-recommendation; P-1 consciously relaxed).
+  Built and applied: skills/design + templates/design.md; skills/upgrade +
+  docs/upgrades.md (hand-maintained per-version migration notes, 0.1.0→0.3.0
+  covered); plan (design context, Design references on stories/tasks, A4
+  design-coverage clause), implement (capsule pulls design slices, fetches
+  frames via connected design-tool MCP, degrades to links), next (designs in
+  reads/vocab/drafts; nine-command list), story/task templates (optional
+  Design references), workspace-claude.md (designs layout row, design-NNN
+  reference example, designed-UI DoR clause); generator lifecycle → nine
+  skills, docs regenerated; models.md + design (opus) and upgrade (sonnet)
+  rows; README updated (nine commands, upgrade flow + upgrades.md reference,
+  MCP posture note); plugin.json → 0.3.0; denylist grep clean. Pilot
+  workspace upgraded to the 0.3.0 notes (pin, CLAUDE.md layout/reference/DoR
+  deltas) — the first manual execution of exactly what /spectacular:upgrade
+  automates. Nothing committed — messages suggested per the protocol.
+  Remaining S-6 unchanged: design (optional for prd-001) → plan → implement
+  → acceptance on the pilot.
+- S-6 (cont. 3) 2026-08-03: Vladimir raised design-code import (he had
+  created a design-code visual direction in Claude Design for the pilot).
+  Grounded the discussion in the actual tooling first: Claude Code's design
+  access verified live — writable design-system projects listed, the
+  pilot's design project read (a regular PROJECT type; reads work through
+  the logged-in session, no extra auth; per-file fetch capped at 256 KiB;
+  writes are plan-gated and incremental). Question round → D-35 (plugin
+  convention + skill support over per-project ad-hoc; workspace-resident
+  git-canonical over dedicated-repo-now and remote-only, both
+  recommendations accepted; source identified via pasted project URL).
+  Applied: design SKILL.md gains the design-code convention section and an
+  import/refresh step 3; design template sources widened + cross-cutting
+  pointer to system/; implement capsule reads imported code from the
+  workspace and translates, never pastes; workspace-claude.md designs row
+  reworded; docs/upgrades.md 0.4.0 section; README (design row + import
+  posture paragraph); plugin.json → 0.4.0; docs regenerated. Pilot-side:
+  the design project's two files imported to product/designs/system/
+  (direction-01.dc.html + support.js, relative link preserved) with
+  provenance.md; pin → 0.4.0; CLAUDE.md row reworded. New Deferred entry:
+  dedicated design-system repo (family U) with a build-time-dependency
+  trigger. Nothing committed — messages suggested per the protocol.

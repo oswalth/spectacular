@@ -28,7 +28,12 @@ edges IS the product roadmap; no other roadmap artifact exists.
    `product/prds/NNN-<slug>.md` from
    `${CLAUDE_PLUGIN_ROOT}/templates/prd.md`, reduced to the stub form:
    `status: stub`, `depends_on` filled, the title, and a one-line Scope —
-   drop the remaining sections until the PRD is developed.
+   drop the remaining sections until the PRD is developed. A stub may carry an
+   optional `## Notes for development` section for ideas parked here by other
+   sessions (e.g. another PRD's clarify pass); nothing else.
+4. **Propose a commit** for the map (e.g. `add PRD map (prd-001…prd-006
+   stubs)`); commit only on the owner's explicit approval — the workspace
+   commit protocol (CLAUDE.md) applies to every unit of work.
 
 ## Mode B — stubs exist: develop one PRD
 
@@ -36,8 +41,14 @@ edges IS the product roadmap; no other roadmap artifact exists.
    whose `depends_on` are all approved and which unblocks the most other stubs.
 2. **Clarify pass.** Ask at most 5 structured questions — only where the brief
    and stub genuinely underdetermine the capability (scope edges, must-vs-nice,
-   failure behavior, integration boundaries). Write the answers into the PRD's
-   Clarifications section; they must not live only in chat.
+   failure behavior, integration boundaries). Work propose-then-ask: precede
+   the questions with a short frame of what the brief and stub already settle
+   and where you stand, so each question reads against a stated position.
+   Write the answers into the PRD's Clarifications section; they must not
+   live only in chat. If an answer amends the *approved brief* (a phrasing
+   now wrong, a scope call the brief doesn't record), open
+   `changes/NNN-<slug>/proposal.md` targeting the brief in the same session —
+   clarifications must never strand brief deltas.
 3. Draft the full PRD (`status: draft`) with every section of
    `${CLAUDE_PLUGIN_ROOT}/templates/prd.md`. Requirements are numbered
    `FR-NNN` with a `must | should | could` priority (an unmet "must" means
@@ -47,6 +58,9 @@ edges IS the product roadmap; no other roadmap artifact exists.
    exclusion goes under Out of scope explicitly.
 4. **Gate.** Present, revise until the owner approves, then set
    `status: approved`.
+5. **Propose a commit** for the developed PRD (e.g. `develop and approve
+   prd-001 <slug>`), plus any change proposal opened in step 2; commit only on
+   explicit approval.
 
 ## Amending an approved PRD
 

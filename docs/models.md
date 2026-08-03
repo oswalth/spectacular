@@ -12,9 +12,11 @@ Review this table at every retro; the model landscape moves.
 |---------|-------------|----------|
 | `/spectacular:init` | opus | — (judgment-dense, low volume, everything downstream builds on the brief) |
 | `/spectacular:prd` | opus | — (ACs steer all delivery work) |
+| `/spectacular:design` | opus | — (design truth gates all UI delivery; mapping visuals to requirements is judgment-dense) |
 | `/spectacular:decide` | opus | fable for foundational, hard-to-reverse ADRs |
 | `/spectacular:plan` | sonnet | opus when cross-repo coupling is non-trivial |
 | `/spectacular:implement` | sonnet | opus after a task fails its goal-driven loop twice |
 | `/spectacular:next` | haiku | sonnet if ranking quality disappoints |
 | `/spectacular:retro` | haiku (append) | sonnet for review mode |
+| `/spectacular:upgrade` | sonnet | — (mechanical scan plus gated edits) |
 | repo-reader (subagent) | sonnet | — |

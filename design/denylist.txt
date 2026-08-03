@@ -7,3 +7,5 @@ wardx
 gdansk
 speck
 speculation
+linguistique
+gagauz

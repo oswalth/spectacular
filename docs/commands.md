@@ -13,6 +13,10 @@ Bootstrap a new spectacular workspace in an empty directory — scaffold, git in
 
 Propose the PRD map on first run, or develop one PRD from stub to approved — bounded clarify pass, checkable acceptance criteria, explicit out-of-scope. Requires an approved product brief.
 
+## `/spectacular:design [prd-NNN]`
+
+Record the product's UX design as a truth artifact — flows, screens, states, and design-tool sources mapped to the PRD's requirements — and import ready design code (e.g. a Claude Design project) into the workspace, git-canonical. Gated like every truth artifact; consumed by plan and implement.
+
 ## `/spectacular:decide [topic]`
 
 Work a forced architecture or technology decision — drivers, options, trade-off table; the owner picks, the result becomes an ADR recording every rejected option, and the architecture overview is updated.
@@ -29,6 +33,10 @@ Execute one task inside a code repo — compile the just-in-time context capsule
 
 Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation.
 
-## `/spectacular:retro ["observation"]`
+## `/spectacular:retro [observation]`
 
-With an argument, append one process observation to the workspace log in seconds, zero questions. Without one, review accumulated observations, root-cause them, and propose fixes.
+Capture process friction cheaply or review it — one-line append for a single observation, itemized capture for a multi-point argument, root-cause review with proposed fixes when called bare.
+
+## `/spectacular:upgrade`
+
+Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Approved truth is only ever amended via changes/.

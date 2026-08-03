@@ -13,6 +13,11 @@ that <key benefit>. Unlike <primary alternative>, it <key differentiation>.
 
 ## Users
 
+## Product shape (capability sketch)
+
+<!-- 2–4 lines per capability plus its sharpest open question — enough to see
+the product's shape. Not a feature spec: full treatment lives in the PRDs. -->
+
 ## Goals
 
 ## Non-goals

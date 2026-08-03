@@ -1,10 +1,16 @@
-# Spectacular v0.1 — build specification (S-3 output)
+# Spectacular — build specification (S-3 output; v0.2 revisions folded in)
 
 Drafted 2026-08-01 from the decisions in design/STATE.md (D-1…D-22). STATE.md stays the
 decision log; this file holds the skill-level detail needed to build the tracer bullet.
 Mechanics tagged **(stated)** were Claude-proposed and ratified in the 2026-08-03 spec
 review (OQ-13 → D-23); the tag now only marks provenance. Everything else traces to a
-D-number.
+D-number. The S-6 retro round (2026-08-03, D-26…D-30 → v0.2.0) is folded in throughout:
+workspace commit protocol, frozen naming-family taxonomy, propose-then-ask
+interviewing, deepened decide, brief capability sketch, content-aware retro. The S-6
+feedback round (same day, D-31…D-34 → v0.3.0) adds: retro challenges observations, the
+design stage (design specs + /spectacular:design), /spectacular:upgrade + upgrade
+notes, and the MCP posture (GitHub MCP deferred). D-35 (same day → v0.4.0) adds
+design-code import: workspace-resident, git-canonical, provenance-tracked.
 
 ## Plugin repo layout (this repo)
 
@@ -12,13 +18,16 @@ D-number.
 spectacular/
 ├── .claude-plugin/                # plugin.json + marketplace.json — the repo is its
 │                                  #   own marketplace (D-4, D-24; install flow in README)
-├── skills/<name>/SKILL.md         # the seven skills (D-8: no plain commands)
+├── skills/<name>/SKILL.md         # the nine skills (D-8: no plain commands;
+│                                  #   design + upgrade added by D-32/D-34)
 ├── agents/repo-reader.md          # the one subagent
 ├── templates/                     # workspace artifact templates (brief, prd, adr,
 │                                  #   story, task, change-proposal, contract,
-│                                  #   overview, workspace-claude) — single source
-│                                  #   of each artifact's shape; added S-5 on
-│                                  #   Vladimir's feedback. No epic template (D-19).
+│                                  #   overview, workspace-claude, naming-families)
+│                                  #   — single source of each artifact's shape;
+│                                  #   added S-5 on Vladimir's feedback;
+│                                  #   naming-families (frozen letter taxonomy)
+│                                  #   added S-6 (D-27). No epic template (D-19).
 ├── scripts/                       # docs generator only in v0.1, python3 stdlib
 │                                  #   (lint + CI deferred — D-24)
 ├── docs/                          # published docs (R-7), partly generated (P-6)
@@ -39,10 +48,17 @@ Skills are invoked as `/spectacular:<name>`.
 │   ├── profile.md             # container layout (sibling-dir default) + plugin version pin (P-5)
 │   ├── registry.md            # code-repo registry: name, relative path, role, one-liner (R-2)
 │   └── observations.md        # retro append target (created on first use)
-├── conventions.md             # optional naming conventions (D-11)
+├── conventions.md             # optional naming conventions (D-11, D-27: activated
+│                              #   families + theme + pools; taxonomy frozen in the
+│                              #   plugin's templates/naming-families.md)
 ├── product/
 │   ├── brief.md
-│   └── prds/NNN-<slug>.md
+│   ├── prds/NNN-<slug>.md
+│   └── designs/                   # design truth (D-34, D-35)
+│       ├── NNN-<slug>.md          #   design specs: owner-authored UX as truth
+│       ├── NNN-<slug>/            #   one spec's imported screen prototypes
+│       └── system/                #   product-wide imported design code
+│                                  #   (each import dir carries provenance.md)
 ├── architecture/
 │   ├── overview.md            # living overview; created from template on first use
 │   └── decisions/NNN-<slug>.md
@@ -70,7 +86,8 @@ init runs `git init` and makes the initial commit.
 
 ## References and numbering (D-15)
 
-A reference is `<type>-<NNN>`: `prd-001` → `product/prds/001-*.md`, `adr-003` →
+A reference is `<type>-<NNN>`: `prd-001` → `product/prds/001-*.md`, `design-002` →
+`product/designs/002-*.md`, `adr-003` →
 `architecture/decisions/003-*.md`, `story-004`, `task-012` likewise. Numbering is
 per-type, zero-padded to 3. There is no `id:` front-matter field — the filename is the
 identity, so nothing can drift; lint checks that references resolve.
@@ -81,6 +98,7 @@ identity, so nothing can drift; lint checks that references resolve.
 |---|---|
 | brief | `status: draft \| approved` |
 | PRD | `status: stub \| draft \| approved` · `depends_on: [prd-…]` (roadmap graph source) |
+| design | `status: draft \| approved` · `prd:` (required) · `sources: [links]` (D-34) |
 | ADR | `status: draft \| approved` · `prd:` (optional — which PRD forced it) |
 | story | `status: todo \| in-progress \| done` · `prd:` (required) · `depends_on: [story-…]` · `epic:` (optional; unused until epic machinery exists — D-19) |
 | task | `status: todo \| in-progress \| done` · `story:` · `repo:` (registry name) · `depends_on: [task-…]` |
@@ -117,6 +135,28 @@ and the task's Verification. All artifact shapes live in templates/ only.
 - **Approval gate (stated):** the authoring skill presents the artifact and asks; on
   approval it flips the status itself. Manual front-matter edits are always legitimate —
   files are the interface. `next` surfaces lingering drafts.
+- **Workspace commit protocol (D-26):** skills never commit unprompted; every unit of
+  work ends with a proposed commit message, committed only on explicit approval.
+  Grain: scaffold · approved brief · PRD-map stubs · each developed PRD (+ its change
+  proposals) · each ADR + overview update · each plan batch · each retro review's
+  fixes. Exception: implement's code-repo commit is mechanical (D-21 — one task = one
+  squashed mainline commit IS the unit); its workspace status/Learnings edits get a
+  proposed workspace commit at close-out. Recorded in the workspace CLAUDE.md template
+  so ad-hoc sessions inherit it.
+- **Propose-then-ask interviewing (D-28):** init's BA interview and the clarify passes
+  in prd and decide frame before asking — synthesis of what's known + a strawman, then
+  2–3 questions referencing the frame, then (init, per topic) a confirmed mini-summary.
+- **MCP posture (D-33, D-34):** the plugin never ships or configures MCP servers.
+  Skills use connected MCPs opportunistically and degrade gracefully without them —
+  design/implement read Figma frames through a connected design-tool MCP, else plain
+  links with owner confirmation. GitHub MCP deferred (STATE.md Deferred).
+- **Design-code import (D-35):** ready design code (Claude Design project, exported
+  prototype, plain files) is imported into the workspace, git-canonical and
+  source-only: product/designs/system/ for product-wide code, NNN-<slug>/ for one
+  spec's screens, provenance.md per import dir (source, file map, date, refresh
+  procedure). External tool = authoring surface; refresh = gated structural diff.
+  Imported code is reference — implement translates to each repo's stack, never
+  pastes. Escalation to a dedicated family-U repo has a written trigger (Deferred).
 - **Acceptance flow (D-22):** all tasks done → story is *awaiting acceptance* (derived);
   `next` names it and lists the ACs to test. A human (QA/PO) tests the whole story;
   explicit sign-off flips `done` + logs PASS — a manual edit of the story file, no
@@ -142,35 +182,62 @@ and the task's Verification. All artifact shapes live in templates/ only.
   one fires, plan says so explicitly — that firing IS the build trigger for the epic
   machinery (P-4).
 
-## The seven skills
+## The nine skills
 
 Every skill: runnable in a fresh session, all context from artifacts (A6); ends with at
 least one concrete, justified next action naming only commands that exist (R-5, P-3).
-Model column = documentation-only recommendation (D-14).
+Model column = documentation-only recommendation (D-14). Lifecycle order:
+init → prd → design → decide → plan → implement → next → retro → upgrade.
 
 ### init — opus
 Empty directory only (D-6; non-empty → refuse, name the brownfield deferral).
-Flow: scaffold (CLAUDE.md embedding Karpathy guidelines, README, profile with plugin
-version pin, empty registry) → `git init` + first commit → BA interview (problem, users,
-goals, non-goals, constraints) → `product/brief.md` (draft) → optional naming step
-(D-11: define groups first, then theme suggestion) → approval gate.
+Flow: scaffold (CLAUDE.md embedding Karpathy guidelines + commit protocol, README,
+profile with plugin version pin, empty registry) → `git init` + proposed scaffold
+commit (D-26) → BA interview (problem, users, goals, non-goals, constraints;
+propose-then-ask per topic with confirmed mini-summaries — D-28) →
+`product/brief.md` (draft; capability sketch 2–4 lines per capability — D-30a) →
+optional naming step (D-27: frozen family taxonomy from templates/naming-families.md;
+activate families, pick a viability-checked theme, write pools) → approval gate
+presenting the depth ladder (D-30a) → proposed closing commit.
 Next: approve brief if still draft; then `/spectacular:prd` for the map.
 
 ### prd — opus
 Precondition: brief approved.
 No PRDs yet → propose the PRD map: capabilities, one-line scopes, `depends_on` edges;
-gate; on approval write one **stub** PRD per capability (D-20).
+gate; on approval write one **stub** PRD per capability (D-20; stubs may carry an
+optional Notes-for-development section — D-30b) → proposed commit (D-26).
 Stubs exist → pick target (argument, or suggest per roadmap); clarify pass (A3: bounded
-structured questions, answers written back into the artifact); draft full PRD
-(requirements, checkable ACs, explicit out-of-scope); gate → approved.
+structured questions, propose-then-ask — D-28; answers written back into the artifact;
+an answer amending the approved brief opens a changes/ proposal in the same session —
+D-30b); draft full PRD (requirements, checkable ACs, explicit out-of-scope); gate →
+approved → proposed commit.
 Next: next stub to develop, `/spectacular:decide` if the PRD forces a decision,
 `/spectacular:plan` once approved.
 
+### design — opus
+Precondition: target PRD approved. Records owner-authored UX as truth (D-34) — never
+generates UX. Flow: pick target (argument, or approved UI-bearing PRD without a spec)
+→ context (PRD + brief; inventory frames via connected design-tool MCP, else
+owner-provided links — never invent screens) → import ready design code when the
+owner has it (D-35: into system/ or the spec's folder, provenance.md, gated refresh
+when an import already exists) → clarify pass (≤5, propose-then-ask: flows in scope,
+platform conventions, states worth specifying, deliberately undesigned areas) →
+draft design-NNN from templates/design.md (flows → screens with sources and states;
+cross-cutting pointing into system/; requirement mapping only where design
+constrains acceptance; open design questions; a PRD contradiction opens a changes/
+proposal) → gate → approved → proposed commit (spec + imported code as one unit).
+Next: `/spectacular:plan` for the PRD, or the opened change proposal's approval first.
+
 ### decide — opus (fable for foundational, hard-to-reverse ADRs)
 Trigger: a forced architecture/technology decision (usually from prd or plan).
-Flow: drivers → options → trade-off table → owner picks (never auto-picks) → ADR with
-every rejected option and why → gate → approved → update `architecture/overview.md`
-(create from template on first use) **(stated)**.
+Flow (deepened per D-29): name the decision + its reversal cost (scales the whole
+treatment) → clarify pass (≤5 questions on what artifacts don't record) → investigate
+(web research; repo-reader — mandatory when hard to reverse) → drivers → options →
+trade-off table (+ per-option failure modes when hard to reverse) → owner picks
+(never auto-picks) → ADR with every rejected option and why, new external
+dependencies decided or named follow-up decisions (no smuggling) → gate → approved →
+update `architecture/overview.md` (create from template on first use) **(stated)** →
+proposed commit (ADR + overview as one unit — D-26).
 Next: back to the blocked prd/plan work.
 
 ### plan — sonnet (opus when cross-repo coupling is non-trivial)
@@ -179,7 +246,8 @@ Breakdown: read PRD + overview/ADRs + registry (repo-reader on relevant repos) �
 propose stories (user-visible slices; AC coverage; `depends_on`) and per-story tasks
 routed per repo → missing repo? propose creation: scaffold sibling dir, `git init`,
 contract (owner picks `merge_flow` — D-21), registry entry (D-6) → epic-trigger check
-(above) → A4 blocking check, repair until green → gate → write files (`todo`).
+(above) → A4 blocking check, repair until green → gate → write files (`todo`) →
+proposed commit for the batch (D-26).
 Re-plan (D-22): read the story's acceptance FAIL → diagnose with repo-reader → propose
 reopened tasks (back to `todo`, note pointing at the failure) and/or new fix tasks →
 gate → apply.
@@ -191,7 +259,8 @@ Flow: select task (argument, or: this repo's tasks with status todo, deps done) 
 compile the JIT capsule → task `in-progress` (story too, if first) → goal-driven loop
 (Karpathy #4: define verification first, loop until it passes) → branch per task →
 squash to one commit (`task-NNN: …`) → mainline per `merge_flow`, history linear →
-task `done` + append Learnings → if that
+task `done` + append Learnings → proposed workspace commit for the status/Learnings
+edits (D-26; the code-repo commit itself stays mechanical per D-21) → if that
 was the story's last task: announce *awaiting acceptance* and print the AC checklist
 for the human tester.
 A discovered architecture/spec problem becomes `changes/<id>/proposal.md` (draft) —
@@ -211,11 +280,27 @@ ranking, D-3); exactly ONE recommendation with justification. In a code repo, fi
 to that repo's tasks.
 
 ### retro — haiku (append) / sonnet (review)
-Append: one observation + timestamp to `.spectacular/observations.md`; zero questions.
-Review: read observations + evidence, root-cause, propose workspace-level fixes
-(applied under gate); plugin-level ideas become handoff briefs kept in the observations
-file. The full R-3 plugin-evolution loop stays deferred (trigger: first accumulated
-pilot observations).
+Modes chosen by argument CONTENT (D-30c). One short observation → append verbatim
+with timestamp to `.spectacular/observations.md`, zero questions, no commit ceremony.
+Multi-item argument → split into individual dated entries, confirm once, append all,
+offer review. Bare call → review: read observations + evidence, root-cause, propose
+workspace-level fixes (applied under gate, then proposed commit — D-26); plugin-level
+ideas become handoff briefs kept in the observations file; no observations → offer
+interactive capture. Observations are challenged, not just accepted —
+confirmed, refined, or overturned explicitly (D-31). Run inside the plugin
+repo, review mode IS the R-3 plugin-evolution loop (trigger fired
+2026-08-03; manual form).
+
+### upgrade — sonnet
+Workspace only (profile.md present). Aligns the workspace with the installed plugin
+version (D-32): compare pin vs installed → collect docs/upgrades.md sections from pin
+to installed → drift-scan workspace files against current templates (CLAUDE.md
+sections; conventions.md vs the frozen taxonomy; .spectacular files) → propose the
+migration set split by ownership (plugin-owned scaffolding: direct gated edits;
+approved truth: changes/ proposals, concrete defects only — conformance alone never
+rewrites approved truth) → apply, bump pin → one proposed commit. Not its job:
+validating upgraded skills — the next lifecycle stage does that.
+Next: `/spectacular:next`.
 
 ## Subagent: repo-reader — sonnet
 
@@ -256,18 +341,23 @@ spectacular@<marketplace>`, `/plugin marketplace update <marketplace>`; note the
 private-repo gotcha: background auto-update needs a credential helper — `gh auth
 setup-git` or an ssh-agent-loaded key) + `docs/commands.md` generated from SKILL.md
 front matter (`name`, `description`, `argument-hint`), ordered by lifecycle (init →
-prd → decide → plan → implement → next → retro) + `docs/models.md` — the
-hand-maintained recommended-model table (single source for R-8/D-14; reviewed at
-every retro). README must reference every file under `docs/` — no docs file may live
+prd → design → decide → plan → implement → next → retro → upgrade) +
+`docs/models.md` — the hand-maintained recommended-model table (single source for
+R-8/D-14; reviewed at every retro) + `docs/upgrades.md` — the hand-maintained
+per-version workspace migration notes consumed by `/spectacular:upgrade` (D-32).
+README must reference every file under `docs/` — no docs file may live
 unreferenced by README (D-24).
 
-Placeholder vocabulary (D-12a allowlist, extensible; two-path per D-23): generic
-examples use the descriptive set — product **acme**; workspace **acme-product**; repos
-**acme-api**, **acme-web**, **acme-mobile**, **acme-infra**; people **alex**, **sam** —
-the default path, since the D-11 naming step is optional. The naming-conventions docs
-alone use a themed worked example demonstrating groups-then-theme: product **acme**,
-theme constellations — **orion** (api), **lyra** (web), **vega** (mobile), **atlas**
-(infra). Both sets are allowlisted.
+Placeholder vocabulary (D-12a allowlist, extensible; two-path per D-23, extended by
+D-27): generic examples use the descriptive set — product **acme**; workspace
+**acme-product**; repos **acme-api**, **acme-web**, **acme-mobile**, **acme-infra**;
+people **alex**, **sam** — the default path, since the naming step is optional. The
+naming-conventions docs alone use a themed worked example, letter-matched to the
+frozen family taxonomy (D-27): product **acme**, theme constellations —
+**acme-gemini** (G, workspace), **acme-andromeda** (A, API), **acme-bootes** (B, web
+portal), **acme-cassiopeia** (C, mobile app), **acme-hydra** (H, infra), plus
+**musca / mensa / monoceros** as M-family pool examples. The pre-D-27 set
+(orion / lyra / vega / atlas) stays allowlisted for history. All sets allowlisted.
 
 ## Pre-build notes — ratification record (2026-08-03, D-24)
 

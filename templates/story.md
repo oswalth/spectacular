@@ -19,4 +19,11 @@ As a <user>, I want <capability>, so that <benefit>.
   - When <the steps the tester performs>
   - Then <the observable outcome>
 
+## Design references
+
+<!-- Only for stories covering designed UI: the design spec sections and
+source frames this story realizes. Drop the section otherwise. -->
+
+- design-NNN <flow / screen> — <source frame link>
+
 ## Acceptance log

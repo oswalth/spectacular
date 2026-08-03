@@ -1,8 +1,8 @@
 # spectacular
 
 A Claude Code plugin for AI-assisted SDLC on **multi-repo products**: from idea
-to merged code through seven commands — brief → PRDs → decisions → stories and
-tasks → implementation → acceptance.
+to merged code through nine commands — brief → PRDs → design specs →
+decisions → stories and tasks → implementation → acceptance.
 
 The model: one **workspace repo** holds all product documentation (brief, PRDs,
 ADRs, stories, tasks); **code repos** live as its sibling directories, each
@@ -61,6 +61,10 @@ prompt. Run `gh auth setup-git` once, or keep your SSH key loaded in an agent.
 /plugin marketplace update spectacular
 ```
 
+After updating, run `/spectacular:upgrade` in each workspace to align it with
+the new version — the per-version migration notes live in
+[docs/upgrades.md](docs/upgrades.md).
+
 ## Use
 
 Commands in lifecycle order — full reference in
@@ -71,11 +75,21 @@ Commands in lifecycle order — full reference in
 |---------|------|
 | `/spectacular:init` | empty dir → workspace scaffold + product brief (interview) |
 | `/spectacular:prd` | PRD map first, then one PRD at a time to approved |
+| `/spectacular:design` | records owner-authored UX as truth; imports ready design code (Figma, Claude Design) |
 | `/spectacular:decide` | just-in-time ADR when a choice blocks progress |
 | `/spectacular:plan` | approved PRD → stories + per-repo tasks; creates missing code repos |
 | `/spectacular:implement` | in a code repo: one task → one squashed mainline commit |
 | `/spectacular:next` | derives state, renders the roadmap, recommends one action |
 | `/spectacular:retro` | one-line friction capture; periodic review |
+| `/spectacular:upgrade` | aligns a workspace with a newer plugin version |
+
+The plugin never ships or configures MCP servers. Skills use connected MCPs
+opportunistically — design/implement read Figma frames through a connected
+Figma MCP and degrade to plain links without one. Ready design code (e.g. a
+Claude Design project) is imported into the workspace **git-canonical** —
+`product/designs/system/` for product-wide code, per-spec folders for screen
+prototypes, each with a `provenance.md`; the external tool stays the
+authoring surface and refreshes are explicit and gated.
 
 A typical first run: `mkdir acme-product && cd acme-product`, then
 `/spectacular:init`. Approve the brief, let `/spectacular:prd` map the

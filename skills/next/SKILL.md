@@ -15,16 +15,17 @@ nothing is stored.
    `workspace:` and filter task-level output to this repo. Neither → refuse:
    run this in a workspace or a registered code repo; for a brand-new product,
    `/spectacular:init` in an empty directory.
-2. **Read front matter only** — brief, PRDs, ADRs, stories, tasks, change
-   proposals, plus the registry. Open an artifact body only where derivation
-   needs it (the AC checklist of a story awaiting acceptance).
+2. **Read front matter only** — brief, PRDs, design specs, ADRs, stories,
+   tasks, change proposals, plus the registry. Open an artifact body only
+   where derivation needs it (the AC checklist of a story awaiting
+   acceptance).
 3. **Validate while reading** (warn at the top of the output; never halt):
    references that resolve to no file; statuses outside their vocabulary
-   (brief/ADR: draft·approved; PRD: stub·draft·approved; story/task:
+   (brief/design/ADR: draft·approved; PRD: stub·draft·approved; story/task:
    todo·in-progress·done; change: draft·approved·applied). This is the only
    workspace validation in v0.1.
 4. **Derive** (never trust a stored summary):
-   - drafts awaiting approval (brief, PRDs, ADRs, changes);
+   - drafts awaiting approval (brief, PRDs, designs, ADRs, changes);
    - **ready** = `todo` with every `depends_on` done · **blocked** = the rest,
      with the blocking reference named;
    - **awaiting acceptance** = story `in-progress` with all its tasks `done`
@@ -44,7 +45,8 @@ nothing is stored.
 ## Next step
 
 Exactly **one** recommendation, with its justification, naming only commands
-that exist (init, prd, decide, plan, implement, next, retro). Rank candidate
+that exist (init, prd, design, decide, plan, implement, next, retro,
+upgrade). Rank candidate
 actions by: unblocks the most downstream work → highest reversal cost (settle
 hard-to-undo choices while they are still cheap) → smallest size. Lingering
 drafts and stories awaiting acceptance outrank new work: an approval that takes

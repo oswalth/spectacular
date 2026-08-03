@@ -55,11 +55,22 @@ non-empty directory.
    created lazily by whichever skill first writes into them — do not create them
    empty.
 
-3. **git init + first commit** — message `scaffold <product-name> workspace`.
+3. **git init + scaffold commit.** Run `git init`, then propose the commit
+   message `scaffold <product-name> workspace` and commit only on the owner's
+   approval — the workspace commit protocol (recorded in CLAUDE.md) applies
+   from the very first commit: never commit or push unprompted.
 
-4. **BA interview.** Act as a business analyst. Cover, in order: problem, users,
-   goals, non-goals, constraints. One topic at a time, a few focused questions
-   each. Weave in three opportunity-assessment questions: what alternatives
+4. **BA interview.** Act as a business analyst working propose-then-ask, never
+   interrogation. Cover, in order: problem, users, goals, non-goals,
+   constraints. For each topic:
+   1. **Frame first** — a short paragraph of what is already known or assumed
+      from the conversation so far, plus a strawman position where you have
+      one, so the owner has something to react to instead of a blank page.
+   2. **Then ask** 2–3 focused questions that reference the frame.
+   3. **Close with a mini-summary** the owner confirms or corrects before the
+      next topic.
+
+   Weave in three opportunity-assessment questions: what alternatives
    exist today, why build this now, and how success will be measured — the
    answers sharpen Goals and Constraints. Never invent answers — if the owner
    is unsure, record the point as open. Push back once when a stated goal looks
@@ -69,33 +80,44 @@ non-empty directory.
    `${CLAUDE_PLUGIN_ROOT}/templates/brief.md` (`status: draft`). It is the one
    product document — no other product-level doc exists. Fill the Positioning
    two-liner from the interview answers; if it cannot be filled sharply, that
-   is a finding — say so and record the gap under Open points.
+   is a finding — say so and record the gap under Open points. The Product
+   shape section is a capability sketch: 2–4 lines per capability plus its
+   sharpest open question — enough to see the product's shape, never a feature
+   spec; full treatment lives in the PRDs.
 
 6. **Optional naming conventions.** Offer in one sentence; skipping is the normal
-   path (descriptive names like `<product>-api` work fine). If taken, order
-   matters — groups first, theme second:
-   1. Define the **groups** of things this product will plausibly need names for.
-      A group is a letter plus a description of what belongs in it. Define only
-      groups with a real, foreseeable need (code repositories almost always;
-      services or environments only if the product's shape demands them).
-   2. Suggest 2–3 **themes derived from the product idea**, such that every
-      defined group genuinely has 5–10 candidate names. The owner picks one.
-   3. Write `conventions.md`: the group table, the chosen theme, and a candidate
-      pool per group. Letters outside the defined groups stay unreserved — the
-      owner may activate one later and then supplies its candidates themselves.
+   path (descriptive names like `<product>-api` work fine). If taken, the
+   letter→family taxonomy is FROZEN — never invent product-specific families:
+   1. Read `${CLAUDE_PLUGIN_ROOT}/templates/naming-families.md`: the canonical
+      letter table, its decision rules, and the codename rules.
+   2. With the owner, **activate** the families this product foreseeably needs
+      (G almost always — the workspace repo itself is governance). Letters keep
+      their frozen meaning even when inactive: M is machine intelligence even
+      if the product has no AI today.
+   3. Suggest 2–3 **themes derived from the product idea**, checking theme
+      viability: every activated family must have 5–10 pronounceable
+      candidates under its letter, or the theme is disqualified. The owner
+      picks one.
+   4. Write `conventions.md`: the family table with activated rows marked, the
+      chosen theme, and a candidate pool per activated family following the
+      template's codename rules.
 
-   Worked example of groups-then-theme: product **acme** defines one group,
-   *R — code repositories*; the owner picks the theme *constellations*, pool
-   orion / lyra / vega / atlas / …; later `/spectacular:plan` names the API repo
-   **orion**, the web app **lyra**, the mobile app **vega**, the infra repo
-   **atlas**.
+   Worked example: product **acme**, theme *constellations*, activated
+   G / A / B / C / H; later `/spectacular:plan` names the workspace-adjacent
+   repos **acme-andromeda** (A, API), **acme-bootes** (B, web portal),
+   **acme-cassiopeia** (C, mobile app), **acme-hydra** (H, infra).
 
-7. **Approval gate.** Present the brief and ask for approval. On explicit
+7. **Approval gate.** Present the brief together with the depth ladder, so its
+   deliberate thinness reads as intentional: brief (problem, users, goals,
+   constraints, one capability sketch) → PRD map → developed PRDs (full
+   feature treatment) → stories and tasks. Then ask for approval. On explicit
    approval, set `status: approved` yourself. If the owner wants changes, revise
    and re-present. Manual edits to any artifact, including statuses, are always
    legitimate — files are the interface.
 
-8. **Commit** whatever state the session ends in.
+8. **Propose the closing commit** for whatever state the session ends in
+   (e.g. `add approved product brief and naming conventions`); commit only on
+   the owner's explicit approval.
 
 ## Next step
 

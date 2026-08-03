@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-LIFECYCLE = ["init", "prd", "decide", "plan", "implement", "next", "retro"]
+LIFECYCLE = ["init", "prd", "design", "decide", "plan", "implement", "next", "retro", "upgrade"]
 
 HEADER = """\
 # Commands

@@ -18,8 +18,12 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
 1. **Precondition:** the target PRD has `status: approved`; otherwise refuse and
    point at `/spectacular:prd`. No argument → suggest the approved PRD with the
    fewest existing stories.
-2. **Context:** read the PRD, `architecture/overview.md`, ADRs touching it, and
-   `.spectacular/registry.md`. For each registered repo plausibly involved,
+2. **Context:** read the PRD, its approved design specs (`product/designs/`
+   with `prd:` matching), `architecture/overview.md`, ADRs touching it, and
+   `.spectacular/registry.md`. If the PRD has user-facing surface and no
+   design spec, say so and recommend `/spectacular:design` first — the owner
+   may explicitly choose to plan without one. For each registered repo
+   plausibly involved,
    dispatch the **repo-reader** subagent with the repo path and one specific
    question (what relevant capability exists, where the integration points are).
    Never guess at code you can inspect.
@@ -32,7 +36,9 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    negotiable, valuable, estimable, small, testable.
 4. **Propose tasks per story,** routed to repos. Each task carries a
    description and a **Verification** section — preconditions, numbered steps,
-   expected result — written before any code exists.
+   expected result — written before any code exists. Stories and tasks
+   implementing designed UI carry **Design references** — the design spec
+   sections and source frames they realize (`design-NNN` + links).
 5. **Missing repo?** Propose creating it (consult `conventions.md` for the name
    if present, else `<product>-<role>`, e.g. `acme-api`): sibling directory per
    `.spectacular/profile.md`, `git init`, minimal README, and
@@ -54,7 +60,10 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    - every PRD AC maps to ≥ 1 story;
    - every story has ≥ 1 task;
    - every task's `repo:` exists in the registry;
-   - the combined story+task dependency graph is acyclic.
+   - the combined story+task dependency graph is acyclic;
+   - every story covering designed UI references an approved design spec,
+     when the PRD has one (skipped only if the owner explicitly planned
+     without a design spec in step 2).
 8. **Gate.** Present the breakdown: stories with AC coverage, tasks with repo
    routing, any repos to create. On approval, create the repos and write the
    files, everything `status: todo`:
@@ -68,6 +77,11 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
 
    Everything written under this gate must meet the workspace's Definitions of
    Ready (workspace CLAUDE.md) — plan is the skill that makes items ready.
+
+9. **Propose a commit** for the batch — workspace stories/tasks plus registry
+   changes as one unit (e.g. `plan prd-001: stories and tasks`); commit only
+   on the owner's explicit approval (workspace commit protocol, CLAUDE.md).
+   A newly created code repo gets its own initial commit, likewise proposed.
 
 ## Re-plan (after an acceptance FAIL)
 

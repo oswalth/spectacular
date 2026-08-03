@@ -14,12 +14,28 @@ them, and each code repo points back here via its `.spectacular/contract.md`.
 - **Orientation:** run `/spectacular:next` to derive current state and get one
   recommended action.
 
+## Commit protocol
+
+Nothing is committed unprompted — by a skill or by any session working here.
+Each **unit of work** ends with a proposed commit message; the owner reviews
+the diff and approves, and only then does the commit happen. Pushing likewise
+happens only on explicit ask.
+
+One commit per unit of work: the scaffold; the approved brief; the PRD-map
+stubs; each developed PRD (plus any change proposal it opened); each ADR with
+its overview update; each plan batch; each retro review's applied fixes.
+The one exception is `/spectacular:implement`'s **code-repo** commit — one
+task = exactly one squashed mainline commit is itself the unit of work; the
+workspace edits it makes (statuses, Learnings) still get a proposed workspace
+commit at close-out.
+
 ## Layout
 
 | Path | Contents |
 |------|----------|
 | `product/brief.md` | the product brief |
 | `product/prds/` | one PRD per capability, `NNN-<slug>.md` |
+| `product/designs/` | design specs (`NNN-<slug>.md`) + imported design code (`system/`, per-spec folders; git-canonical, with `provenance.md`) |
 | `architecture/overview.md` | living architecture overview |
 | `architecture/decisions/` | ADRs, `NNN-<slug>.md` |
 | `delivery/stories/` | user-visible slices of a PRD |
@@ -29,8 +45,9 @@ them, and each code repo points back here via its `.spectacular/contract.md`.
 | `conventions.md` | naming conventions (optional) |
 
 References are `<type>-<NNN>` and resolve by filename: `prd-001` →
-`product/prds/001-*.md`, `adr-003`, `story-004`, `task-012` likewise. Numbering
-is per type, zero-padded to 3. The filename is the identity.
+`product/prds/001-*.md`, `design-002`, `adr-003`, `story-004`, `task-012`
+likewise. Numbering is per type, zero-padded to 3. The filename is the
+identity.
 
 ## Definitions of Ready and Done
 
@@ -41,8 +58,10 @@ part of "done" lives in each story's Acceptance criteria and each task's
 Verification; these definitions are the invariant rest.
 
 **Story ready:** its PRD is approved; ACs are Given/When/Then test scripts
-mapped from the PRD's ACs; every AC is covered by at least one task; its
-`depends_on` stories are done.
+mapped from the PRD's ACs; every AC is covered by at least one task; a story
+covering designed UI references the approved design spec sections it
+implements (when its PRD has a design spec); its `depends_on` stories are
+done.
 
 **Story done:** all its tasks are done; a human tested every AC and logged
 PASS in the Acceptance log; the human sign-off (never the plugin) flips

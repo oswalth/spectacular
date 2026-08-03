@@ -24,6 +24,13 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    - the task file;
    - its story: goal + the ACs this task serves;
    - the slice of the PRD those ACs come from;
+   - the design spec sections the task's Design references name (`design-NNN`)
+     plus any imported design code they point at (`product/designs/system/`,
+     the spec's own folder) — read imported code from the workspace directly;
+     pull Figma frames through the connected design-tool MCP when one is
+     available; otherwise ask the owner to confirm visuals from the links
+     before building UI. Imported design code is reference for look and
+     feel — translate it to this repo's stack and idioms, never paste it in;
    - `architecture/overview.md` and ADRs touching this repo;
    - this repo's `contract.md` (stack, commands, conventions);
    - the Learnings sections of this story's already-done tasks.
@@ -52,6 +59,13 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    If this was the story's last open task, announce that the story is now
    **awaiting acceptance** and print its AC checklist for the human tester, plus
    how to record the verdict (see below).
+
+   The code-repo mainline commit above is mechanical — one task = exactly one
+   squashed commit IS the unit of work and needs no separate approval beyond
+   the gate that started the task. The **workspace** edits this step made
+   (statuses, Learnings) do need one: propose a workspace commit (e.g.
+   `task-NNN done: status + learnings`) and commit only on explicit approval
+   (workspace commit protocol, CLAUDE.md).
 8. **Discovered problem in workspace truth?** If the work reveals an
    architecture or spec problem, never edit workspace truth directly — write
    `changes/NNN-<slug>/proposal.md` from
