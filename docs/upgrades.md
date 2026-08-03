@@ -5,7 +5,24 @@ version, the workspace-side migration items it introduces. Newest first. A
 version with no section requires no workspace changes.
 
 Hand-maintained; every release that changes workspace-facing behavior adds a
-section here.
+section here — written at release time (step 4 of `docs/release.md`), and
+every section must have a matching entry in `CHANGELOG.md`.
+
+## 0.6.0
+
+- `CLAUDE.md`: extend the **Commit protocol** section with the Conventional
+  Commits grammar, the workspace type/scope mapping, and the
+  no-versions/no-tags rule — copy from `templates/workspace-claude.md`.
+  Update the **Task done** DoD line to the CC-subject + `Task: task-NNN`
+  footer wording.
+- Code-repo contracts: add the `versioning:` and `release_flow:` front-matter
+  fields (defaults `semver` / `manual`) — copy from `templates/contract.md`.
+  New repos get them from plan; existing contracts add them by hand.
+- History is not rewritten: existing `task-NNN: …` commits stay as they are;
+  the CC grammar applies from this upgrade forward. Workspaces create no tags.
+- Commit messages never carry AI-attribution trailers (`Co-Authored-By:
+  Claude …`, `Generated with …`) — applies to workspace and code-repo
+  commits from this upgrade forward.
 
 ## 0.5.0
 
