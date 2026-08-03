@@ -46,14 +46,20 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    task's Verification section if it was vague. Branch `task-NNN-<slug>`.
    Implement, run the verification, loop until it passes. Use the contract's
    build/test/run commands.
-6. **Land — one task, exactly one mainline commit,** message starting
-   `task-NNN: `. Per the contract's `merge_flow`:
+6. **Land — one task, exactly one mainline commit.** Message per Conventional
+   Commits 1.0.0 — subject `type(scope): summary` with the type matching the
+   change (`feat`, `fix`, …) and footer `Task: task-NNN` (D-37; the task id
+   never goes in the subject). Per the contract's `merge_flow`:
    - `pr`: push the branch, open a PR with `gh`, squash-merge it (`gh pr merge
      --squash`).
    - `local-rebase`: squash the branch to one commit, rebase onto the mainline,
      fast-forward it.
 
-   History stays linear either way.
+   History stays linear either way. Commits never bump versions or create
+   tags: the release act (when to ship, derive the bump from CC types since
+   the last tag, tag `vX.Y.Z`) belongs to the contract's
+   `versioning`/`release_flow` and follows
+   `${CLAUDE_PLUGIN_ROOT}/docs/release.md` (D-37).
 7. **Close out.** Walk the task's Definition of Done (workspace CLAUDE.md)
    explicitly and confirm each item: Verification passes, exactly one squashed
    mainline commit, Learnings appended, `status: done`. Learnings carry what
@@ -67,7 +73,8 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    squashed commit IS the unit of work and needs no separate approval beyond
    the gate that started the task. The **workspace** edits this step made
    (statuses, Learnings) do need one: propose a workspace commit (e.g.
-   `task-NNN done: status + learnings`) and commit only on explicit approval
+   `docs(task-NNN): done — status + learnings`) and commit only on explicit
+   approval
    (workspace commit protocol, CLAUDE.md).
 8. **Discovered problem in workspace truth?** If the work reveals an
    architecture or spec problem, never edit workspace truth directly — write

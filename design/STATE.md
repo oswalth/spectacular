@@ -42,6 +42,12 @@ Open Claude Code in this repo and paste:
    allowed. Enforced structurally by the PreToolUse hook in
    .claude/settings.json + .claude/hooks/repo-boundary.py (blocks outside
    Write/Edit/NotebookEdit and mutating Bash referencing outside paths).
+8. Change strategy (added 2026-08-03, D-37): Conventional Commits everywhere;
+   tags mark releases only — a commit's version is derived via git describe,
+   never stamped. Plugin releases follow docs/release.md: one atomic release
+   commit keeps plugin.json, CHANGELOG.md, docs/upgrades.md and the tag in
+   sync. No AI-attribution trailers (`Co-Authored-By: Claude …`,
+   `Generated with …`) in any repo — plugin, workspace, or code (D-37e).
 
 ## Requirements (given in the brief — challengeable, but not to be silently dropped)
 
@@ -535,6 +541,48 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   No per-screen wireframes required — screen structure comes from PRD ACs +
   design-spec flows; final screens are Figma artifacts only where the owner
   chooses. → v0.5.0.
+- D-37 (2026-08-03) Unified change strategy across plugin, workspaces, and
+  code repos (retro-driven). Conventional Commits was Vladimir's call over
+  Claude's formalize-existing-grammar recommendation; the four resolution
+  forks below were Claude-recommended and Vladimir-ratified.
+  (a) Commit messages follow Conventional Commits 1.0.0 in every repo kind;
+  artifact provenance rides git-trailer footers (`Task: task-NNN`,
+  `Refs: prd-004`), never the subject — a bare `task-123` body line is not a
+  valid CC footer and is invisible to tooling. Mapping: workspaces are mostly
+  `docs`/`chore` with the artifact id as scope (`docs(prd-004): approve`);
+  code repos use the type matching the change with a mandatory `Task:` footer;
+  plugin scopes = skill/template/doc area, releases = `chore(release): X.Y.Z`.
+  (b) Tags mark releases, never commits — "tag every commit with the latest
+  version" is mechanically impossible (tag names are unique refs); any
+  commit's version is derived (`git describe --tags`). Workspaces get NO
+  versions and NO tags (state = artifact statuses + plugin pin; resolves the
+  contradiction with the workspace-versioning idea). Historical plugin
+  versions retro-tagged where a commit is reconstructable: v0.1.0 → ed4bce7,
+  v0.4.0 → 6990da2, v0.5.0 → c117233 (post-rewrite SHAs, see amendment (f));
+  0.2.0/0.3.0/0.4.1 shipped inside session commits — CHANGELOG entries only,
+  no tags.
+  (c) Versioning stays semver; the bump is DERIVED from CC types since the
+  last tag (feat → minor, fix → patch, BREAKING CHANGE/`!` → major;
+  workspace-facing release ⇒ ≥ minor). Code repos record
+  `versioning`/`release_flow` in the contract; the release act (when to ship)
+  stays with the release manager — manual now, automatable when CI arrives
+  (D-24 trigger).
+  (d) CHANGELOG.md added at the plugin root (Keep-a-Changelog-lite, backfilled
+  from commit subjects); docs/upgrades.md stays the machine-consumed
+  migration subset. Invariant: upgrades ⊆ changelog, held structurally by the
+  atomic release commit checklist in docs/release.md (version bump +
+  changelog + upgrades-if-workspace-facing + tag in one commit; denylist
+  check per OQ-14 folded in). → v0.6.0.
+  D-37 amended (2026-08-03, same session, Vladimir-directed): (e) commit
+  messages never carry AI-attribution trailers (`Co-Authored-By: Claude …`,
+  `Generated with …`) — banned across plugin, workspaces, and code repos;
+  (f) the plugin's pre-release history was rewritten once to the CC grammar
+  (local-only repo, no remote, no consumers — a never-again event once
+  published); the retro-tag SHAs in (b) are post-rewrite values;
+  (g) docs/release.md is referenced from shipped surfaces (implement step 6,
+  retro's plugin-repo section, upgrades.md header, contract template
+  comments), not only the design zone, so the procedure survives release —
+  design/ is excluded from released history (D-12).
 
 ## Principles (all adopted — D-2, D-5)
 

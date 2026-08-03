@@ -267,7 +267,8 @@ Runs in a code repo; finds the workspace via `contract.md`.
 Flow: select task (argument, or: this repo's tasks with status todo, deps done) →
 compile the JIT capsule → task `in-progress` (story too, if first) → goal-driven loop
 (Karpathy #4: define verification first, loop until it passes) → branch per task →
-squash to one commit (`task-NNN: …`) → mainline per `merge_flow`, history linear →
+squash to one commit (CC subject + `Task: task-NNN` footer — D-37) → mainline per
+`merge_flow`, history linear →
 task `done` + append Learnings → proposed workspace commit for the status/Learnings
 edits (D-26; the code-repo commit itself stays mechanical per D-21) → if that
 was the story's last task: announce *awaiting acceptance* and print the AC checklist
@@ -344,7 +345,7 @@ private personal use. Kept here as the spec of what gets built when the trigger 
    against shipped files only. The rule skips silently when the file is absent — which
    is exactly the state of the released repo, since design/ is excluded at release.
    No local hooks. Until the trigger: checked manually as part of the release
-   procedure (OQ-14).
+   procedure (OQ-14; step 5 of docs/release.md — D-37).
 
 Docs (R-7): README (hand-written: quickstart + install/update from the private GitHub
 repo per the verified flow — `/plugin marketplace add owner/repo`, `/plugin install

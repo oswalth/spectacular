@@ -56,7 +56,7 @@ non-empty directory.
    empty.
 
 3. **git init + scaffold commit.** Run `git init`, then propose the commit
-   message `scaffold <product-name> workspace` and commit only on the owner's
+   message `chore(scaffold): init <product-name> workspace` and commit only on the owner's
    approval — the workspace commit protocol (recorded in CLAUDE.md) applies
    from the very first commit: never commit or push unprompted.
 

@@ -29,6 +29,28 @@ task = exactly one squashed mainline commit is itself the unit of work; the
 workspace edits it makes (statuses, Learnings) still get a proposed workspace
 commit at close-out.
 
+Messages follow **Conventional Commits 1.0.0** (D-37). In a workspace almost
+everything is `docs` (artifact content) or `chore` (scaffolding, statuses);
+the artifact id is the scope, and cross-references ride git-trailer footers,
+never the subject:
+
+```
+docs(prd-004): approve — payments
+chore(scaffold): init <product> workspace
+docs(task-012): done — status + learnings
+
+Refs: story-003
+```
+
+Code-repo commits use the type matching the change (`feat`, `fix`, …) with a
+mandatory `Task: task-NNN` footer. Workspaces carry **no versions and no
+tags** — state is artifact statuses plus the plugin pin; tags mark releases,
+and a workspace releases nothing. Code repos version and release per their
+contract (`versioning`, `release_flow`). Commit messages never carry
+AI-attribution trailers — no `Co-Authored-By: Claude …`, no
+`Generated with …` — in any repo: workspace, code, or the plugin itself
+(D-37).
+
 ## Layout
 
 | Path | Contents |
@@ -72,7 +94,8 @@ contract; Verification (preconditions, steps, expected) is written; its
 `depends_on` tasks are done.
 
 **Task done:** Verification passes; exactly one squashed mainline commit
-(`task-NNN: …`); Learnings appended; `status: done`.
+(Conventional Commits subject, `Task: task-NNN` footer); Learnings appended;
+`status: done`.
 
 ## Ways of working (Karpathy guidelines)
 
