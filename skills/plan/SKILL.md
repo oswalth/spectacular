@@ -44,14 +44,37 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    `.spectacular/profile.md`, `git init`, minimal README, and
    `.spectacular/contract.md` from
    `${CLAUDE_PLUGIN_ROOT}/templates/contract.md` — fill the workspace
-   back-pointer, the registry name, and the stack/commands/conventions the
-   owner intends. The owner picks `merge_flow` at creation (`pr` needs a remote
-   and `gh`; `local-rebase` needs neither). Append the repo to the registry.
-   History stays linear either way, and task branches are always squashed.
-   For a UI repo, when `product/designs/system/tokens.json` exists: the
-   contract's conventions name it as the theme source, and the repo's first
-   UI task is a theme bootstrap — materialize the tokens into the repo's
-   stack (CSS variables/Tailwind, or the platform theme).
+   back-pointer, the registry name, and the stack/commands from the ADRs that
+   forced the repo. The owner picks `merge_flow` at creation (`pr` needs a
+   remote and `gh`; `local-rebase` needs neither). Append the repo to the
+   registry. History stays linear either way, and task branches are always
+   squashed.
+
+   **Repo-bootstrap interview** — fill the contract's Conventions before the
+   repo's initial commit; propose-then-ask, never a blank page:
+   - *Frame first:* what the forcing ADRs already settle (stack, plus any
+     conventions decided there), and defaults proposed from already-registered
+     repos' contracts where a dimension carries across the product — that is
+     what makes conventions repeatable between repos.
+   - *Walk the dimensions:* the template's common core (architecture style,
+     testing, tooling, build & packaging, quality gates) PLUS the
+     stack-specific ones this repo's decided architecture implies — e.g.
+     sync/async posture for an API, state management for a SPA, dataset
+     versioning for ML. The list is open: derive it from the decisions, do
+     not stop at the template.
+   - *Per open dimension:* offer realistic options with one marked
+     recommended and a one-line justification; the owner picks. A dimension
+     that turns out genuinely contested and hard to reverse is a decision,
+     not an interview answer — recommend `/spectacular:decide` for it.
+
+   **Scaffold first task.** The new repo's first task materializes the
+   contract — project skeleton, tooling, test harness with the decided
+   fixture/test-data strategy, build & packaging — and its Verification
+   checks each convention the interview recorded. For a UI repo, when
+   `product/designs/system/tokens.json` exists: the contract's conventions
+   name it as the theme source, and the theme bootstrap (materialize the
+   tokens into the repo's stack — CSS variables/Tailwind, or the platform
+   theme) folds into the scaffold task or follows it as the first UI task.
 6. **Epic-trigger check.** Epics do not exist in v0.1. If any of these fires,
    say so explicitly and recommend recording it with
    `/spectacular:retro "epic trigger fired: …"` — that firing is the build

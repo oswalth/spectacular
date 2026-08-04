@@ -17,6 +17,11 @@ a phase. The owner always picks; this skill never decides.
    expensive this choice is to unwind later — because it scales the depth of
    everything below: a foundational, hard-to-reverse decision earns the full
    treatment; a cheap-to-reverse one may be worked briefly, and you say so.
+   Repo-internal engineering conventions (testing approach, tooling,
+   packaging, …) are not one forced decision: they are elicited at repo
+   creation by `/spectacular:plan`'s repo-bootstrap interview into the repo's
+   contract, and amended there later — decide handles a single contested,
+   hard-to-reverse choice among them, not the batch.
 2. **Clarify pass.** At most 5 questions on what the artifacts do NOT record:
    unstated constraints and preferences, prior experience with the candidates,
    appetite for build and operational effort, accounts or subscriptions

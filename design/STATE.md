@@ -583,6 +583,41 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   retro's plugin-repo section, upgrades.md header, contract template
   comments), not only the design zone, so the procedure survives release —
   design/ is excluded from released history (D-12).
+- D-38 (2026-08-04) Repo-internal engineering conventions are elicited at
+  repo birth and carried by the contract (retro round 2, pilot; in-chat
+  observation, Vladimir-ratified with refinements). The gap: stack ADRs
+  decide language/framework, but nothing elicited repo-internal principles
+  (architecture style, testing philosophy, tooling, packaging) — the pilot's
+  foundational stack ADR itself listed "conventions the owner must set and
+  keep consistent alone" as an accepted risk with no place to set them; the
+  contract template's Conventions section was an empty heading filled "as
+  the owner intends", in passing. Root-cause verdicts: decide stays scoped
+  to ONE forced decision (a convention batch is not one; cramming it into
+  the stack ADR bloats it); repo creation stays with plan (moving it to
+  decide would fork the contract/registry machinery); the missing piece is
+  elicitation only — implement's capsule already carries the contract, so
+  the contract IS the enforcement vehicle. Resolution:
+  (a) templates/contract.md Conventions becomes a structured dimension
+  list — common core (architecture style, testing, tooling, build &
+  packaging, quality gates) as template prompts; the list is explicitly
+  OPEN: stack-specific dimensions (sync/async posture, state management,
+  dataset versioning, …) are derived per repo from its decided
+  architecture, never limited to the template (Vladimir's refinement).
+  (b) plan step 5 grows a repo-bootstrap interview (D-28 style): frame from
+  the forcing ADRs + defaults from already-registered repos' contracts
+  (cross-repo repeatability without a new workspace artifact); per open
+  dimension, options with one recommended + justification, owner picks;
+  answers land in the contract before the initial commit. A contested,
+  hard-to-reverse dimension routes to decide instead.
+  (c) The new repo's first task is a scaffold task materializing the
+  contract, Verification checking each convention — generalizes the D-36
+  theme-bootstrap pattern, which folds into it for UI repos.
+  (d) Amendment path (Vladimir's refinement — "we missed the testing
+  framework" case): the contract is code-repo-local, NOT workspace truth —
+  implement amends it directly under a gate (rides the task branch, or its
+  own chore(contract) commit); an amendment contradicting an approved ADR
+  is workspace truth — superseding ADR via decide, then re-plan.
+  (e) decide step 1 states the boundary explicitly. → v0.7.0.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -641,7 +676,9 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   repo only receives retro-driven fixes afterwards. ← IN PROGRESS: the pilot
   ran init → brief approved → PRD map (6 stubs) → one PRD developed and
   approved → one foundational ADR; seven friction observations came back and
-  were processed in this repo (retro round, D-26…D-30, v0.2.0). Remaining:
+  were processed in this repo (retro round, D-26…D-30, v0.2.0); a second
+  retro round after the pilot's stack ADR produced the repo-bootstrap
+  conventions machinery (D-38, v0.7.0). Remaining:
   plan → implement → ≥1 story through acceptance PASS, on the updated plugin.
 
 ## Session log
@@ -894,3 +931,22 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   Vladimir there: distill direction-01 via /spectacular:design prd-001 (or
   a direct distill ask), per upgrades.md 0.5.0. Uncommitted (v0.4.1 +
   v0.5.0 + hook) — message suggested per protocol.
+- S-6 (cont. 6) 2026-08-04: Retro round 2 from the pilot, in-chat (no
+  observations file in this repo — plugin-mode retro). After the pilot's
+  foundational stack ADR, Vladimir asked whether decide should also have
+  covered repo-internal architecture, created the repo, and defined
+  repo-specific principles (async-first, DDD, test fixtures/factories,
+  package manager, multistage Docker), wanting a repeatable
+  from-day-1 elicitation per code repo. Root-caused against the skills:
+  decide's one-decision scope and plan's repo-creation ownership both
+  CONFIRMED correct (challenged his fold-into-decide framing); the
+  elicitation gap CONFIRMED as stated — plan filled Conventions "as the
+  owner intends" with no interview, template heading empty, while the
+  pilot's own ADR flagged unset conventions as an accepted risk. Four
+  fixes proposed; Vladimir ratified all with refinements (open
+  dimension list derived from the repo's decided architecture;
+  interactive options with a recommended one; a contract-amendment
+  method distinct from ADR-level changes) → D-38 applied across
+  contract template, plan, implement, decide, spec → v0.7.0. He will
+  test via the pilot's next plan session. Commits proposed per
+  protocol.

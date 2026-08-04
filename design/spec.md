@@ -85,7 +85,11 @@ init runs `git init` and makes the initial commit.
   exactly one mainline commit, message starting with the task reference: `task-012: …`
   — D-21 as amended).
 - Body: stack, commands (build / test / run), conventions. (speck's proven contract
-  content, rewritten fresh — D-3.)
+  content, rewritten fresh — D-3.) Conventions is a structured dimension list
+  (common core in the template: architecture style, testing, tooling, build &
+  packaging, quality gates; stack-specific dimensions added per repo) — filled by
+  plan's repo-bootstrap interview at creation, amended in place later (gated,
+  never against an approved ADR) — D-38.
 
 ## References and numbering (D-15)
 
@@ -239,6 +243,8 @@ Next: `/spectacular:plan` for the PRD, or the opened change proposal's approval 
 
 ### decide — opus (fable for foundational, hard-to-reverse ADRs)
 Trigger: a forced architecture/technology decision (usually from prd or plan).
+Repo-internal convention batches are NOT one decision — they route to plan's
+repo-bootstrap interview; decide takes a single contested one (D-38).
 Flow (deepened per D-29): name the decision + its reversal cost (scales the whole
 treatment) → clarify pass (≤5 questions on what artifacts don't record) → investigate
 (web research; repo-reader — mandatory when hard to reverse) → drivers → options →
@@ -254,7 +260,12 @@ Precondition: target PRD approved. Two modes.
 Breakdown: read PRD + overview/ADRs + registry (repo-reader on relevant repos) →
 propose stories (user-visible slices; AC coverage; `depends_on`) and per-story tasks
 routed per repo → missing repo? propose creation: scaffold sibling dir, `git init`,
-contract (owner picks `merge_flow` — D-21), registry entry (D-6) → epic-trigger check
+contract (owner picks `merge_flow` — D-21), registry entry (D-6); repo-bootstrap
+interview fills the contract's Conventions (frame from forcing ADRs + defaults from
+registered repos' contracts; common + stack-derived dimensions, open list;
+recommended option + justification per question; contested hard-to-reverse dimension
+→ decide) and a scaffold first task materializes them, Verification checking each —
+theme bootstrap folds in for UI repos (D-38) → epic-trigger check
 (above) → A4 blocking check, repair until green → gate → write files (`todo`) →
 proposed commit for the batch (D-26).
 Re-plan (D-22): read the story's acceptance FAIL → diagnose with repo-reader → propose
@@ -274,7 +285,9 @@ edits (D-26; the code-repo commit itself stays mechanical per D-21) → if that
 was the story's last task: announce *awaiting acceptance* and print the AC checklist
 for the human tester.
 A discovered architecture/spec problem becomes `changes/<id>/proposal.md` (draft) —
-never a direct edit to workspace truth (A1).
+never a direct edit to workspace truth (A1). A contract-convention gap is amended in
+`contract.md` directly, gated — rides the task branch or its own `chore(contract):`
+commit; an ADR-contradicting change needs a superseding ADR + re-plan instead (D-38).
 Next: next ready task here, or `/spectacular:next` in the workspace.
 
 ### next — haiku (sonnet if ranking quality disappoints)

@@ -83,6 +83,15 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    and say so. Continue the task if possible; otherwise stop and name the
    blocker.
 
+   A gap in this repo's **contract** is different — a convention never
+   decided (say, no testing framework was ever picked) is not workspace
+   truth. Propose the amendment; on the owner's approval edit `contract.md`
+   directly — it rides the task branch, or lands as its own
+   `chore(contract): …` commit when no task is in flight. But an amendment
+   that would contradict an approved ADR (e.g. switching frameworks) IS a
+   workspace-truth problem: superseding ADR via `/spectacular:decide` first,
+   then re-plan what it invalidates.
+
 ## Acceptance (context for step 7)
 
 A story with all tasks done is *awaiting acceptance* — a derived state, stored
