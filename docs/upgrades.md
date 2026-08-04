@@ -8,6 +8,16 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.8.0
+
+- `CLAUDE.md`: update the **Commit protocol** section — the
+  `/spectacular:implement` exception paragraph is replaced by the
+  landing-gate wording; copy from `templates/workspace-claude.md`.
+- No artifact migrations. Code-repo contracts gain nothing new; from this
+  version the upgrade drift scan itself checks each registered repo's
+  `.spectacular/contract.md` against the current template (fixes gated per
+  repo). Code repos still carry no plugin version pin.
+
 ## 0.7.0
 
 - Code-repo contracts: restructure `## Conventions` to the dimension list in

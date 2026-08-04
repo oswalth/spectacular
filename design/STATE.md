@@ -618,6 +618,35 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   own chore(contract) commit); an amendment contradicting an approved ADR
   is workspace truth — superseding ADR via decide, then re-plan.
   (e) decide step 1 states the boundary explicitly. → v0.7.0.
+- D-39 (2026-08-04, retro round 3, pilot) The D-26 exception is dead:
+  implement never commits or pushes without an explicit greenlight. The
+  pilot's first code-repo implement run auto-landed the squashed commit
+  exactly as designed — and the owner experienced it as the plugin committing
+  without permission, while the gated workspace close-out sat uncommitted
+  next to it (reported as an inconsistency; it was the designed asymmetry).
+  Verdict: the gate that starts a task does not substitute for reviewing the
+  verified result; approval belongs between verification passing and anything
+  landing. Resolution: implement step 6 becomes a landing gate — diff
+  summary + verification evidence + both proposed commits (code repo,
+  workspace close-out); one greenlight lands both, and it never carries
+  across tasks or sessions. `pr` flow pushes only inside the approved
+  landing; `local-rebase` pushes nothing (mainline push stays on explicit
+  ask). D-21's grain is untouched: one task = exactly one squashed mainline
+  commit. The commit protocol now has no exceptions.
+- D-40 (2026-08-04, retro round 3, pilot) Code repos carry no plugin version
+  pin; upgrade's drift scan covers their contracts instead. Observation:
+  "code repos don't have the current plugin version set — I guess they
+  should." Confirmed as a real coverage gap with a different fix: the pin's
+  only consumer would be upgrade, which refused to look at code repos at
+  all — so contract migrations kept shipping as "fix by hand" notes (0.6.0,
+  0.7.0 upgrade notes). A per-repo pin is N more places to bump that go
+  stale silently, and a code repo is never operated without its workspace
+  (implement refuses without the back-pointer). Resolution: the drift scan
+  walks `.spectacular/registry.md` and checks each repo's contract.md
+  against the current template; fixes are gated per repo as their own
+  `chore(contract): …` commits, structure only — undecided Conventions are
+  findings, never auto-filled. The workspace pin stays the single version
+  authority (P-5 holds).
 
 ## Principles (all adopted — D-2, D-5)
 

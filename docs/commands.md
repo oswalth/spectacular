@@ -27,7 +27,7 @@ Break an approved PRD into stories and per-repo tasks — creating missing code 
 
 ## `/spectacular:implement [task-NNN]`
 
-Execute one task inside a code repo — compile the just-in-time context capsule from the workspace, run a goal-driven loop until verification passes, and land exactly one squashed mainline commit.
+Execute one task inside a code repo — compile the just-in-time context capsule from the workspace, run a goal-driven loop until verification passes, and land exactly one squashed mainline commit behind the owner's landing gate.
 
 ## `/spectacular:next`
 
@@ -39,4 +39,4 @@ Capture process friction cheaply or review it — one-line append for a single o
 
 ## `/spectacular:upgrade`
 
-Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Equal versions run the drift scan as a verification pass. Approved truth is only ever amended via changes/.
+Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan the workspace and its registered repos' contracts for structural drift against current templates, apply gated fixes, and bump the version pin. Equal versions run the drift scan as a verification pass. Approved truth is only ever amended via changes/.

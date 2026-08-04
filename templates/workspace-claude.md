@@ -24,10 +24,11 @@ happens only on explicit ask.
 One commit per unit of work: the scaffold; the approved brief; the PRD-map
 stubs; each developed PRD (plus any change proposal it opened); each ADR with
 its overview update; each plan batch; each retro review's applied fixes.
-The one exception is `/spectacular:implement`'s **code-repo** commit — one
-task = exactly one squashed mainline commit is itself the unit of work; the
-workspace edits it makes (statuses, Learnings) still get a proposed workspace
-commit at close-out.
+`/spectacular:implement` is no exception (D-39): once verification passes it
+presents the diff, the verification evidence, and both proposed commits —
+the code-repo commit (one task = exactly one squashed mainline commit) and
+the workspace close-out commit (statuses, Learnings) — and lands them only
+on one explicit greenlight.
 
 Messages follow **Conventional Commits 1.0.0** (D-37). In a workspace almost
 everything is `docs` (artifact content) or `chore` (scaffolding, statuses);

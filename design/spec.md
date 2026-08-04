@@ -13,6 +13,9 @@ notes, and the MCP posture (GitHub MCP deferred). D-35 (same day → v0.4.0) add
 design-code import: workspace-resident, git-canonical, provenance-tracked. D-36
 (same day → v0.5.0) adds distillation: imported design code yields tokens.json +
 design-language.md, the artifacts that actually keep AI-generated UI consistent.
+The retro-3 round (2026-08-04, D-39/D-40 → v0.8.0) removes the commit-protocol
+exception (implement lands behind a landing gate) and extends upgrade's drift scan
+to registered repos' contracts.
 
 ## Plugin repo layout (this repo)
 
@@ -146,10 +149,10 @@ and the task's Verification. All artifact shapes live in templates/ only.
   work ends with a proposed commit message, committed only on explicit approval.
   Grain: scaffold · approved brief · PRD-map stubs · each developed PRD (+ its change
   proposals) · each ADR + overview update · each plan batch · each retro review's
-  fixes. Exception: implement's code-repo commit is mechanical (D-21 — one task = one
-  squashed mainline commit IS the unit); its workspace status/Learnings edits get a
-  proposed workspace commit at close-out. Recorded in the workspace CLAUDE.md template
-  so ad-hoc sessions inherit it.
+  fixes. No exceptions since D-39: implement's code-repo commit (one task = one
+  squashed mainline commit stays the grain — D-21) lands behind a landing gate, one
+  greenlight covering it and the workspace status/Learnings close-out commit.
+  Recorded in the workspace CLAUDE.md template so ad-hoc sessions inherit it.
 - **Propose-then-ask interviewing (D-28):** init's BA interview and the clarify passes
   in prd and decide frame before asking — synthesis of what's known + a strawman, then
   2–3 questions referencing the frame, then (init, per topic) a confirmed mini-summary.
@@ -278,10 +281,11 @@ Runs in a code repo; finds the workspace via `contract.md`.
 Flow: select task (argument, or: this repo's tasks with status todo, deps done) →
 compile the JIT capsule → task `in-progress` (story too, if first) → goal-driven loop
 (Karpathy #4: define verification first, loop until it passes) → branch per task →
-squash to one commit (CC subject + `Task: task-NNN` footer — D-37) → mainline per
-`merge_flow`, history linear →
-task `done` + append Learnings → proposed workspace commit for the status/Learnings
-edits (D-26; the code-repo commit itself stays mechanical per D-21) → if that
+landing gate (D-39): diff summary + verification evidence + both proposed commits,
+explicit greenlight before anything lands → squash to one commit (CC subject +
+`Task: task-NNN` footer — D-37) → mainline per `merge_flow`, history linear →
+task `done` + append Learnings → workspace commit for the status/Learnings
+edits under the same greenlight (D-26 as amended by D-39; grain per D-21) → if that
 was the story's last task: announce *awaiting acceptance* and print the AC checklist
 for the human tester.
 A discovered architecture/spec problem becomes `changes/<id>/proposal.md` (draft) —
@@ -318,10 +322,13 @@ repo, review mode IS the R-3 plugin-evolution loop (trigger fired
 Workspace only (profile.md present). Aligns the workspace with the installed plugin
 version (D-32): compare pin vs installed → collect docs/upgrades.md sections from pin
 to installed → drift-scan workspace files against current templates (CLAUDE.md
-sections; conventions.md vs the frozen taxonomy; .spectacular files) → propose the
+sections; conventions.md vs the frozen taxonomy; .spectacular files; each registry
+repo's contract.md vs the contract template — D-40, code repos have no pin of their
+own) → propose the
 migration set split by ownership (plugin-owned scaffolding: direct gated edits;
 approved truth: changes/ proposals, concrete defects only — conformance alone never
-rewrites approved truth) → apply, bump pin → one proposed commit. Equal versions run
+rewrites approved truth; code-repo contracts: gated per-repo `chore(contract): …`
+commits, structure only) → apply, bump pin → one proposed commit. Equal versions run
 the drift scan as a verification pass (D-32 as amended: hand-migrated workspaces can
 claim the right pin while missing pieces; findings follow the gated flow, no pin
 change). Not its job: validating upgraded skills — the next lifecycle stage does that.

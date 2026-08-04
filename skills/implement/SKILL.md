@@ -1,13 +1,14 @@
 ---
 name: implement
-description: Execute one task inside a code repo — compile the just-in-time context capsule from the workspace, run a goal-driven loop until verification passes, and land exactly one squashed mainline commit.
+description: Execute one task inside a code repo — compile the just-in-time context capsule from the workspace, run a goal-driven loop until verification passes, and land exactly one squashed mainline commit behind the owner's landing gate.
 argument-hint: [task-NNN]
 ---
 
 # /spectacular:implement — execute a task
 
 Runs **in a code repo**, not the workspace. One invocation drives one task from
-`todo` to `done`: one branch, one squashed mainline commit.
+`todo` to `done`: one branch, one squashed mainline commit — landed only on the
+owner's explicit greenlight.
 
 ## Steps
 
@@ -46,19 +47,31 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    task's Verification section if it was vague. Branch `task-NNN-<slug>`.
    Implement, run the verification, loop until it passes. Use the contract's
    build/test/run commands.
-6. **Land — one task, exactly one mainline commit.** Message per Conventional
-   Commits 1.0.0 — subject `type(scope): summary` with the type matching the
-   change (`feat`, `fix`, …) and footer `Task: task-NNN` (D-37; the task id
-   never goes in the subject). Per the contract's `merge_flow`:
+6. **Landing gate — nothing lands without a greenlight (D-39).** Verification
+   green does not end the loop; it opens the gate. Present, in one stop:
+   - what changed — the files touched and a short diff summary;
+   - the verification evidence — the check that ran and its passing result;
+   - the proposed code-repo commit message, per Conventional Commits 1.0.0 —
+     subject `type(scope): summary` with the type matching the change
+     (`feat`, `fix`, …) and footer `Task: task-NNN` (D-37; the task id never
+     goes in the subject);
+   - what landing will do per the contract's `merge_flow` (below);
+   - the workspace close-out commit that follows in step 7 (statuses,
+     Learnings).
+
+   Then wait for the owner's explicit approval. No commit, push, PR, or merge
+   happens before it — "verification passed" is a report, not a license. One
+   greenlight covers landing the whole task: this code-repo commit and the
+   step-7 workspace commit. On approval, land per `merge_flow`:
    - `pr`: push the branch, open a PR with `gh`, squash-merge it (`gh pr merge
      --squash`).
    - `local-rebase`: squash the branch to one commit, rebase onto the mainline,
-     fast-forward it.
+     fast-forward it. Pushing the mainline stays on explicit ask.
 
-   History stays linear either way. Commits never bump versions or create
-   tags: the release act (when to ship, derive the bump from CC types since
-   the last tag, tag `vX.Y.Z`) belongs to the contract's
-   `versioning`/`release_flow` and follows
+   One task = exactly one squashed mainline commit either way (D-21), history
+   linear. Commits never bump versions or create tags: the release act (when
+   to ship, derive the bump from CC types since the last tag, tag `vX.Y.Z`)
+   belongs to the contract's `versioning`/`release_flow` and follows
    `${CLAUDE_PLUGIN_ROOT}/docs/release.md` (D-37).
 7. **Close out.** Walk the task's Definition of Done (workspace CLAUDE.md)
    explicitly and confirm each item: Verification passes, exactly one squashed
@@ -69,13 +82,12 @@ Runs **in a code repo**, not the workspace. One invocation drives one task from
    **awaiting acceptance** and print its AC checklist for the human tester, plus
    how to record the verdict (see below).
 
-   The code-repo mainline commit above is mechanical — one task = exactly one
-   squashed commit IS the unit of work and needs no separate approval beyond
-   the gate that started the task. The **workspace** edits this step made
-   (statuses, Learnings) do need one: propose a workspace commit (e.g.
-   `docs(task-NNN): done — status + learnings`) and commit only on explicit
-   approval
-   (workspace commit protocol, CLAUDE.md).
+   The **workspace** edits this step makes (statuses, Learnings) land as
+   their own workspace commit (e.g. `docs(task-NNN): done — status +
+   learnings`) under the step-6 greenlight — it covered both commits, so
+   commit now without re-asking. A greenlight never carries across tasks or
+   sessions (D-39). Pushing the workspace stays on explicit ask (workspace
+   commit protocol, CLAUDE.md).
 8. **Discovered problem in workspace truth?** If the work reveals an
    architecture or spec problem, never edit workspace truth directly — write
    `changes/NNN-<slug>/proposal.md` from

@@ -7,6 +7,22 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.8.0 — 2026-08-04
+
+- Landing gate for implement (D-39, retro-driven): the D-26 commit-protocol
+  exception is removed — implement no longer commits or pushes on its own.
+  Verification green opens a gate: diff summary, verification evidence, and
+  both proposed commits (code-repo squash + workspace close-out) are
+  presented, and one explicit greenlight lands both. One task = exactly one
+  squashed mainline commit stays the grain (D-21); `local-rebase` pushes
+  nothing, mainline/workspace pushes stay on explicit ask.
+- Upgrade drift scan covers code repos (D-40, retro-driven): the scan now
+  walks `.spectacular/registry.md` and checks each repo's
+  `.spectacular/contract.md` against the current template; fixes are gated
+  per repo as their own `chore(contract): …` commits, structure only. Code
+  repos deliberately carry no plugin version pin — the workspace pin covers
+  the constellation (P-5).
+
 ## 0.7.0 — 2026-08-04
 
 - Repo-bootstrap conventions (D-38, retro-driven): a new code repo's

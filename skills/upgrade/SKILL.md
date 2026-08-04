@@ -1,6 +1,6 @@
 ---
 name: upgrade
-description: Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan for structural drift against current templates, apply gated fixes, and bump the version pin. Equal versions run the drift scan as a verification pass. Approved truth is only ever amended via changes/.
+description: Align a workspace with the installed plugin version — walk the shipped per-version upgrade notes, scan the workspace and its registered repos' contracts for structural drift against current templates, apply gated fixes, and bump the version pin. Equal versions run the drift scan as a verification pass. Approved truth is only ever amended via changes/.
 ---
 
 # /spectacular:upgrade — align a workspace with the plugin
@@ -31,7 +31,12 @@ Runs **in a workspace** (profile.md present); otherwise refuse.
      outdated sections;
    - `conventions.md` (if present) vs `templates/naming-families.md`: letters
      must carry their frozen family meaning;
-   - `.spectacular/` files present and well-formed.
+   - `.spectacular/` files present and well-formed;
+   - each repo in `.spectacular/registry.md`: its `.spectacular/contract.md`
+     present and structured per `templates/contract.md` — front-matter fields
+     complete, Conventions as the dimension list. Code repos carry no version
+     pin of their own (D-40): the workspace pin covers the constellation, and
+     this pass is how their contract drift gets caught.
 4. **Propose the migration set**, split by ownership:
    - **Plugin-owned scaffolding** (CLAUDE.md sections, conventions structure,
      profile) → direct edits, applied under this gate.
@@ -39,6 +44,11 @@ Runs **in a workspace** (profile.md present); otherwise refuse.
      proposal, and only where the new standard exposes a concrete defect.
      Template conformance alone never rewrites approved truth — approved is
      approved.
+   - **Code-repo contracts** → gated edits in that repo, each proposed as its
+     own `chore(contract): …` commit there (a contract is code-repo-local,
+     not workspace truth). Structure only — never fill Conventions content
+     the owner hasn't decided; a missing decision is a finding to report, not
+     a blank to complete.
 5. **Apply** the approved items; set the pin to the installed version.
 6. **Propose one commit** — `upgrade workspace to spectacular vX.Y.Z`; commit
    only on explicit approval (workspace commit protocol, CLAUDE.md).
