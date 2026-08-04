@@ -8,6 +8,19 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.7.0
+
+- Code-repo contracts: restructure `## Conventions` to the dimension list in
+  `templates/contract.md` (common core + stack-specific dimensions). For an
+  existing repo, fill it by asking a workspace session to run the
+  repo-bootstrap interview from plan step 5 against that repo (frame from
+  the ADRs that shaped it and other registered contracts, recommended option
+  per open dimension), or fill it by hand. New repos get the interview from
+  plan at creation.
+- No workspace-artifact migrations. Convention gaps found later are amended
+  in the contract directly (gated) per implement step 8; only
+  ADR-contradicting changes need a superseding ADR.
+
 ## 0.6.0
 
 - `CLAUDE.md`: extend the **Commit protocol** section with the Conventional

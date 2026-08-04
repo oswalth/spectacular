@@ -7,6 +7,30 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.7.0 — 2026-08-04
+
+- Repo-bootstrap conventions (D-38, retro-driven): a new code repo's
+  engineering conventions are now elicited explicitly at creation, not left
+  to chance.
+  - Contract template: `## Conventions` is a structured dimension list —
+    common core (architecture style, testing, tooling, build & packaging,
+    quality gates) plus stack-specific dimensions derived per repo from its
+    decided architecture (open list, never limited to the template).
+  - plan step 5: repo-bootstrap interview — framed from the forcing ADRs and
+    defaults from already-registered repos' contracts; per open dimension,
+    options with one recommended + justification, owner picks; answers land
+    in the contract before the initial commit. Contested, hard-to-reverse
+    dimensions route to `/spectacular:decide`.
+  - plan step 5: the new repo's first task is a scaffold task materializing
+    the contract, its Verification checking each convention; the UI
+    theme-bootstrap task folds into it.
+  - implement step 8: contract-amendment path — a convention gap discovered
+    mid-work is amended in `contract.md` directly under a gate (rides the
+    task branch, or its own `chore(contract):` commit); an amendment
+    contradicting an approved ADR needs a superseding ADR + re-plan instead.
+  - decide step 1: states the boundary — a convention batch is not one
+    forced decision; decide takes a single contested choice among them.
+
 ## 0.6.0 — 2026-08-03
 
 - Unified change strategy (D-37): Conventional Commits 1.0.0 across plugin,
