@@ -8,6 +8,17 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.9.0
+
+- `CLAUDE.md`: add the **Gate protocol** section and the **Self-sufficient
+  by design** bullet under "How this workspace works" — copy both from
+  `templates/workspace-claude.md`.
+- ADR status vocabulary is now `stub → draft → approved`; existing ADRs
+  (`draft`/`approved`) need no change. Optionally run a bare
+  `/spectacular:decide` once to persist the decision map as ADR stubs —
+  `/spectacular:next` surfaces pending decisions only when stubs exist.
+- No other artifact migrations.
+
 ## 0.8.0
 
 - `CLAUDE.md`: update the **Commit protocol** section — the

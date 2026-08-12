@@ -7,6 +7,40 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.9.0 — 2026-08-12
+
+- Gate protocol + discussion-first (D-41, retro-driven): defined once in the
+  workspace CLAUDE.md template, referenced by every gated skill — a gate
+  ends with an explicit question naming the decision; only an explicit
+  approve-like answer approves; vague go-aheads ("ok", "keep working")
+  re-ask; approvals name their scope, partial approval is normal. plan's
+  breakdown gains a bounded clarify pass; implement stops and asks when the
+  capsule genuinely underdetermines a task; a uniform
+  challenge-with-justification line lands at every authoring decision point
+  (init generalized, prd, design, plan). Workspaces are self-sufficient by
+  design: process rules live in repo artifacts, never one person's session
+  memory or machine-local config.
+- next sees the whole pipeline (D-42, retro-driven): additionally derives
+  **plannable** PRDs (approved, no stories) and **pending decisions** (ADR
+  stubs); ready-next lists every available action type; the single
+  recommendation ranks across the full ladder — approve/accept/apply →
+  implement → plan → decide → develop the next stub — instead of collapsing
+  to PRD development when no delivery artifacts exist.
+- plan reads sibling truth and takes PRD sets (D-43, retro-driven):
+  breakdown context now includes every other approved PRD's front
+  matter/scope and all existing stories/tasks; cross-PRD `depends_on` is
+  expected wherever ordering is real. One run may break down 2–3
+  tightly-coupled PRDs together (combined acyclicity over proposed +
+  on-disk items; gate grouped per PRD showing ready-vs-blocked). Execution
+  order stays derived, never stored; a set run is not epic trigger 2; bare
+  plan suggests a target or coupled set — never all plannable PRDs at once.
+- decide map mode (D-44, retro-driven): a bare call scans the approved
+  brief, PRD bodies, and plan blockers, and persists the decision backlog
+  under a gate as ADR **stubs** — reference, one-line scope, Forced-by
+  note, reversal-cost note, suggested order; nothing speculative, re-scans
+  only append. ADR status vocabulary becomes stub → draft → approved
+  (mirroring PRD stubs, D-20); working `adr-NNN` fills the stub in place.
+
 ## 0.8.0 — 2026-08-04
 
 - Landing gate for implement (D-39, retro-driven): the D-26 commit-protocol
