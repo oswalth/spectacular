@@ -44,7 +44,9 @@ a phase. The owner always picks; this skill never decides.
    choice hurt in a year, and what would migration off it cost? Below the
    table, give your recommendation with reasoning — clearly marked as a
    recommendation.
-7. **Owner picks.** Never auto-pick, never treat silence as consent.
+7. **Owner picks.** Never auto-pick, never treat silence as consent — and a
+   vague go-ahead is not a pick: only an explicit choice counts (gate
+   protocol, CLAUDE.md).
 8. **Write the ADR** — `architecture/decisions/NNN-<slug>.md` from
    `${CLAUDE_PLUGIN_ROOT}/templates/adr.md` (MADR 4.0 structure). The `prd:`
    field is optional — drop it when no PRD forced the decision. Pros and Cons

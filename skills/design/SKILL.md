@@ -83,10 +83,16 @@ capability, not a moving one. Otherwise refuse and point at `/spectacular:prd`.
    constrains acceptance, and open design questions. If the design work
    exposes a gap or contradiction in the approved PRD, open a
    `changes/NNN-<slug>/proposal.md` — never bend the spec to paper over it.
+   Where an owner design choice undermines a PRD goal without contradicting
+   it outright, say so — justification plus a suggested alternative — and if
+   the owner keeps it, record it as an open design question rather than a
+   silent fact.
    Screens may source from Figma frames, imported design code, or both; the
    Cross-cutting section points into `product/designs/system/` where a
    product-wide design system exists.
-6. **Gate.** Present; on approval set `status: approved`.
+6. **Gate.** Present and ask explicitly; only an explicit approve-like
+   answer approves (gate protocol, CLAUDE.md). On approval set
+   `status: approved`.
 7. **Propose a commit** for the design spec — plus any imported design code
    and its provenance — as one unit (e.g. `design-001: <what it covers>`);
    commit only on explicit approval (workspace commit protocol, CLAUDE.md).

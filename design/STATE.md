@@ -48,6 +48,14 @@ Open Claude Code in this repo and paste:
    commit keeps plugin.json, CHANGELOG.md, docs/upgrades.md and the tag in
    sync. No AI-attribution trailers (`Co-Authored-By: Claude …`,
    `Generated with …`) in any repo — plugin, workspace, or code (D-37e).
+9. Gate protocol + self-sufficiency (added 2026-08-11, D-41): at any approval
+   gate — in this repo's sessions too — only an explicit approve-like answer
+   approves; a vague go-ahead ("ok", "keep working") re-asks, and every gate
+   ends with an explicit question so the session never looks stuck. Process
+   rules are never carried in session memory or machine-local config:
+   Vladimir may have a team on the plugin and the projects, so all three
+   repo kinds (plugin, workspace, code) must be self-sufficient and behave
+   identically on any machine or account.
 
 ## Requirements (given in the brief — challengeable, but not to be silently dropped)
 
@@ -647,6 +655,35 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   `chore(contract): …` commits, structure only — undecided Conventions are
   findings, never auto-filled. The workspace pin stays the single version
   authority (P-5 holds).
+- D-41 (2026-08-11, retro round 4, second workspace) Gate protocol,
+  discussion-first, uniform challenge. Observation (Vladimir, interrupting a
+  retro review that applied three proposed fixes after his reply "keep on
+  working"): when intent is unclear, discuss first; even clear intent gets
+  challenged when that genuinely helps; and he had sent the vague go-ahead
+  only because the session looked stuck — only explicit approve-like
+  messages approve. Root cause: no skill defined what counts as approval at
+  a gate, and the existing machinery (D-28 propose-then-ask, D-31
+  challenge) covered the authoring skills unevenly — plan's breakdown had
+  no clarify pass at all. His "make it explicit in all skills" was
+  challenged and refined: the rule binds at decision points (interviews,
+  authoring, gates), not mechanical derivation/execution — next and upgrade
+  need no discussion phase (Vladimir confirmed "next does not need this").
+  Resolution, three parts: (1) gate protocol, defined once in the workspace
+  CLAUDE.md template and referenced one-line by every gated skill: a gate
+  ends with an explicit question naming the decision; only an explicit
+  approve-like answer approves; vague go-aheads re-ask; silence never
+  consents; approvals name their scope, partial approval normal. Ways of
+  working #9 applies the same rule to this repo's sessions. (2) plan's
+  breakdown gains a bounded clarify pass (the one authoring skill without
+  one); implement stops and asks when the capsule genuinely underdetermines
+  the task. (3) one challenge line at every authoring decision point (init
+  generalized, prd, design, plan): justification plus proposed alternative,
+  stated explicitly when the owner's point stands, never ritual; decide and
+  retro already complied (D-29/D-31). Also ratified: repo
+  self-sufficiency — process rules live in repo artifacts, never one
+  person's session memory or machine-local config; any teammate on any
+  machine gets identical behavior (extends P-2/A6/P-5; encoded in the
+  workspace template and WoW #9).
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -979,3 +1016,31 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   contract template, plan, implement, decide, spec → v0.7.0. He will
   test via the pilot's next plan session. Commits proposed per
   protocol.
+- S-6 (cont. 7) 2026-08-11: Retro round 4 — first findings from a second
+  workspace (wardx/gdansk), in-chat. Two observations root-caused: (1)
+  /next never surfaces decide/plan for approved PRDs — confirmed
+  structural (step 4 derives no plannable-PRD or pending-decision
+  candidates, so the recommendation collapses to stub development); (2)
+  multi-PRD planning — split three ways: decide already product-scoped
+  (overturned), a persisted decision backlog missing (confirmed),
+  interleaved story order = plan's missing sibling-PRD/story context
+  (confirmed as cross-PRD depends_on gap; a stored schedule refused per
+  D-18). Fixes proposed: A next candidate classes, B plan sibling context
+  + PRD sets, C decide map mode → ADR stubs. Vladimir replied "keep on
+  working"; Fix A was partially applied and he interrupted — the reply
+  was not approval (the session had merely looked stuck to him). Fix A
+  reverted. His directive: skills must make discussion-first and
+  justified-challenge explicit. Nine-skill compliance audit run; his
+  "all skills" framing challenged (decision points only; he confirmed
+  next needs nothing); C1 gate protocol / C2 plan clarify pass +
+  implement ambiguity stop / C3 uniform challenge line each explicitly
+  approved → D-41 applied (workspace-claude template gains ## Gate
+  protocol + self-sufficiency bullet; one-line gate references in init,
+  prd, design, decide, plan, implement, upgrade, retro; plan steps
+  renumbered 3→10 with clarify inserted; spec cross-cutting + plan flow;
+  WoW #9; stale "plan step 5" pointer fixed in upgrades.md 0.7.0 note).
+  Also his rule, now encoded: never rely on session memory for process —
+  all three repo kinds self-sufficient for a possible team, identical
+  across machines/accounts. Retro fixes A/B/C pending re-gate under the
+  new protocol; release intended as one 0.9.0 once they settle. Commits
+  proposed per protocol, uncommitted.

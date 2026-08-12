@@ -23,7 +23,8 @@ edges IS the product roadmap; no other roadmap artifact exists.
 2. Present the map for approval: per capability a proposed reference
    (`prd-001`, …), a one-line scope, and `depends_on` edges (must be acyclic).
    Number so that low numbers are upstream where possible.
-3. **Gate.** On approval, write one **stub** PRD per capability — the map is
+3. **Gate** (explicit approval only — gate protocol, CLAUDE.md). On
+   approval, write one **stub** PRD per capability — the map is
    persisted only as stub PRDs, nowhere else. File:
    `product/prds/NNN-<slug>.md` from
    `${CLAUDE_PLUGIN_ROOT}/templates/prd.md`, reduced to the stub form:
@@ -48,7 +49,10 @@ edges IS the product roadmap; no other roadmap artifact exists.
    live only in chat. If an answer amends the *approved brief* (a phrasing
    now wrong, a scope call the brief doesn't record), open
    `changes/NNN-<slug>/proposal.md` targeting the brief in the same session —
-   clarifications must never strand brief deltas.
+   clarifications must never strand brief deltas. Challenge answers that
+   would weaken the capability — with your justification and a proposed
+   alternative — and say explicitly when the owner's point stands as-is; the
+   owner's call is final.
 3. Draft the full PRD (`status: draft`) with every section of
    `${CLAUDE_PLUGIN_ROOT}/templates/prd.md`. Requirements are numbered
    `FR-NNN` with a `must | should | could` priority (an unmet "must" means
@@ -56,8 +60,9 @@ edges IS the product roadmap; no other roadmap artifact exists.
    THE SYSTEM SHALL <observable behavior>` — and name the FRs they verify;
    every AC must be binary, a human tester can answer pass/fail. Every known
    exclusion goes under Out of scope explicitly.
-4. **Gate.** Present, revise until the owner approves, then set
-   `status: approved`.
+4. **Gate.** Present, revise until the owner approves — approval is an
+   explicit answer to an explicit question; a vague go-ahead re-asks (gate
+   protocol, CLAUDE.md) — then set `status: approved`.
 5. **Propose a commit** for the developed PRD (e.g. `develop and approve
    prd-001 <slug>`), plus any change proposal opened in step 2; commit only on
    explicit approval.

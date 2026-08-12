@@ -73,8 +73,11 @@ non-empty directory.
    Weave in three opportunity-assessment questions: what alternatives
    exist today, why build this now, and how success will be measured — the
    answers sharpen Goals and Constraints. Never invent answers — if the owner
-   is unsure, record the point as open. Push back once when a stated goal looks
-   like a solution in disguise; accept the owner's call.
+   is unsure, record the point as open. Push back — once, with your
+   justification and a proposed alternative — when an answer would hurt the
+   product (a goal that is a solution in disguise, a constraint contradicting
+   a stated goal); say explicitly when the owner's point stands as-is, and
+   accept their call either way.
 
 5. **Write `product/brief.md`** from
    `${CLAUDE_PLUGIN_ROOT}/templates/brief.md` (`status: draft`). It is the one
@@ -110,8 +113,10 @@ non-empty directory.
 7. **Approval gate.** Present the brief together with the depth ladder, so its
    deliberate thinness reads as intentional: brief (problem, users, goals,
    constraints, one capability sketch) → PRD map → developed PRDs (full
-   feature treatment) → stories and tasks. Then ask for approval. On explicit
-   approval, set `status: approved` yourself. If the owner wants changes, revise
+   feature treatment) → stories and tasks. Then ask for approval as an
+   explicit question; only an explicit approve-like answer approves — a vague
+   go-ahead re-asks (gate protocol, CLAUDE.md). On explicit approval, set
+   `status: approved` yourself. If the owner wants changes, revise
    and re-present. Manual edits to any artifact, including statuses, are always
    legitimate — files are the interface.
 

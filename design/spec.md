@@ -142,9 +142,14 @@ and the task's Verification. All artifact shapes live in templates/ only.
 
 ## Cross-cutting mechanics
 
-- **Approval gate (stated):** the authoring skill presents the artifact and asks; on
-  approval it flips the status itself. Manual front-matter edits are always legitimate —
-  files are the interface. `next` surfaces lingering drafts.
+- **Approval gate (stated; protocol per D-41):** the authoring skill presents the
+  artifact and asks an explicit question naming the decision; on approval it flips the
+  status itself. Only an explicit approve-like answer approves — a vague go-ahead
+  ("ok", "keep working") re-asks, silence is never consent, and an approval names what
+  it covers (partial approval is normal). Defined once in the workspace CLAUDE.md
+  template (## Gate protocol); every gated skill references it. Manual front-matter
+  edits are always legitimate — files are the interface. `next` surfaces lingering
+  drafts.
 - **Workspace commit protocol (D-26):** skills never commit unprompted; every unit of
   work ends with a proposed commit message, committed only on explicit approval.
   Grain: scaffold · approved brief · PRD-map stubs · each developed PRD (+ its change
@@ -154,8 +159,11 @@ and the task's Verification. All artifact shapes live in templates/ only.
   greenlight covering it and the workspace status/Learnings close-out commit.
   Recorded in the workspace CLAUDE.md template so ad-hoc sessions inherit it.
 - **Propose-then-ask interviewing (D-28):** init's BA interview and the clarify passes
-  in prd and decide frame before asking — synthesis of what's known + a strawman, then
-  2–3 questions referencing the frame, then (init, per topic) a confirmed mini-summary.
+  in prd, design, decide, and plan frame before asking — synthesis of what's known + a
+  strawman, then 2–3 questions referencing the frame, then (init, per topic) a
+  confirmed mini-summary. At decision points, owner inputs that would hurt the product
+  are challenged — justification plus a proposed alternative, stated explicitly when
+  the point stands as-is — never ritually (D-41).
 - **MCP posture (D-33, D-34):** the plugin never ships or configures MCP servers.
   Skills use connected MCPs opportunistically and degrade gracefully without them —
   design/implement read Figma frames through a connected design-tool MCP, else plain
@@ -261,6 +269,7 @@ Next: back to the blocked prd/plan work.
 ### plan — sonnet (opus when cross-repo coupling is non-trivial)
 Precondition: target PRD approved. Two modes.
 Breakdown: read PRD + overview/ADRs + registry (repo-reader on relevant repos) →
+clarify pass when the PRD admits materially different breakdowns (D-41) →
 propose stories (user-visible slices; AC coverage; `depends_on`) and per-story tasks
 routed per repo → missing repo? propose creation: scaffold sibling dir, `git init`,
 contract (owner picks `merge_flow` — D-21), registry entry (D-6); repo-bootstrap

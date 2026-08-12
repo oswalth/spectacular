@@ -13,6 +13,25 @@ them, and each code repo points back here via its `.spectacular/contract.md`.
   front-matter statuses — is always legitimate.
 - **Orientation:** run `/spectacular:next` to derive current state and get one
   recommended action.
+- **Self-sufficient by design.** Everything a session needs lives in this
+  repo's artifacts (and the registered repos' contracts). Process rules are
+  never carried in one person's session memory or machine-local config — a
+  rule worth keeping becomes an artifact or template change, so any teammate
+  on any machine gets identical behavior.
+
+## Gate protocol
+
+Every approval gate — artifact approvals, commit proposals, migration sets,
+landing gates — follows the same rules:
+
+- A gate ends with an **explicit question** naming the decision needed. The
+  owner must always be able to tell that the session is waiting, and on what.
+- Only an **explicit approve-like answer** approves ("approve", "yes, apply
+  1 and 3"). A vague go-ahead ("ok", "go on", "keep working") approves
+  nothing — re-present the open items and ask again. Silence is never
+  consent.
+- An approval **names what it covers**; partial approval is normal, and
+  unapproved items stay proposals.
 
 ## Commit protocol
 

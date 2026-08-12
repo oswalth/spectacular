@@ -44,7 +44,10 @@ owner's explicit greenlight.
    `todo`.
 5. **Goal-driven loop.** Before writing code, restate the task's Verification as
    a concrete, runnable check (test command, expected behavior) — extend the
-   task's Verification section if it was vague. Branch `task-NNN-<slug>`.
+   task's Verification section if it was vague. If the capsule genuinely
+   underdetermines the task — two readings implying different code — stop
+   and ask the owner before building; never pick an interpretation
+   silently. Branch `task-NNN-<slug>`.
    Implement, run the verification, loop until it passes. Use the contract's
    build/test/run commands.
 6. **Landing gate — nothing lands without a greenlight (D-39).** Verification
@@ -59,8 +62,11 @@ owner's explicit greenlight.
    - the workspace close-out commit that follows in step 7 (statuses,
      Learnings).
 
-   Then wait for the owner's explicit approval. No commit, push, PR, or merge
-   happens before it — "verification passed" is a report, not a license. One
+   Then wait for the owner's explicit approval — an approve-like answer to
+   this explicit question; "ok, continue"-style replies do not open the
+   gate, re-ask (gate protocol, workspace CLAUDE.md). No commit, push, PR,
+   or merge happens before it — "verification passed" is a report, not a
+   license. One
    greenlight covers landing the whole task: this code-repo commit and the
    step-7 workspace commit. On approval, land per `merge_flow`:
    - `pr`: push the branch, open a PR with `gh`, squash-merge it (`gh pr merge

@@ -23,7 +23,7 @@ every section must have a matching entry in `CHANGELOG.md`.
 - Code-repo contracts: restructure `## Conventions` to the dimension list in
   `templates/contract.md` (common core + stack-specific dimensions). For an
   existing repo, fill it by asking a workspace session to run the
-  repo-bootstrap interview from plan step 5 against that repo (frame from
+  repo-bootstrap interview from plan's Missing-repo step against that repo (frame from
   the ADRs that shaped it and other registered contracts, recommended option
   per open dimension), or fill it by hand. New repos get the interview from
   plan at creation.

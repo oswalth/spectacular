@@ -49,7 +49,9 @@ Runs **in a workspace** (profile.md present); otherwise refuse.
      not workspace truth). Structure only — never fill Conventions content
      the owner hasn't decided; a missing decision is a finding to report, not
      a blank to complete.
-5. **Apply** the approved items; set the pin to the installed version.
+5. **Apply** the approved items — approval is explicit and names which
+   items; a vague go-ahead re-asks (gate protocol, CLAUDE.md). Set the pin
+   to the installed version.
 6. **Propose one commit** — `upgrade workspace to spectacular vX.Y.Z`; commit
    only on explicit approval (workspace commit protocol, CLAUDE.md).
 

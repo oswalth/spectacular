@@ -27,19 +27,27 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    dispatch the **repo-reader** subagent with the repo path and one specific
    question (what relevant capability exists, where the integration points are).
    Never guess at code you can inspect.
-3. **Propose stories:** user-visible slices of the PRD. Every PRD AC maps to at
+3. **Clarify pass.** When the PRD admits materially different breakdowns —
+   slicing strategy, phasing, what ships first, story granularity — run at
+   most 5 propose-then-ask questions: frame the option you recommend and
+   why, and let the owner pick before stories are drafted. Challenge a
+   slicing the owner dictates when it breaks INVEST or hides a dependency —
+   justification plus a proposed alternative, their call final. Skip when
+   the artifacts genuinely determine the breakdown, and say that you are
+   skipping.
+4. **Propose stories:** user-visible slices of the PRD. Every PRD AC maps to at
    least one story; each story lists the ACs it covers, plus `depends_on`
    between stories where ordering is real. A story's Goal is the Connextra
    line (*As a <user>, I want <capability>, so that <benefit>*); its ACs
    restate the covered PRD ACs as Given/When/Then test scripts a human can
    execute step by step. Sanity-check each story against INVEST — independent,
    negotiable, valuable, estimable, small, testable.
-4. **Propose tasks per story,** routed to repos. Each task carries a
+5. **Propose tasks per story,** routed to repos. Each task carries a
    description and a **Verification** section — preconditions, numbered steps,
    expected result — written before any code exists. Stories and tasks
    implementing designed UI carry **Design references** — the design spec
    sections and source frames they realize (`design-NNN` + links).
-5. **Missing repo?** Propose creating it (consult `conventions.md` for the name
+6. **Missing repo?** Propose creating it (consult `conventions.md` for the name
    if present, else `<product>-<role>`, e.g. `acme-api`): sibling directory per
    `.spectacular/profile.md`, `git init`, minimal README, and
    `.spectacular/contract.md` from
@@ -75,14 +83,14 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    name it as the theme source, and the theme bootstrap (materialize the
    tokens into the repo's stack — CSS variables/Tailwind, or the platform
    theme) folds into the scaffold task or follows it as the first UI task.
-6. **Epic-trigger check.** Epics do not exist in v0.1. If any of these fires,
+7. **Epic-trigger check.** Epics do not exist in v0.1. If any of these fires,
    say so explicitly and recommend recording it with
    `/spectacular:retro "epic trigger fired: …"` — that firing is the build
    trigger for epic machinery, not a license to improvise it now:
    - the owner states phased delivery of this PRD;
    - one goal pulls stories from more than one PRD;
    - more than ~12 stories for one PRD.
-7. **Blocking consistency check** — repair your own proposal and re-check until
+8. **Blocking consistency check** — repair your own proposal and re-check until
    all four pass; only then gate:
    - every PRD AC maps to ≥ 1 story;
    - every story has ≥ 1 task;
@@ -91,21 +99,23 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    - every story covering designed UI references an approved design spec,
      when the PRD has one (skipped only if the owner explicitly planned
      without a design spec in step 2).
-8. **Gate.** Present the breakdown: stories with AC coverage, tasks with repo
-   routing, any repos to create. On approval, create the repos and write the
-   files, everything `status: todo`:
+9. **Gate.** Present the breakdown: stories with AC coverage, tasks with repo
+   routing, any repos to create. Ask explicitly; only an explicit
+   approve-like answer approves, and partial approval keeps the rest
+   proposals (gate protocol, CLAUDE.md). On approval, create the repos and
+   write the files, everything `status: todo`:
    - Story — `delivery/stories/NNN-<slug>.md` from
      `${CLAUDE_PLUGIN_ROOT}/templates/story.md`. The task list is never
      duplicated into the story body; it is derived from task files' `story:`
      links.
    - Task — `delivery/tasks/NNN-<slug>.md` from
      `${CLAUDE_PLUGIN_ROOT}/templates/task.md`, its Verification section
-     filled from step 4.
+     filled from step 5.
 
    Everything written under this gate must meet the workspace's Definitions of
    Ready (workspace CLAUDE.md) — plan is the skill that makes items ready.
 
-9. **Propose a commit** for the batch — workspace stories/tasks plus registry
+10. **Propose a commit** for the batch — workspace stories/tasks plus registry
    changes as one unit (e.g. `plan prd-001: stories and tasks`); commit only
    on the owner's explicit approval (workspace commit protocol, CLAUDE.md).
    A newly created code repo gets its own initial commit, likewise proposed.

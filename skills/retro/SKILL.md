@@ -43,7 +43,9 @@ confirmation, append them all, then offer to run review mode on the spot.
    as stated.
 3. Split the causes:
    - **Workspace-level** (this project's process, conventions, artifacts):
-     propose concrete fixes, gate them with the owner, apply the approved ones,
+     propose concrete fixes, gate them with the owner — explicit approval
+     naming which fixes; a vague go-ahead re-asks (gate protocol,
+     CLAUDE.md) — apply the approved ones,
      and mark the covered observations `(addressed <date>)`.
    - **Plugin-level** (spectacular itself should change): write a handoff brief
      under `## Plugin handoff briefs` in the observations file — what hurt,
