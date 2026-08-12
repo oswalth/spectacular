@@ -684,6 +684,54 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   person's session memory or machine-local config; any teammate on any
   machine gets identical behavior (extends P-2/A6/P-5; encoded in the
   workspace template and WoW #9).
+- D-42 (2026-08-12, retro round 4, second workspace) next derives the whole
+  action ladder. Observation: in a PRD-phase workspace (4 approved PRDs, 13
+  stubs, no delivery/, empty registry) /next recommended developing the
+  next stub and never surfaced decide or plan for the approved PRDs.
+  Confirmed structural: step 4 derived only four candidate classes (drafts,
+  ready/blocked, awaiting acceptance, open changes) — all empty in that
+  state — so the recommendation could only collapse to stub development;
+  the ranking rule (reversal cost) never saw decision candidates because
+  nothing derived them. Resolution: step 4 additionally derives
+  **plannable** (PRD approved, zero stories via `prd:` links) and **pending
+  decisions** (ADR stubs — D-44); ready-next lists every available action
+  type while the recommendation stays single; candidates come from every
+  derived class, and a decision gating planning (empty registry) outranks
+  developing another stub. Front-matter-only derivation preserved.
+- D-43 (2026-08-12, retro round 4, second workspace) plan reads sibling
+  truth and takes tightly-coupled PRD sets. Observation: owner unsure
+  prd-N is fully implementable before prd-N+1; wanted interleaved story
+  order across PRDs. Challenged and split: a stored global schedule is
+  refused (D-18 — order is derived, would rot); interleaving falls out of
+  cross-PRD `depends_on` + next's ready derivation. Confirmed gap: plan's
+  context read only the target PRD + designs/overview/ADRs/registry —
+  never sibling PRDs or existing stories, so cross-PRD links happened only
+  if the model volunteered, and forward coupling surfaced late.
+  Resolution: context includes every other approved PRD's front
+  matter/scope and all existing stories/tasks; cross-PRD depends_on
+  expected (same-run links too); breakdown accepts 2–3 tightly-coupled
+  PRDs with a combined acyclicity check (proposed + on-disk) and a gate
+  grouped per PRD showing ready-vs-blocked; explicitly not epic trigger 2
+  (one goal spanning PRDs ≠ N goals planned together). Bare plan suggests
+  a target (or coupled set) and never plans all plannable PRDs in one run —
+  JIT batches keep gates reviewable and let later PRDs profit from
+  implemented learnings; plan-all was Vladimir's floated idea, analyzed
+  and recommended against (context exhaustion, rubber-stamp gates,
+  staleness); he confirmed suggest-only on 2026-08-12.
+- D-44 (2026-08-12, retro round 4, second workspace) The decision map is
+  persisted as ADR stubs — decide gains map mode. Observation: a free-form
+  /next answer produced a good decision inventory (waves, ordering) that
+  then evaporated in chat; owner wants to review/refactor/order decisions
+  as an artifact ("same stuff like we have with bare /prd"). Tension with
+  "architecture is not a phase" resolved: every stub names its forcing
+  artifact (Forced by note; empty registry with approved PRDs counts and
+  heads the map); nothing speculative; re-scans append, never rewrite.
+  Mirrors D-20 exactly: map approval writes stub files; the backlog has
+  one source — ADR front matter. ADR vocabulary becomes stub → draft →
+  approved (extends D-18); working `adr-NNN` fills the stub in place,
+  keeping number and file. next derives pending decisions from the stubs
+  (D-42); the two compose with D-43 into decide → plan → implement
+  visibility at every /next run.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -1044,3 +1092,19 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   across machines/accounts. Retro fixes A/B/C pending re-gate under the
   new protocol; release intended as one 0.9.0 once they settle. Commits
   proposed per protocol, uncommitted.
+- S-6 (cont. 8) 2026-08-12: Vladimir approved the compliance diff and,
+  re-gated per the new protocol, all three retro fixes explicitly (A
+  approve / B agree / C agree) → D-42/D-43/D-44 applied across next, plan,
+  decide, spec. Two open points handled per D-31/D-41: (1) his "each
+  commit should have a version bump" challenged against his own D-37
+  (tags mark releases, commits never stamp versions) — his fallback
+  option taken instead: compliance batch staged separately, retro fixes
+  layered on top, one chore(release): 0.9.0 to follow; (2) his floated
+  bare-plan-plans-everything idea analyzed on his ask (10 PRDs ≈ 300 work
+  items: context exhaustion, unreviewable gate, stale-by-implementation
+  stories) → recommended and encoded as suggest-target-or-coupled-set,
+  never plan-all (D-43); he confirmed. Gate protocol exercised as
+  designed: his partial approval landed commit 1 alone (51ab9e9); the
+  rest stayed proposals until his explicit "all changes are approved" —
+  then feat commit 2, chore(release): 0.9.0, tag v0.9.0, push and local
+  plugin update, all on his ask.

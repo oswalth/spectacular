@@ -1,7 +1,7 @@
 ---
 name: decide
-description: Work a forced architecture or technology decision — drivers, options, trade-off table; the owner picks, the result becomes an ADR recording every rejected option, and the architecture overview is updated.
-argument-hint: [topic]
+description: Propose the decision map — every decision the brief, PRDs, or plan blockers force, persisted as ADR stubs — or work one decision — drivers, options, trade-off table; the owner picks, the result becomes an ADR recording every rejected option, and the architecture overview is updated.
+argument-hint: [topic | adr-NNN]
 ---
 
 # /spectacular:decide — just-in-time architecture decision
@@ -9,11 +9,44 @@ argument-hint: [topic]
 ADRs are written only when a PRD or a plan forces a choice — architecture is not
 a phase. The owner always picks; this skill never decides.
 
-## Steps
+Mode: a topic or `adr-NNN` argument selects **work one decision**; a bare
+call, or an ask like "what decisions do I need?", selects **map**.
+
+## Map — propose the decision backlog
+
+The map makes already-forced decisions visible, reviewable, and orderable —
+it never licenses speculative architecture. A candidate no artifact forces
+does not go on it.
+
+1. **Scan** the approved brief, every approved PRD body, and the current
+   plan blockers for decisions they force or explicitly defer. An empty
+   registry with approved PRDs is itself a forced decision — which repos
+   exist — and heads the map whenever it holds.
+2. **Present the map** for approval: per decision a proposed reference
+   (`adr-001`, …), a one-line scope, the artifact(s) forcing it, a
+   reversal-cost note, and a suggested working order — number so that low
+   numbers come first where possible. The owner reviews, refactors, and
+   reorders this list; that is the point of persisting it.
+3. **Gate** (explicit approval only — gate protocol, CLAUDE.md). On
+   approval write one **stub** ADR per decision —
+   `architecture/decisions/NNN-<slug>.md` from
+   `${CLAUDE_PLUGIN_ROOT}/templates/adr.md` reduced to the stub form:
+   `status: stub`, `prd:` when a single PRD forces it, the title, and a
+   one-line **Forced by** note naming the forcing artifact and the scope.
+   Everything else waits until the decision is worked.
+4. **Propose a commit** for the map (e.g. `add decision map (adr-001…adr-004
+   stubs)`); commit only on the owner's explicit approval.
+
+A later run (new PRDs approved, new plan blockers) appends new stubs through
+the same gate; a re-scan never rewrites existing stubs.
+
+## Work one decision
 
 1. **Name the decision.** From the argument or the conversation: what must be
    chosen, and which PRD or plan forces it now (that reference goes into the
-   ADR's `prd:` field when it applies). State its **reversal cost** — how
+   ADR's `prd:` field when it applies). An `adr-NNN` argument picks that
+   stub from the map; it is developed in place and keeps its number and
+   file. State its **reversal cost** — how
    expensive this choice is to unwind later — because it scales the depth of
    everything below: a foundational, hard-to-reverse decision earns the full
    treatment; a cheap-to-reverse one may be worked briefly, and you say so.
@@ -48,7 +81,8 @@ a phase. The owner always picks; this skill never decides.
    vague go-ahead is not a pick: only an explicit choice counts (gate
    protocol, CLAUDE.md).
 8. **Write the ADR** — `architecture/decisions/NNN-<slug>.md` from
-   `${CLAUDE_PLUGIN_ROOT}/templates/adr.md` (MADR 4.0 structure). The `prd:`
+   `${CLAUDE_PLUGIN_ROOT}/templates/adr.md` (MADR 4.0 structure), filling
+   the stub in place when one exists. The `prd:`
    field is optional — drop it when no PRD forced the decision. Pros and Cons
    of the Options records every rejected option and why it lost — that section
    is the ADR's value; Confirmation states how compliance will be verified.
@@ -71,7 +105,8 @@ applied), whichever the owner prefers.
 
 ## Next step
 
-Recommend returning to the work that raised the decision — the specific
-`/spectacular:prd` or `/spectacular:plan` invocation that was blocked, now
-unblocked by the approved ADR. If nothing was blocked, recommend
-`/spectacular:next` to re-derive where things stand.
+After a map run: recommend `/spectacular:decide adr-NNN` for the first stub
+in the approved order. After a worked decision: recommend returning to the
+work that raised it — the specific `/spectacular:prd` or `/spectacular:plan`
+invocation that was blocked, now unblocked by the approved ADR. If nothing
+was blocked, recommend `/spectacular:next` to re-derive where things stand.

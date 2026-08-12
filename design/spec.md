@@ -109,7 +109,7 @@ identity, so nothing can drift; lint checks that references resolve.
 | brief | `status: draft \| approved` |
 | PRD | `status: stub \| draft \| approved` · `depends_on: [prd-…]` (roadmap graph source) |
 | design | `status: draft \| approved` · `prd:` (required) · `sources: [links]` (D-34) |
-| ADR | `status: draft \| approved` · `prd:` (optional — which PRD forced it) |
+| ADR | `status: stub \| draft \| approved` · `prd:` (optional — which PRD forced it); stubs persist the decision map (D-44), mirroring D-20 |
 | story | `status: todo \| in-progress \| done` · `prd:` (required) · `depends_on: [story-…]` · `epic:` (optional; unused until epic machinery exists — D-19) |
 | task | `status: todo \| in-progress \| done` · `story:` · `repo:` (registry name) · `depends_on: [task-…]` |
 | change | `status: draft \| approved \| applied` · `targets: [refs]` **(stated)** |
@@ -254,6 +254,11 @@ Next: `/spectacular:plan` for the PRD, or the opened change proposal's approval 
 
 ### decide — opus (fable for foundational, hard-to-reverse ADRs)
 Trigger: a forced architecture/technology decision (usually from prd or plan).
+Map mode (D-44): a bare call scans the approved brief + PRD bodies + plan blockers
+(an empty registry with approved PRDs is itself a forced decision) and persists the
+decision backlog, gated, as ADR stubs — reference, one-line scope, Forced-by note,
+reversal-cost note, suggested order; nothing speculative, re-scans only append.
+Working `adr-NNN` develops a stub in place.
 Repo-internal convention batches are NOT one decision — they route to plan's
 repo-bootstrap interview; decide takes a single contested one (D-38).
 Flow (deepened per D-29): name the decision + its reversal cost (scales the whole
@@ -267,11 +272,16 @@ proposed commit (ADR + overview as one unit — D-26).
 Next: back to the blocked prd/plan work.
 
 ### plan — sonnet (opus when cross-repo coupling is non-trivial)
-Precondition: target PRD approved. Two modes.
-Breakdown: read PRD + overview/ADRs + registry (repo-reader on relevant repos) →
+Precondition: every target PRD approved. Two modes; breakdown takes one PRD or a
+tightly-coupled set of 2–3 (D-43) — never all plannable PRDs at once (JIT batches
+keep gates reviewable).
+Breakdown: read target PRD(s) + overview/ADRs + registry (repo-reader on relevant
+repos) + every other approved PRD's front matter/scope + all existing stories and
+tasks — cross-PRD `depends_on` expected; execution order stays derived by next,
+never stored (D-43) →
 clarify pass when the PRD admits materially different breakdowns (D-41) →
-propose stories (user-visible slices; AC coverage; `depends_on`) and per-story tasks
-routed per repo → missing repo? propose creation: scaffold sibling dir, `git init`,
+propose stories (user-visible slices; AC coverage; `depends_on`, cross-PRD allowed)
+and per-story tasks routed per repo → missing repo? propose creation: scaffold sibling dir, `git init`,
 contract (owner picks `merge_flow` — D-21), registry entry (D-6); repo-bootstrap
 interview fills the contract's Conventions (frame from forcing ADRs + defaults from
 registered repos' contracts; common + stack-derived dimensions, open list;
@@ -306,14 +316,18 @@ Next: next ready task here, or `/spectacular:next` in the workspace.
 ### next — haiku (sonnet if ranking quality disappoints)
 Workspace or code repo (via contract). Reads registry + all front matter only — no
 bodies except where derivation requires ACs **(stated)**.
-Derives: drafts awaiting approval, ready vs blocked stories/tasks, stories awaiting
-acceptance, open changes; warns on unresolvable references or invalid statuses (this is
+Derives: drafts awaiting approval, plannable PRDs (approved, no stories — D-42),
+pending decisions (ADR stubs — D-42/D-44), ready vs blocked stories/tasks, stories
+awaiting acceptance, open changes; warns on unresolvable references or invalid
+statuses (this is
 the only workspace validation in v0.1 — no standalone validator, avoiding speculation's
 fixture trap **(stated)**).
-Output: roadmap as text (last done → in flight → ready) AND a Mermaid graph of PRDs
-with story rollup (D-10); ranks ready work by unblocks → reversal cost → size (speck's
-ranking, D-3); exactly ONE recommendation with justification. In a code repo, filtered
-to that repo's tasks.
+Output: roadmap as text (last done → in flight → ready; ready lists every available
+action type, never the PRD pipeline alone — D-42) AND a Mermaid graph of PRDs
+with story rollup (D-10); candidates from every derived class (approve/accept/apply →
+implement → plan → decide → develop stub), ranked by unblocks → reversal cost → size
+(speck's ranking, D-3); exactly ONE recommendation with justification. In a code repo,
+filtered to that repo's tasks.
 
 ### retro — haiku (append) / sonnet (review)
 Modes chosen by argument CONTENT (D-30c). One short observation → append verbatim

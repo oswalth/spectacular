@@ -1,7 +1,7 @@
 ---
 name: plan
 description: Break an approved PRD into stories and per-repo tasks — creating missing code repos with contracts — behind a blocking consistency check; or re-plan a story after an acceptance FAIL.
-argument-hint: [prd-NNN | story-NNN]
+argument-hint: [prd-NNN … | story-NNN]
 ---
 
 # /spectacular:plan — delivery breakdown
@@ -11,16 +11,28 @@ and **tasks** (one repo's share of a story). PRD → story → task is the manda
 spine — every story names its `prd:`, every task its `story:` and `repo:`.
 
 Mode: a `story-NNN` argument (or a story whose Acceptance log ends in FAIL)
-selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
+selects **re-plan**; one or more `prd-NNN` arguments, or none, select
+**breakdown**. A set is for tightly-coupled PRDs (2–3, no more) whose
+stories genuinely interleave — one combined proposal, one gate; the
+owner's review sitting grows with every PRD added, so coupling must earn
+its place.
 
 ## Breakdown
 
-1. **Precondition:** the target PRD has `status: approved`; otherwise refuse and
-   point at `/spectacular:prd`. No argument → suggest the approved PRD with the
-   fewest existing stories.
-2. **Context:** read the PRD, its approved design specs (`product/designs/`
-   with `prd:` matching), `architecture/overview.md`, ADRs touching it, and
-   `.spectacular/registry.md`. If the PRD has user-facing surface and no
+1. **Precondition:** every target PRD has `status: approved`; otherwise refuse
+   and point at `/spectacular:prd`. No argument → suggest a target — the
+   plannable PRD that unblocks the most, as a coupled set when its stories
+   could not be ordered without a sibling — and let the owner confirm. Never
+   plan every plannable PRD in one run: breakdown happens just-in-time, per
+   PRD or small set, so each gate stays reviewable and later PRDs get
+   planned against the learnings of implemented ones.
+2. **Context:** read the target PRD(s), their approved design specs
+   (`product/designs/` with `prd:` matching), `architecture/overview.md`,
+   ADRs touching them, and `.spectacular/registry.md`. Also read every
+   *other* approved PRD's front matter and scope, and all existing stories
+   and tasks — ordering rarely stops at a PRD boundary, and the
+   `depends_on` links proposed below are expected to cross it. If the PRD
+   has user-facing surface and no
    design spec, say so and recommend `/spectacular:design` first — the owner
    may explicitly choose to plan without one. For each registered repo
    plausibly involved,
@@ -37,7 +49,10 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    skipping.
 4. **Propose stories:** user-visible slices of the PRD. Every PRD AC maps to at
    least one story; each story lists the ACs it covers, plus `depends_on`
-   between stories where ordering is real. A story's Goal is the Connextra
+   between stories where ordering is real — including stories of other PRDs,
+   already on disk or proposed in this same run. Execution order is never
+   stored: with cross-PRD links written, `/spectacular:next` derives the
+   interleaving. A story's Goal is the Connextra
    line (*As a <user>, I want <capability>, so that <benefit>*); its ACs
    restate the covered PRD ACs as Given/When/Then test scripts a human can
    execute step by step. Sanity-check each story against INVEST — independent,
@@ -90,17 +105,24 @@ selects **re-plan**; a `prd-NNN` argument or none selects **breakdown**.
    - the owner states phased delivery of this PRD;
    - one goal pulls stories from more than one PRD;
    - more than ~12 stories for one PRD.
+
+   A multi-PRD breakdown run is not the second trigger: that trigger is one
+   goal spanning PRDs; a set run is several goals planned together, each
+   story still naming exactly one `prd:`.
 8. **Blocking consistency check** — repair your own proposal and re-check until
    all four pass; only then gate:
    - every PRD AC maps to ≥ 1 story;
    - every story has ≥ 1 task;
    - every task's `repo:` exists in the registry;
-   - the combined story+task dependency graph is acyclic;
+   - the combined story+task dependency graph — proposed items plus
+     everything already on disk — is acyclic;
    - every story covering designed UI references an approved design spec,
      when the PRD has one (skipped only if the owner explicitly planned
      without a design spec in step 2).
 9. **Gate.** Present the breakdown: stories with AC coverage, tasks with repo
-   routing, any repos to create. Ask explicitly; only an explicit
+   routing, any repos to create. For a multi-PRD run, group stories per PRD
+   and show which are immediately ready versus blocked, so the derived
+   interleaving is visible at approval time. Ask explicitly; only an explicit
    approve-like answer approves, and partial approval keeps the rest
    proposals (gate protocol, CLAUDE.md). On approval, create the repos and
    write the files, everything `status: todo`:

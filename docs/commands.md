@@ -17,11 +17,11 @@ Propose the PRD map on first run, or develop one PRD from stub to approved — b
 
 Record the product's UX design as a truth artifact — flows, screens, states, and design-tool sources mapped to the PRD's requirements — and import ready design code (e.g. a Claude Design project) into the workspace, git-canonical. Gated like every truth artifact; consumed by plan and implement.
 
-## `/spectacular:decide [topic]`
+## `/spectacular:decide [topic | adr-NNN]`
 
-Work a forced architecture or technology decision — drivers, options, trade-off table; the owner picks, the result becomes an ADR recording every rejected option, and the architecture overview is updated.
+Propose the decision map — every decision the brief, PRDs, or plan blockers force, persisted as ADR stubs — or work one decision — drivers, options, trade-off table; the owner picks, the result becomes an ADR recording every rejected option, and the architecture overview is updated.
 
-## `/spectacular:plan [prd-NNN | story-NNN]`
+## `/spectacular:plan [prd-NNN … | story-NNN]`
 
 Break an approved PRD into stories and per-repo tasks — creating missing code repos with contracts — behind a blocking consistency check; or re-plan a story after an acceptance FAIL.
 

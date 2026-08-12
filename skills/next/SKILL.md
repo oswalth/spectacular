@@ -21,18 +21,26 @@ nothing is stored.
    acceptance).
 3. **Validate while reading** (warn at the top of the output; never halt):
    references that resolve to no file; statuses outside their vocabulary
-   (brief/design/ADR: draft·approved; PRD: stub·draft·approved; story/task:
+   (brief/design: draft·approved; PRD/ADR: stub·draft·approved; story/task:
    todo·in-progress·done; change: draft·approved·applied). This is the only
    workspace validation in v0.1.
 4. **Derive** (never trust a stored summary):
    - drafts awaiting approval (brief, PRDs, designs, ADRs, changes);
+   - **plannable** = PRD `approved` with no stories naming it in `prd:` — an
+     approved spec whose breakdown nobody has run (`/spectacular:plan`);
+   - **pending decisions** = ADRs still `stub` — the decision map waiting to
+     be worked (`/spectacular:decide`);
    - **ready** = `todo` with every `depends_on` done · **blocked** = the rest,
      with the blocking reference named;
    - **awaiting acceptance** = story `in-progress` with all its tasks `done`
      and no PASS sign-off (tasks found via their `story:` links);
    - open changes (`draft`, or `approved` but not yet `applied`).
 5. **Output:**
-   - Roadmap as text: last thing done → in flight → ready next.
+   - Roadmap as text: last thing done → in flight → ready next. Ready next
+     lists every available action type — approvals, acceptances, ready tasks,
+     plannable PRDs, pending decisions, developable stubs — never the PRD
+     pipeline alone: the owner sees the whole option space even though the
+     recommendation below stays single.
    - Mermaid graph: one node per PRD labeled with its reference, slug, and
      story rollup (`2/5 stories done`); edges from `depends_on`; mark each
      node's status.
@@ -46,8 +54,14 @@ nothing is stored.
 
 Exactly **one** recommendation, with its justification, naming only commands
 that exist (init, prd, design, decide, plan, implement, next, retro,
-upgrade). Rank candidate
+upgrade). Candidates come from every class step 4 derives — approve a draft,
+accept a story, apply a change, implement a ready task, plan a plannable
+PRD, work a pending decision, develop a ready stub — never from the PRD
+pipeline alone. Rank candidate
 actions by: unblocks the most downstream work → highest reversal cost (settle
 hard-to-undo choices while they are still cheap) → smallest size. Lingering
 drafts and stories awaiting acceptance outrank new work: an approval that takes
-minutes is usually the cheapest unblock available.
+minutes is usually the cheapest unblock available. A pending decision that
+gates planning (say, an empty registry — no task can become ready) outranks
+developing another stub: more approved spec is worth little while everything
+downstream waits on one choice.
