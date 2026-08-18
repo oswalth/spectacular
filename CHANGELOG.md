@@ -7,6 +7,35 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.11.0 — 2026-08-18
+
+- implement reads the capsule by section (D-47, retro-driven): the
+  workspace CLAUDE.md joins the capsule; the PRD contributes only the ACs
+  the story maps from and the FRs they cite; ADRs contribute Decision
+  Outcome, Consequences and Confirmation — Considered Options and Pros and
+  Cons are never read; readiness checks read front matter only. Whole ADRs
+  and PRDs had been a third of every run's pre-code context.
+- implement plans first, then loops (D-47): after the capsule and before
+  any further read, lookup or command, a numbered plan (step + check,
+  Verification restated as runnable commands) is printed and progress is
+  narrated against it; reconnaissance is just-in-time and per step — code
+  is read at the step that touches it, never the whole tree; one batched
+  lookup per question; a failing gate is the discovery mechanism; rehearse
+  outside the repo only when an in-repo failure is expensive to undo; CLIs
+  run non-interactively under a timeout. Defined once as **Ways of working
+  §5 Just-in-time reconnaissance** in the workspace CLAUDE.md template and
+  referenced by implement step 5.
+- Repo-level Learnings get a home (D-47): the contract template gains
+  `## Toolchain notes` (version pins and blocks, CLI flags and traps, lint
+  quirks, layout facts); the landing gate presents Learnings triaged —
+  repo-level as a contract diff on the task branch, story-level for the
+  task file at close-out; the task template's Learnings comment says so;
+  upgrade's drift scan reports a contract missing the section (an empty
+  heading is fine).
+- docs/models.md gains a Retro evidence section: on a frontier model at
+  very high effort, implement deliberated 24–32k tokens before a visible
+  plan; the sonnet recommendation for implement stands.
+
 ## 0.10.0 — 2026-08-18
 
 - Standalone tasks (D-45, retro-driven): maintenance work with no

@@ -8,6 +8,19 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.11.0
+
+- `CLAUDE.md`: add **§5 Just-in-time reconnaissance** at the end of
+  "Ways of working (Karpathy guidelines)" — copy from
+  `templates/workspace-claude.md`. A workspace that already carries a
+  locally written §5 realigns its text to the template.
+- Code-repo contracts: add the `## Toolchain notes` section (the heading
+  and the template's comment; content is written by implement at each
+  task's landing gate — an existing repo may seed it from repo-level facts
+  sitting in done tasks' Learnings). The drift scan reports the missing
+  section; the fix lands per repo as its own `chore(contract): …` commit.
+- No task or story migrations: existing Learnings stay where they are.
+
 ## 0.10.0
 
 - `CLAUDE.md`: add the **Work outside a PRD breakdown** section (after
