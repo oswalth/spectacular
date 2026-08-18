@@ -791,6 +791,58 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   precedes routing (repo-reader makes that cheap), routing unit is the repo
   — no people model; assignee/severity fields deferred (see Deferred).
   Untriaged bugs outrank new work in next. D-22 amended accordingly.
+- D-47 (2026-08-18, retro round 6, pilot implement runs) Plan-first,
+  section-scoped capsule, just-in-time reconnaissance, a home for
+  repo-level Learnings. Observation (Vladimir, in-chat, plus briefs P1–P3
+  from the pilot workspace's own retro): implement "does a lot of stuff for
+  5–10 minutes without writing a single line of code", ~150k tokens, in
+  both the api and the web repo — reading pyproject/CI/Dockerfiles,
+  checking docker, running existing tests, inspecting packages. Evidence
+  taken from the three implement transcripts (tool-call timelines, context
+  size at first write, thinking-block sizes), not memory: two scaffold
+  tasks and one feature task, all on a frontier model at very high effort,
+  spent 10–20 minutes and 126–172k context before the first in-repo write.
+  Root causes: (1) step 3 mandated whole-document reads — MADR ADRs (30–50
+  KB per session) and a whole PRD were a third of the pre-code context in
+  every run; (2) the skill said nothing about reading the code repo, so
+  one run cat'ed the entire tree (41k, the largest agent-chosen cost);
+  (3) no plan placement — Karpathy #4 sat in the capsule and still all
+  three planned inside 24–32k-token thinking blocks (5–7 minutes each,
+  invisible to the owner); the web run rehearsed an interactive CLI in a
+  scratch directory and hung 5 minutes on its prompt; (4) repo-level facts
+  (version pins, CLI traps, lint quirks) had no home but story-scoped task
+  Learnings, so the api repo pushed them into its contract by hand as a
+  separate commit and the web workspace invented a local "Toolchain
+  notes" section. Challenged (D-31): "tasks were not too hard" — scaffold
+  tasks materialize a whole contract by construction (D-38c), so the
+  existence of toolchain reconnaissance was proportionate and only its
+  manner was wasteful; the baseline test run and docker check cost 4 s and
+  stay; package-internals research was legitimate work the previous
+  task's Learnings had deferred there — mis-ordered, not wrong; P1's
+  overview scoping refused (short by design, ~4k tokens); P2's "plan
+  before the first read" inverted to capsule first, then plan; the
+  invisible deliberation is the owner's model/effort lever, not the
+  skill's. Resolution: (a) implement step 3 reads by section — workspace
+  CLAUDE.md added to the capsule, PRD → only the story's mapped ACs and
+  cited FRs, ADRs → Decision Outcome/Consequences/Confirmation only
+  (options analysis never), DoR from front matter; (b) workspace CLAUDE.md
+  template gains Ways of working §5 "Just-in-time reconnaissance" (plan
+  after the capsule and before any further read, code read at the step
+  that touches it — never the whole tree, one batched lookup per question,
+  a failing gate is the discovery mechanism, rehearse outside the repo
+  only when in-repo failure is expensive to undo, CLIs non-interactive
+  under a timeout, knowledge bought → contract); implement step 5 places
+  the printed plan and references §5 (D-41 define-once pattern);
+  (c) contract template gains `## Toolchain notes`; the landing gate
+  presents Learnings triaged — repo-level as a contract diff on the task
+  branch, story-level for the task file — so one greenlight covers both;
+  task template Learnings comment; upgrade's drift scan reports a
+  contract missing the section (empty heading fine); (d) models.md gains
+  a Retro evidence
+  section recording the deliberation cost — the sonnet recommendation for
+  implement stands. Not done: splitting scaffold tasks (manner, not size,
+  was the defect) and any numeric time-box (the plan is the time-box).
+  → v0.11.0.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -871,8 +923,11 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   approved → one foundational ADR; seven friction observations came back and
   were processed in this repo (retro round, D-26…D-30, v0.2.0); a second
   retro round after the pilot's stack ADR produced the repo-bootstrap
-  conventions machinery (D-38, v0.7.0). Remaining:
-  plan → implement → ≥1 story through acceptance PASS, on the updated plugin.
+  conventions machinery (D-38, v0.7.0); plan has run (six stories, 21
+  tasks across three repos) and implement has landed two scaffold tasks
+  and reached the gate on a third — retro round 6 (D-47, v0.11.0) came out
+  of those runs. Remaining: ≥1 story through acceptance PASS, on the
+  updated plugin.
 
 ## Session log
 
@@ -1229,3 +1284,21 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   install), reported, no remote invented; local plugin updated via
   `claude plugin marketplace update spectacular` + `claude plugin update
   spectacular@spectacular` → 0.10.0 in the cache (restart to apply).
+- S-6 (cont. 10) 2026-08-18: Retro round 6 in this repo, review mode —
+  Vladimir's in-chat observation (implement spends 5–10 minutes and ~150k
+  tokens before the first line of code, in the api and the web repo) plus
+  the workspace retro's briefs P1–P3 (its W1/W2 already applied locally
+  there). Evidence taken from the three implement transcripts — tool-call
+  timelines, context size at first write, thinking-block sizes — rather
+  than memory; verdicts and the four-part fix recorded as D-47: P1
+  confirmed for ADRs/PRD and challenged for the overview; P2 confirmed
+  with plan-after-capsule and a no-whole-tree clause; P3 confirmed with
+  gate-time triage; "tasks not hard" challenged (scaffold = whole
+  contract); baseline tests / docker check not a defect; invisible
+  deliberation at xhigh effort named as an owner-held lever (models.md).
+  Presented with an explicit gate naming items A–E; "approve all" →
+  applied across implement (steps 2, 3, 5, 6, 7, 8), workspace-claude /
+  contract / task templates, models.md, spec.md; release files staged for
+  chore(release): 0.11.0 (minor — template changes are workspace-facing;
+  upgrade note: CLAUDE.md §5, per-repo Toolchain notes heading via the
+  drift scan). Commits proposed per protocol, uncommitted.

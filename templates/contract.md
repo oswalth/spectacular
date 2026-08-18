@@ -29,3 +29,11 @@ versioning for ML). Every implement capsule carries this section. -->
 - Tooling: … <!-- package manager, lint/format, type checking -->
 - Build & packaging: … <!-- container strategy, artifact format -->
 - Quality gates: … <!-- what must pass before a task lands -->
+
+## Toolchain notes
+
+<!-- Repo-level facts every task would otherwise rediscover: version pins
+and blocks, CLI flags and traps, lint quirks, layout facts. Written by
+implement at the landing gate — repo-level Learnings land here, story-level
+ones stay on the task; terse, pruned when obsolete. Decided conventions
+belong under Conventions, never here. -->

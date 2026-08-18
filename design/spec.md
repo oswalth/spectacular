@@ -97,7 +97,10 @@ init runs `git init` and makes the initial commit.
   (common core in the template: architecture style, testing, tooling, build &
   packaging, quality gates; stack-specific dimensions added per repo) — filled by
   plan's repo-bootstrap interview at creation, amended in place later (gated,
-  never against an approved ADR) — D-38.
+  never against an approved ADR) — D-38. Plus **Toolchain notes** (D-47): repo-level
+  facts every task would otherwise rediscover — version pins and blocks, CLI flags and
+  traps, lint quirks, layout facts — written by implement at the landing gate from the
+  repo-level share of a task's Learnings; terse, pruned; never decided conventions.
 
 ## References and numbering (D-15)
 
@@ -130,7 +133,8 @@ Story body: goal, acceptance criteria (mapped from the PRD), **Acceptance log**
 (`date — who — PASS/FAIL: note`). The task list is NOT duplicated in the story body —
 it is derived from task files' `story:` links (P-2).
 Task body: description, verification (how "done" is checked — Karpathy #4), **Learnings**
-(appended by implement on completion; feeds later capsules — A2).
+(appended by implement on completion; feeds later capsules — A2; story-level only —
+repo-level facts go to the contract's Toolchain notes, D-47).
 
 Adopted document standards (S-5 research round, ratified 2026-08-03 — D-25):
 ADRs follow MADR 4.0 section structure (spectacular front matter and status
@@ -226,11 +230,15 @@ and the task's Verification. All artifact shapes live in templates/ only.
 - **A4 blocking check** lives in plan (one place in v0.1): every PRD AC maps to ≥1
   story; every story has ≥1 task; every `repo:` exists in the registry; dependency
   graph is acyclic. Plan repairs its own output until the check passes, only then gates.
-- **JIT capsule recipe (A2) (stated):** task + its story (goal, relevant ACs) + the
-  PRD slice those ACs come from + any open bug routed to the task or its story +
-  architecture overview + ADRs touching this repo +
-  repo contract + Learnings from prior done tasks of the same story. A standalone
-  task skips the story/PRD/design lines. Compiled at implement time, never stored.
+- **JIT capsule recipe (A2) (stated):** workspace CLAUDE.md + task + its story (goal,
+  relevant ACs) + from the PRD only the ACs those story ACs map from and the FRs they
+  cite + any open bug routed to the task or its story + architecture overview (whole —
+  short by design) + from each ADR touching this repo only Decision Outcome /
+  Consequences / Confirmation (Context and Drivers skimmed on need; options analysis
+  never) + repo contract (incl. Toolchain notes) + Learnings from prior done tasks of
+  the same story. Read by section, not by file — a whole ADR or PRD never enters the
+  capsule (D-47). A standalone task skips the story/PRD/design lines. Compiled at
+  implement time, never stored.
 - **Change flow (D-17):** truth is written directly by init/prd/decide/plan under their
   gates. Only amendments to *approved* artifacts go through `changes/<id>/`
   (proposal.md: why + what deltas). On owner approval the deltas are merged into truth
@@ -250,7 +258,8 @@ init → prd → design → decide → plan → implement → bug → next → r
 
 ### init — opus
 Empty directory only (D-6; non-empty → refuse, name the brownfield deferral).
-Flow: scaffold (CLAUDE.md embedding Karpathy guidelines + commit protocol, README,
+Flow: scaffold (CLAUDE.md embedding Karpathy guidelines + §5 just-in-time reconnaissance
++ commit protocol, README,
 profile with plugin version pin, empty registry) → `git init` + proposed scaffold
 commit (D-26) → BA interview (problem, users, goals, non-goals, constraints;
 propose-then-ask per topic with confirmed mini-summaries — D-28) →
@@ -342,10 +351,17 @@ Next: `/spectacular:implement` in the repo of the highest-ranked ready task.
 Runs in a code repo; finds the workspace via `contract.md`.
 Flow: select task (argument, or: this repo's tasks with status todo, deps done,
 Verification filled; story ready when there is one — standalone tasks have none) →
-compile the JIT capsule → task `in-progress` (story too, if first) → goal-driven loop
-(Karpathy #4: define verification first, loop until it passes) → branch per task →
-landing gate (D-39): diff summary + verification evidence + both proposed commits,
-explicit greenlight before anything lands → squash to one commit (CC subject +
+compile the JIT capsule (by section — D-47) → task `in-progress` (story too, if first)
+→ print the numbered plan before any further read, lookup or command (step + check,
+Verification restated as runnable commands — Karpathy #4) → branch per task →
+goal-driven loop with just-in-time reconnaissance (workspace CLAUDE.md Ways of working
+§5, D-47: code read at the step that touches it, never the whole tree; one batched
+lookup per question; a failing gate is the discovery mechanism; rehearse outside the
+repo only when in-repo failure is expensive to undo; CLIs non-interactive under a
+timeout; one line of narration per step) → landing gate (D-39): diff summary +
+Learnings triaged (repo-level → contract Toolchain notes on the branch; story-level →
+task file) + verification evidence + both proposed commits, explicit greenlight before
+anything lands → squash to one commit (CC subject +
 `Task: task-NNN` footer — D-37) → mainline per `merge_flow`, history linear →
 task `done` + append Learnings → close any open bug whose every routed_to target is
 now done (`fixed via task-NNN`; a story-routed bug waits for the re-acceptance PASS)

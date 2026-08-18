@@ -21,3 +21,13 @@ Review this table at every retro; the model landscape moves.
 | `/spectacular:retro` | haiku (append) | sonnet for review mode |
 | `/spectacular:upgrade` | sonnet | — (mechanical scan plus gated edits) |
 | repo-reader (subagent) | sonnet | — |
+
+## Retro evidence
+
+Kept short, newest first — the observations that shaped a row.
+
+- 2026-08 — `implement` on a frontier model at very high effort: pre-code
+  deliberation ran as 24–32k-token thinking blocks (5–7 minutes each) before
+  any visible plan. Plan-first (implement step 5) makes it legible; the token
+  cost is the effort setting, not the skill. The sonnet recommendation for
+  `implement` stands.

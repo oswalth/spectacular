@@ -197,3 +197,26 @@ Define success criteria. Loop until verified.
 | "Refactor X" | "Ensure tests pass before and after" |
 
 For multi-step tasks, state a brief plan: each step paired with its verification.
+
+### 5. Just-in-time reconnaissance
+
+Plan first, write early, let the gates discover. Applies to every code repo.
+
+- Once a task's context is compiled and before any further read, state the
+  numbered plan (§4) and narrate progress against it. Reconnaissance no
+  plan step needs is not done.
+- No upfront survey. Read code at the step that changes or calls it — that
+  file and its tests, never the whole tree. Look a tool, package or library
+  up when the step that uses it starts: one batched lookup per question
+  (`--help`, `--version`, one registry query).
+- A failing gate — type check, lint, tests, build — is the discovery
+  mechanism: run the repo's commands and let them say what is wrong;
+  investigate that failure, then continue.
+- Rehearse outside the repo only when an in-repo failure would be expensive
+  to undo: remote or state-changing operations, irreversible writes, long
+  jobs. A task branch plus git makes everything else free to retry in place.
+- Run CLIs non-interactively (yes/defaults flags, stdin from `/dev/null`)
+  under a timeout.
+- Knowledge bought this way is repo-level: it goes to the repo contract's
+  Toolchain notes at the landing gate, so the next task never pays for it
+  again.

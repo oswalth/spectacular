@@ -34,7 +34,8 @@ Runs **in a workspace** (profile.md present); otherwise refuse.
    - `.spectacular/` files present and well-formed;
    - each repo in `.spectacular/registry.md`: its `.spectacular/contract.md`
      present and structured per `templates/contract.md` — front-matter fields
-     complete, Conventions as the dimension list. Code repos carry no version
+     complete, Conventions as the dimension list, a Toolchain notes section
+     (an empty heading is fine — implement fills it). Code repos carry no version
      pin of their own (D-40): the workspace pin covers the constellation, and
      this pass is how their contract drift gets caught.
 4. **Propose the migration set**, split by ownership:
