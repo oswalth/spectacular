@@ -8,6 +8,20 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.10.0
+
+- `CLAUDE.md`: add the **Work outside a PRD breakdown** section (after
+  the references paragraph), the `delivery/bugs/` row and the updated
+  `delivery/tasks/` row in **Layout**, `bug-005` in the references line,
+  the **Bug ready** / **Bug done** definitions under Definitions of Ready
+  and Done, "(a standalone task has none)" in **Task ready**, and the
+  bug/standalone items in the commit-protocol grain list — copy each from
+  `templates/workspace-claude.md`.
+- No artifact migrations: existing tasks all carry `story:` and stay
+  valid; `delivery/bugs/` is created lazily by the first
+  `/spectacular:bug`. Standalone tasks and bug reports appear only when
+  you create them.
+
 ## 0.9.0
 
 - `CLAUDE.md`: add the **Gate protocol** section and the **Self-sufficient

@@ -7,6 +7,44 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.10.0 — 2026-08-18
+
+- Standalone tasks (D-45, retro-driven): maintenance work with no
+  user-visible change — an IaC team-member add, a dependency bump, a
+  rotation, a data fix — is a task **without `story:`**; `repo:` +
+  Verification make it ready. Written only by plan's new standalone mode
+  (`/spectacular:plan "<task>"`), behind one challenge (new or changed
+  behavior belongs to a PRD, then a story) and ≤3 clarify questions;
+  implement, next and the DoR treat the missing story as "none", no
+  acceptance step. PRD → story → task stays the mandatory spine for
+  capability delivery.
+- Bug flow (D-46, retro-driven): `/spectacular:bug "<what happened>"` files
+  a bug report as an artifact — `delivery/bugs/NNN-<slug>.md`, `bug-NNN`,
+  `status: open | closed`, `routed_to: []` — mapping the report onto a
+  **bug Definition of Ready** (summary, where, steps, actual/expected,
+  environment, reproducibility, evidence, regression, related) and
+  eliciting the gaps in at most two propose-then-ask rounds; filing is
+  never blocked. `/spectacular:plan bug-NNN` triages behind a narrowing
+  funnel (front matter + slugs → capped candidate story bodies →
+  repo-reader on candidate repos only → overview + touching ADRs; widen only
+  on ask), converges or offers 2–3 candidate causes, and routes under one
+  gate: violated AC → late acceptance FAIL on that story (returned to
+  in-progress, fix tasks, re-tested to a fresh PASS); real work without an
+  AC → standalone task(s); not a defect → closed with a Resolution (spec gap
+  opens a change proposal). A routed bug stays open until fixed: implement
+  closes it when the last routed task lands, the re-acceptance PASS closes
+  a story-routed one, next surfaces untriaged / routed / fixed-but-open
+  bugs and ranks untriaged ones with lingering drafts. Bugs are never
+  implemented directly; no assignee/severity fields (deferred).
+- plan's re-plan mode is now **fix** mode: `plan story-NNN "<defect>"`
+  handles a defect found after acceptance without a prior FAIL entry.
+  Mode is chosen by argument content: `prd-NNN…`/bare → breakdown,
+  `story-NNN` → fix, `bug-NNN` → triage, free text → standalone task.
+- Workspace CLAUDE.md template gains a "Work outside a PRD breakdown"
+  section, the `delivery/bugs/` layout row, bug DoR/DoD, and the bug/
+  standalone commit grain; the task template documents the optional
+  `story:`; docs regenerated (ten commands, `bug` after `implement`).
+
 ## 0.9.0 — 2026-08-12
 
 - Gate protocol + discussion-first (D-41, retro-driven): defined once in the
