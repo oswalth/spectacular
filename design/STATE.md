@@ -1222,4 +1222,10 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   breakdown", bug DoR/DoD, grain); generate-docs lifecycle + regenerated
   commands.md; README, models.md; spec.md throughout ("ten skills").
   Release files staged for chore(release): 0.10.0. Commits proposed per
-  protocol.
+  protocol. Vladimir: "approved. commit, push and update plugin locally"
+  → feat commit d016c35, chore(release): 0.10.0 commit 2971149, tag
+  v0.10.0; push impossible — the repo has no remote configured (and no
+  GitHub repo exists yet; README still describes the local-checkout
+  install), reported, no remote invented; local plugin updated via
+  `claude plugin marketplace update spectacular` + `claude plugin update
+  spectacular@spectacular` → 0.10.0 in the cache (restart to apply).
