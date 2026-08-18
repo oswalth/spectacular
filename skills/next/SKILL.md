@@ -1,6 +1,6 @@
 ---
 name: next
-description: Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation.
+description: Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open bugs, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation.
 ---
 
 # /spectacular:next — where things stand, what to do
@@ -16,14 +16,15 @@ nothing is stored.
    run this in a workspace or a registered code repo; for a brand-new product,
    `/spectacular:init` in an empty directory.
 2. **Read front matter only** — brief, PRDs, design specs, ADRs, stories,
-   tasks, change proposals, plus the registry. Open an artifact body only
-   where derivation needs it (the AC checklist of a story awaiting
+   tasks, bugs, change proposals, plus the registry. Open an artifact body
+   only where derivation needs it (the AC checklist of a story awaiting
    acceptance).
 3. **Validate while reading** (warn at the top of the output; never halt):
-   references that resolve to no file; statuses outside their vocabulary
-   (brief/design: draft·approved; PRD/ADR: stub·draft·approved; story/task:
-   todo·in-progress·done; change: draft·approved·applied). This is the only
-   workspace validation in v0.1.
+   references that resolve to no file (including a bug's `routed_to`);
+   statuses outside their vocabulary (brief/design: draft·approved; PRD/ADR:
+   stub·draft·approved; story/task: todo·in-progress·done; bug: open·closed;
+   change: draft·approved·applied). This is the only workspace validation
+   in v0.1.
 4. **Derive** (never trust a stored summary):
    - drafts awaiting approval (brief, PRDs, designs, ADRs, changes);
    - **plannable** = PRD `approved` with no stories naming it in `prd:` — an
@@ -31,37 +32,54 @@ nothing is stored.
    - **pending decisions** = ADRs still `stub` — the decision map waiting to
      be worked (`/spectacular:decide`);
    - **ready** = `todo` with every `depends_on` done · **blocked** = the rest,
-     with the blocking reference named;
+     with the blocking reference named — standalone tasks (no `story:`)
+     derive the same way and are labeled as such;
    - **awaiting acceptance** = story `in-progress` with all its tasks `done`
-     and no PASS sign-off (tasks found via their `story:` links);
+     (tasks found via their `story:` links; a PASS sign-off would have
+     flipped it to `done`) — a story reopened by a FAIL after acceptance
+     re-enters this state exactly the same way;
+   - **untriaged bugs** = bug `open` with empty `routed_to` (needs
+     `/spectacular:plan bug-NNN`) · **routed bugs** = `open` with targets,
+     their fix state read off the targets (task todo/in-progress/done;
+     story awaiting acceptance) · **fixed-but-open** = every target `done`
+     yet the bug still `open` — print the closing edit;
    - open changes (`draft`, or `approved` but not yet `applied`).
 5. **Output:**
    - Roadmap as text: last thing done → in flight → ready next. Ready next
-     lists every available action type — approvals, acceptances, ready tasks,
-     plannable PRDs, pending decisions, developable stubs — never the PRD
-     pipeline alone: the owner sees the whole option space even though the
-     recommendation below stays single.
+     lists every available action type — approvals, acceptances, untriaged
+     bugs, ready tasks (standalone ones marked), plannable PRDs, pending
+     decisions, developable stubs — never the PRD pipeline alone: the owner
+     sees the whole option space even though the recommendation below stays
+     single.
    - Mermaid graph: one node per PRD labeled with its reference, slug, and
      story rollup (`2/5 stories done`); edges from `depends_on`; mark each
-     node's status.
+     node's status. Bugs and standalone tasks are not in the graph — they
+     are listed below it.
+   - Open bugs: untriaged ones, and routed ones with their fix state; for
+     fixed-but-open bugs the exact closing edit — append `fixed via
+     <target>` to Resolution and set `status: closed`.
    - Stories awaiting acceptance: the AC checklist, and the exact edit that
      records the verdict — on PASS append `<date> — <name> — PASS: <note>` to
-     the story's Acceptance log and set `status: done`; on FAIL append the FAIL
-     line and run `/spectacular:plan story-NNN`.
+     the story's Acceptance log and set `status: done` (closing any bug
+     routed to the story the same way); on FAIL append the FAIL line and run
+     `/spectacular:plan story-NNN`.
    - Warnings from step 3.
 
 ## Next step
 
 Exactly **one** recommendation, with its justification, naming only commands
-that exist (init, prd, design, decide, plan, implement, next, retro,
+that exist (init, prd, design, decide, plan, implement, bug, next, retro,
 upgrade). Candidates come from every class step 4 derives — approve a draft,
-accept a story, apply a change, implement a ready task, plan a plannable
-PRD, work a pending decision, develop a ready stub — never from the PRD
-pipeline alone. Rank candidate
+accept a story, close a fixed bug, triage an untriaged bug, apply a change,
+implement a ready task, plan a plannable PRD, work a pending decision,
+develop a ready stub — never from the PRD pipeline alone. Rank candidate
 actions by: unblocks the most downstream work → highest reversal cost (settle
 hard-to-undo choices while they are still cheap) → smallest size. Lingering
-drafts and stories awaiting acceptance outrank new work: an approval that takes
-minutes is usually the cheapest unblock available. A pending decision that
+drafts, stories awaiting acceptance, and untriaged bugs outrank new work: an
+approval that takes minutes is usually the cheapest unblock available, and a
+triage is cheap while its outcome — a defect in delivered value — is not.
+A routed bug's fix task is a ready task like any other; the owner may pull
+it forward. A pending decision that
 gates planning (say, an empty registry — no task can become ready) outranks
 developing another stub: more approved spec is worth little while everything
 downstream waits on one choice.

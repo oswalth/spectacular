@@ -209,6 +209,10 @@ commands at all.
 - GitHub MCP (D-33): no current need — sibling layout reads across repos on
   disk; merge_flow: pr rides the gh CLI. Trigger: first remote-only repo, a
   collaborator without local siblings, or CI-status needs.
+- People model for bugs and tasks (D-46): no `assignee:`/`severity:` fields;
+  routing unit is the repo, severity is a triage judgment recorded in the
+  Triage notes. Trigger: a real team needs per-person routing or a
+  severity-driven ranking that the owner cannot make by reading next.
 - Dedicated design-system repo (D-35, frozen family U): imported design code
   stays workspace-resident reference material. Trigger: it becomes a
   build-time dependency consumed by multiple repos (a real component
@@ -344,6 +348,8 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   delivery of one PRD; one goal spanning >1 PRD; >~12 stories per PRD) — never a
   per-project judgment call. Epic status is always derived from member stories.
   Machinery deferred (see Deferred).
+  Amended 2026-08-18 (D-45): the spine is mandatory for *capability delivery*;
+  maintenance work with no story is a standalone task (no `story:`).
 - D-20 (2026-08-01) The PRD map is persisted as stub PRDs: map approval writes one PRD
   file per capability (status: stub, one-line scope, depends_on filled). The roadmap
   graph has exactly one source — PRD front matter.
@@ -360,6 +366,9 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   story's ACs; sign-off flips done and logs PASS in the story's Acceptance log. On
   FAIL: log it, then plan's re-plan mode (gated) diagnoses via repo-reader and
   proposes reopening tasks and/or new fix tasks. Loop until PASS.
+  Amended 2026-08-18 (D-46): a defect found after acceptance is a *late FAIL* of
+  the same loop — the story returns to `in-progress` and is re-tested to a fresh
+  PASS; re-plan mode is renamed fix mode and also entered from a bug report.
 - D-24 (2026-08-03) S-4.5 pre-build notes ratified with changes. Approved: marketplace
   manifest (note 1); acceptance sign-off as a manual story-file edit, no dedicated
   skill (note 3); docs generation from name/description/argument-hint plus a new
@@ -732,6 +741,56 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   keeping number and file. next derives pending decisions from the stubs
   (D-42); the two compose with D-43 into decide → plan → implement
   visibility at every /next run.
+- D-45 (2026-08-18, retro round 5, in-chat question) Standalone tasks.
+  Observation: "how do I create singular tasks?" — a DevOps engineer adding a
+  team member through IaC has no story to hang a task on. Root cause: D-19
+  made the spine mandatory for every task and plan wrote tasks only from a
+  PRD breakdown or a FAIL, so maintenance/operations work was structurally
+  impossible to record — worse than ceremony, since work then happens that no
+  artifact reflects (contra P-2). Resolution: a task without `story:` is a
+  **standalone task** — `repo:` + Verification make it ready; written only by
+  plan's new standalone mode (free-text argument, chosen by content like
+  retro's modes) behind one challenge (new/changed user-visible behavior
+  belongs to a PRD → story) and ≤3 clarify questions; implement/next/DoR gain
+  "(if any)" clauses; no acceptance step. The standing-"ops PRD/story"
+  alternative was rejected (a never-accepted story contradicts D-19/D-22).
+  D-19 amended accordingly. Need was hypothetical at decision time — P-4
+  consciously overridden on Vladimir's explicit call: "not possible at all"
+  is a wall for any real team.
+- D-46 (2026-08-18, retro round 5, in-chat question) Bug flow — report →
+  triage → fix. Observation: "how do I create a bug task for a story that is
+  already done?" Vladimir's framing "bug task" was challenged: a defect in an
+  accepted story is a **late acceptance FAIL** — the D-22 loop already covers
+  it (`plan story-NNN "<defect>"` writes the FAIL entry, returns the story to
+  in-progress, adds fix tasks; re-tested to a fresh PASS), and a standalone
+  bug task would lose the AC link and skip re-acceptance. His counter-gap
+  stood: the reporter usually does not know the story and must not have to
+  investigate first. Resolution, three parts. (1) Bug reports are artifacts —
+  `delivery/bugs/NNN-<slug>.md`, `bug-NNN`, `status: open | closed`,
+  `routed_to: []` — because report and triage are different acts by
+  different people in different sessions (A6, D-16 rationale). (2) A tenth
+  skill, `bug`: cheap intake, zero investigation, but NOT zero questions —
+  Vladimir overturned that proposal (the reporter's context is richest at
+  report time; retro's one-sentence rule does not transfer): it maps the
+  argument onto a **bug DoR** (workspace CLAUDE.md: summary, where, steps,
+  actual/expected, environment, reproducibility, evidence, regression,
+  related), elicits gaps in ≤2 propose-then-ask rounds, files even with
+  gaps. (3) Triage lives in **plan** (fix mode, `bug-NNN`) — plan stays the
+  single writer of tasks and its FAIL diagnosis is the engine; triage adds
+  "find the story first" behind a **narrowing funnel** on Vladimir's ask
+  (front matter + slugs → capped candidate story bodies → repo-reader on
+  candidate repos only → overview + touching ADRs; widen only on ask; state
+  what was not examined), ≤5 rounds, converge or offer 2–3 candidates, then
+  route under one gate: violated AC → late-FAIL loop; real work without an
+  AC → standalone task(s); not a defect → closed at triage with a Resolution
+  (spec gap opens a changes/ proposal). One link direction (bug.routed_to →
+  fixing work); a routed bug stays open until fixed — implement closes it
+  when the last routed task lands, the re-acceptance PASS closes a
+  story-routed one, next nudges fixed-but-open and ranks untriaged bugs
+  with lingering drafts. Bugs are never implemented directly. Investigation
+  precedes routing (repo-reader makes that cheap), routing unit is the repo
+  — no people model; assignee/severity fields deferred (see Deferred).
+  Untriaged bugs outrank new work in next. D-22 amended accordingly.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -766,6 +825,26 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   squash + force-push (one repo, but destroys the iteration history and
   force-pushed-away commits can linger fetchable on GitHub for a while). Trigger:
   tracer bullet complete and release near.
+- OQ-15 resolved 2026-08-18 → D-45 (standalone tasks) + D-46 (bug flow); the
+  original framing kept below for the record.
+- OQ-15 (opened 2026-08-18, retro question in the plugin repo) Singular work
+  outside a PRD breakdown: (a) a bug in an already-accepted (done) story;
+  (b) operations/maintenance work with no product story at all (e.g. a
+  DevOps engineer adding a team member through IaC). Root cause against the
+  skills: D-19 makes PRD → story → task mandatory and only plan writes tasks
+  (breakdown or acceptance-FAIL re-plan), so (b) is impossible today, and
+  (a) is only reachable via a manual late-FAIL log entry + `plan story-NNN`
+  — undocumented, and no rule says how a `done` story returns to
+  `in-progress`. Proposal under gate: (a) is a *late acceptance FAIL*, not
+  a new task — re-plan mode accepts a defect description, logs the FAIL,
+  flips the story back to in-progress, adds fix tasks; the D-22 loop then
+  runs to a fresh PASS. (b) **standalone tasks** — a task file with no
+  `story:` (repo + Verification required), authored by a third plan mode
+  from a free-text argument, challenged when it smells like new
+  user-visible behavior; implement/next/DoR gain "(if any)" clauses;
+  D-19 amended to "mandatory spine for capability delivery". P-1/P-4
+  tension noted (delivery back half not yet run for real): build now iff a
+  real case exists, else defer with that trigger — Vladimir's call.
 
 ## Session plan
 
@@ -1108,3 +1187,39 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   rest stayed proposals until his explicit "all changes are approved" —
   then feat commit 2, chore(release): 0.9.0, tag v0.9.0, push and local
   plugin update, all on his ask.
+- S-6 (cont. 9) 2026-08-18: Retro question in-chat: how to create singular
+  tasks — a bug fix on a done story; an ops/IaC change with no story.
+  Root-caused against plan/implement/next/templates (see OQ-15): the
+  bug case is a late acceptance FAIL that D-22 already covers but no
+  skill documents past first acceptance; the ops case is structurally
+  impossible under D-19. Proposal (late-FAIL re-plan + standalone tasks)
+  presented with an explicit gate; nothing applied, no commit. Awaiting
+  Vladimir: real case or hypothetical (P-4), and which parts to build.
+  His answer: hypothetical; both approved anyway (P-4 consciously
+  overridden — "not possible at all" is a wall for any real team); on A he
+  raised a gap: the reporter usually does NOT know which story a bug
+  belongs to — wants intake of what happened → agent-driven investigation
+  (artifacts + code repos, clarifying questions until confident or a few
+  options) → the ticket planned by the agent; cites the usual QA→assign→
+  investigate→fix/hand-over flow. Bug-flow design proposed (bug report
+  artifact + cheap capture skill, triage as a plan mode); awaiting his
+  explicit approval before applying A+B together. His round 2: (1)
+  capture must NOT be zero-question — elicit best-practice bug evidence
+  against a bug DoR, bounded, then structure and file (conceded: the
+  reporter's context is richest at report time; my zero-question idea
+  imported retro's rationale wrongly); (2) confirm triage routes, never
+  closes a fixable bug, and devs implement tasks not bugs (correct — only
+  not-a-bug/duplicate/can't-reproduce close at triage); (3) triage must
+  not read every story/task on a big project → narrowing funnel (front
+  matter + slugs → candidates → bodies → repo-reader on candidate repos
+  only → widen only on ask). Refined design pending his approval.
+  "approve design" → D-45/D-46 applied: new skills/bug + templates/bug.md;
+  plan rewritten into breakdown / fix (known story + late FAIL, bug triage
+  funnel + routing) / standalone modes; implement (story-optional DoR and
+  capsule, bug evidence in capsule, bug close-out); next (bug classes,
+  ranking, closing edits, standalone labels); task template (story:
+  optional), workspace CLAUDE.md template (bugs row, "Work outside a PRD
+  breakdown", bug DoR/DoD, grain); generate-docs lifecycle + regenerated
+  commands.md; README, models.md; spec.md throughout ("ten skills").
+  Release files staged for chore(release): 0.10.0. Commits proposed per
+  protocol.

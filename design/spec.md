@@ -15,7 +15,10 @@ design-code import: workspace-resident, git-canonical, provenance-tracked. D-36
 design-language.md, the artifacts that actually keep AI-generated UI consistent.
 The retro-3 round (2026-08-04, D-39/D-40 → v0.8.0) removes the commit-protocol
 exception (implement lands behind a landing gate) and extends upgrade's drift scan
-to registered repos' contracts.
+to registered repos' contracts. The retro-5 round (2026-08-18, D-45/D-46 →
+v0.10.0) adds work outside a PRD breakdown: standalone tasks (no story) for
+maintenance, and the bug flow — bug reports as artifacts, triage as a plan
+mode, post-acceptance defects as late FAILs.
 
 ## Plugin repo layout (this repo)
 
@@ -23,11 +26,12 @@ to registered repos' contracts.
 spectacular/
 ├── .claude-plugin/                # plugin.json + marketplace.json — the repo is its
 │                                  #   own marketplace (D-4, D-24; install flow in README)
-├── skills/<name>/SKILL.md         # the nine skills (D-8: no plain commands;
-│                                  #   design + upgrade added by D-32/D-34)
+├── skills/<name>/SKILL.md         # the ten skills (D-8: no plain commands;
+│                                  #   design + upgrade added by D-32/D-34,
+│                                  #   bug by D-46)
 ├── agents/repo-reader.md          # the one subagent
 ├── templates/                     # workspace artifact templates (brief, prd, adr,
-│                                  #   story, task, change-proposal, contract,
+│                                  #   story, task, bug, change-proposal, contract,
 │                                  #   overview, workspace-claude, naming-families)
 │                                  #   — single source of each artifact's shape;
 │                                  #   added S-5 on Vladimir's feedback;
@@ -70,7 +74,8 @@ Skills are invoked as `/spectacular:<name>`.
 │   └── decisions/NNN-<slug>.md
 ├── delivery/
 │   ├── stories/NNN-<slug>.md
-│   └── tasks/NNN-<slug>.md
+│   ├── tasks/NNN-<slug>.md    # story tasks and standalone tasks (D-45)
+│   └── bugs/NNN-<slug>.md     # bug reports (D-46); NNN-<slug>/ holds evidence files
 └── changes/<change-id>/       # A1 delta folders, amend-only (D-17)
 ```
 
@@ -98,7 +103,7 @@ init runs `git init` and makes the initial commit.
 
 A reference is `<type>-<NNN>`: `prd-001` → `product/prds/001-*.md`, `design-002` →
 `product/designs/002-*.md`, `adr-003` →
-`architecture/decisions/003-*.md`, `story-004`, `task-012` likewise. Numbering is
+`architecture/decisions/003-*.md`, `story-004`, `task-012`, `bug-005` likewise. Numbering is
 per-type, zero-padded to 3. There is no `id:` front-matter field — the filename is the
 identity, so nothing can drift; lint checks that references resolve.
 
@@ -111,12 +116,15 @@ identity, so nothing can drift; lint checks that references resolve.
 | design | `status: draft \| approved` · `prd:` (required) · `sources: [links]` (D-34) |
 | ADR | `status: stub \| draft \| approved` · `prd:` (optional — which PRD forced it); stubs persist the decision map (D-44), mirroring D-20 |
 | story | `status: todo \| in-progress \| done` · `prd:` (required) · `depends_on: [story-…]` · `epic:` (optional; unused until epic machinery exists — D-19) |
-| task | `status: todo \| in-progress \| done` · `story:` · `repo:` (registry name) · `depends_on: [task-…]` |
+| task | `status: todo \| in-progress \| done` · `story:` (absent on a standalone task — D-45) · `repo:` (registry name) · `depends_on: [task-…]` |
+| bug | `status: open \| closed` · `routed_to: [story-… \| task-…]` (the work that fixes it, written by triage — D-46) |
 | change | `status: draft \| approved \| applied` · `targets: [refs]` **(stated)** |
 
 Never stored, always derived (P-2): **blocked** (dep not done), **awaiting acceptance**
-(story in-progress ∧ all its tasks done ∧ not signed off), epic status (from member
-stories), the roadmap itself.
+(story in-progress ∧ all its tasks done — a PASS would have flipped it; a story
+reopened by a late FAIL re-enters the same way), bug **untriaged** (open, no
+routed_to) / **routed** (fix state read off the targets) / **fixed-but-open**
+(all targets done), epic status (from member stories), the roadmap itself.
 
 Story body: goal, acceptance criteria (mapped from the PRD), **Acceptance log**
 (`date — who — PASS/FAIL: note`). The task list is NOT duplicated in the story body —
@@ -186,16 +194,43 @@ and the task's Verification. All artifact shapes live in templates/ only.
   explicit sign-off flips `done` + logs PASS — a manual edit of the story file, no
   dedicated skill in v0.1; `next` prints exactly what to edit (D-24). On FAIL: log
   the failure, then `plan`
-  re-plan mode — diagnose (repo-reader on suspect repos), propose reopening task(s)
+  fix mode — diagnose (repo-reader on suspect repos), propose reopening task(s)
   and/or new fix tasks, gate, apply. Reopened tasks make the story mechanically leave
-  awaiting-acceptance. Loop until PASS.
+  awaiting-acceptance. Loop until PASS. A defect found *after* acceptance is a
+  **late FAIL** of the same loop (D-46): `plan story-NNN "<defect>"` writes the FAIL
+  entry, returns the story to `in-progress`, adds fix tasks under the gate; the story
+  is re-tested to a fresh PASS — never assumed fixed.
+- **Standalone tasks (D-45):** maintenance work with no user-visible change (IaC
+  team-member add, dependency bump, rotation, data fix) is a task **without
+  `story:`** — `repo:` + Verification make it ready; written only by plan's
+  standalone mode from a free-text argument, behind one challenge (new/changed
+  behavior belongs to a PRD, then a story) and ≤3 clarify questions; implemented
+  like any task, no acceptance step (Verification is its done); listed by next,
+  outside the PRD graph. The spine PRD → story → task stays mandatory for
+  capability delivery.
+- **Bug flow (D-46):** report → triage → fix. `bug` files `delivery/bugs/NNN-<slug>.md`
+  (`open`, `routed_to: []`) — maps what the reporter says onto the bug DoR
+  (workspace CLAUDE.md: summary, where, steps, actual/expected, environment,
+  reproducibility, evidence, regression, related), elicits gaps in ≤2
+  propose-then-ask rounds, files even when gaps remain. `plan bug-NNN` triages
+  behind a narrowing funnel (front matter + slugs → candidate stories' bodies,
+  capped → repo-reader on candidate repos only → overview + touching ADRs; widen
+  only on ask; state what was not examined), ≤5 rounds total, converges or offers
+  2–3 candidate causes, then routes under one gate: violated AC → late-FAIL loop
+  on that story; real work without an AC → standalone task(s); not a defect →
+  closed at triage with a Resolution (spec gap opens a changes/ proposal). One link
+  direction — bug.routed_to → fixing work; a routed bug stays open until fixed:
+  implement closes it when the last routed task lands, the re-acceptance PASS
+  closes a story-routed one, next nudges fixed-but-open. Bugs are never
+  implemented directly. No assignee/severity fields (deferred, STATE.md).
 - **A4 blocking check** lives in plan (one place in v0.1): every PRD AC maps to ≥1
   story; every story has ≥1 task; every `repo:` exists in the registry; dependency
   graph is acyclic. Plan repairs its own output until the check passes, only then gates.
 - **JIT capsule recipe (A2) (stated):** task + its story (goal, relevant ACs) + the
-  PRD slice those ACs come from + architecture overview + ADRs touching this repo +
-  repo contract + Learnings from prior done tasks of the same story. Compiled at
-  implement time, never stored.
+  PRD slice those ACs come from + any open bug routed to the task or its story +
+  architecture overview + ADRs touching this repo +
+  repo contract + Learnings from prior done tasks of the same story. A standalone
+  task skips the story/PRD/design lines. Compiled at implement time, never stored.
 - **Change flow (D-17):** truth is written directly by init/prd/decide/plan under their
   gates. Only amendments to *approved* artifacts go through `changes/<id>/`
   (proposal.md: why + what deltas). On owner approval the deltas are merged into truth
@@ -206,12 +241,12 @@ and the task's Verification. All artifact shapes live in templates/ only.
   one fires, plan says so explicitly — that firing IS the build trigger for the epic
   machinery (P-4).
 
-## The nine skills
+## The ten skills
 
 Every skill: runnable in a fresh session, all context from artifacts (A6); ends with at
 least one concrete, justified next action naming only commands that exist (R-5, P-3).
 Model column = documentation-only recommendation (D-14). Lifecycle order:
-init → prd → design → decide → plan → implement → next → retro → upgrade.
+init → prd → design → decide → plan → implement → bug → next → retro → upgrade.
 
 ### init — opus
 Empty directory only (D-6; non-empty → refuse, name the brownfield deferral).
@@ -271,8 +306,12 @@ update `architecture/overview.md` (create from template on first use) **(stated)
 proposed commit (ADR + overview as one unit — D-26).
 Next: back to the blocked prd/plan work.
 
-### plan — sonnet (opus when cross-repo coupling is non-trivial)
-Precondition: every target PRD approved. Two modes; breakdown takes one PRD or a
+### plan — sonnet (opus when cross-repo coupling is non-trivial, or a triage spans repos)
+plan turns intent into ready tasks and is the only skill that writes them (DoR
+enforced in one place). Mode by argument content: `prd-NNN…`/bare → breakdown;
+`story-NNN ["<defect>"]` → fix for a known story; `bug-NNN` → fix via triage;
+free text → standalone task (D-45/D-46; details in "Cross-cutting mechanics").
+Breakdown precondition: every target PRD approved; it takes one PRD or a
 tightly-coupled set of 2–3 (D-43) — never all plannable PRDs at once (JIT batches
 keep gates reviewable).
 Breakdown: read target PRD(s) + overview/ADRs + registry (repo-reader on relevant
@@ -290,43 +329,61 @@ recommended option + justification per question; contested hard-to-reverse dimen
 theme bootstrap folds in for UI repos (D-38) → epic-trigger check
 (above) → A4 blocking check, repair until green → gate → write files (`todo`) →
 proposed commit for the batch (D-26).
-Re-plan (D-22): read the story's acceptance FAIL → diagnose with repo-reader → propose
-reopened tasks (back to `todo`, note pointing at the failure) and/or new fix tasks →
-gate → apply.
+Fix (D-22, D-46): read the story's acceptance FAIL — or write it from the defect
+argument, returning a done story to in-progress — → diagnose with repo-reader →
+propose reopened tasks (back to `todo`, note pointing at the failure) and/or new fix
+tasks (Verification starts from the reproduction) → gate → apply. From a bug: the
+triage funnel and routing above, then the same fix steps.
+Standalone (D-45): challenge once → ≤3 clarify questions (repo, Verification,
+deps) → task without `story:` → gate → write → proposed commit.
 Next: `/spectacular:implement` in the repo of the highest-ranked ready task.
 
 ### implement — sonnet (owner escalates to opus after two failed goal-loops)
 Runs in a code repo; finds the workspace via `contract.md`.
-Flow: select task (argument, or: this repo's tasks with status todo, deps done) →
+Flow: select task (argument, or: this repo's tasks with status todo, deps done,
+Verification filled; story ready when there is one — standalone tasks have none) →
 compile the JIT capsule → task `in-progress` (story too, if first) → goal-driven loop
 (Karpathy #4: define verification first, loop until it passes) → branch per task →
 landing gate (D-39): diff summary + verification evidence + both proposed commits,
 explicit greenlight before anything lands → squash to one commit (CC subject +
 `Task: task-NNN` footer — D-37) → mainline per `merge_flow`, history linear →
-task `done` + append Learnings → workspace commit for the status/Learnings
+task `done` + append Learnings → close any open bug whose every routed_to target is
+now done (`fixed via task-NNN`; a story-routed bug waits for the re-acceptance PASS)
+→ workspace commit for the status/Learnings/bug
 edits under the same greenlight (D-26 as amended by D-39; grain per D-21) → if that
 was the story's last task: announce *awaiting acceptance* and print the AC checklist
-for the human tester.
+for the human tester (a standalone task has no acceptance step).
 A discovered architecture/spec problem becomes `changes/<id>/proposal.md` (draft) —
 never a direct edit to workspace truth (A1). A contract-convention gap is amended in
 `contract.md` directly, gated — rides the task branch or its own `chore(contract):`
 commit; an ADR-contradicting change needs a superseding ADR + re-plan instead (D-38).
 Next: next ready task here, or `/spectacular:next` in the workspace.
 
+### bug — haiku (sonnet if the evidence elicitation misses obvious gaps)
+Workspace or code repo (via contract). Cheap intake, zero investigation (D-46):
+map the argument onto the bug DoR → ≤2 propose-then-ask rounds framed with what
+was inferred, only for the gaps; evidence files under `delivery/bugs/NNN-<slug>/`
+→ write `bug-NNN` (`open`, `routed_to: []`), unknowns marked, filing never blocked
+→ proposed commit `docs(bug-NNN): report — <slug>`.
+Next: `/spectacular:plan bug-NNN` (or `plan story-NNN "<defect>"` when the story is
+known).
+
 ### next — haiku (sonnet if ranking quality disappoints)
 Workspace or code repo (via contract). Reads registry + all front matter only — no
 bodies except where derivation requires ACs **(stated)**.
 Derives: drafts awaiting approval, plannable PRDs (approved, no stories — D-42),
-pending decisions (ADR stubs — D-42/D-44), ready vs blocked stories/tasks, stories
-awaiting acceptance, open changes; warns on unresolvable references or invalid
-statuses (this is
+pending decisions (ADR stubs — D-42/D-44), ready vs blocked stories/tasks
+(standalone tasks labeled), stories awaiting acceptance, untriaged / routed /
+fixed-but-open bugs (D-46), open changes; warns on unresolvable references
+(including `routed_to`) or invalid statuses (this is
 the only workspace validation in v0.1 — no standalone validator, avoiding speculation's
 fixture trap **(stated)**).
 Output: roadmap as text (last done → in flight → ready; ready lists every available
 action type, never the PRD pipeline alone — D-42) AND a Mermaid graph of PRDs
-with story rollup (D-10); candidates from every derived class (approve/accept/apply →
+with story rollup (D-10); candidates from every derived class (approve/accept/close-fixed-bug/triage/apply →
 implement → plan → decide → develop stub), ranked by unblocks → reversal cost → size
-(speck's ranking, D-3); exactly ONE recommendation with justification. In a code repo,
+(speck's ranking, D-3) — untriaged bugs rank with lingering drafts, above new work;
+exactly ONE recommendation with justification. In a code repo,
 filtered to that repo's tasks.
 
 ### retro — haiku (append) / sonnet (review)
@@ -396,7 +453,7 @@ spectacular@<marketplace>`, `/plugin marketplace update <marketplace>`; note the
 private-repo gotcha: background auto-update needs a credential helper — `gh auth
 setup-git` or an ssh-agent-loaded key) + `docs/commands.md` generated from SKILL.md
 front matter (`name`, `description`, `argument-hint`), ordered by lifecycle (init →
-prd → design → decide → plan → implement → next → retro → upgrade) +
+prd → design → decide → plan → implement → bug → next → retro → upgrade) +
 `docs/models.md` — the hand-maintained recommended-model table (single source for
 R-8/D-14; reviewed at every retro) + `docs/upgrades.md` — the hand-maintained
 per-version workspace migration notes consumed by `/spectacular:upgrade` (D-32).

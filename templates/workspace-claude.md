@@ -42,7 +42,8 @@ happens only on explicit ask.
 
 One commit per unit of work: the scaffold; the approved brief; the PRD-map
 stubs; each developed PRD (plus any change proposal it opened); each ADR with
-its overview update; each plan batch; each retro review's applied fixes.
+its overview update; each plan batch; each bug report and each triage; each
+standalone task; each retro review's applied fixes.
 `/spectacular:implement` is no exception (D-39): once verification passes it
 presents the diff, the verification evidence, and both proposed commits —
 the code-repo commit (one task = exactly one squashed mainline commit) and
@@ -81,15 +82,34 @@ AI-attribution trailers — no `Co-Authored-By: Claude …`, no
 | `architecture/overview.md` | living architecture overview |
 | `architecture/decisions/` | ADRs, `NNN-<slug>.md` |
 | `delivery/stories/` | user-visible slices of a PRD |
-| `delivery/tasks/` | one repo's share of a story |
+| `delivery/tasks/` | one repo's share of a story — or a standalone task (no `story:`) for maintenance work |
+| `delivery/bugs/` | bug reports, `NNN-<slug>.md` (evidence files in `NNN-<slug>/`) |
 | `changes/` | amendment proposals to approved artifacts |
 | `.spectacular/` | profile, code-repo registry, retro observations |
 | `conventions.md` | naming conventions (optional) |
 
 References are `<type>-<NNN>` and resolve by filename: `prd-001` →
-`product/prds/001-*.md`, `design-002`, `adr-003`, `story-004`, `task-012`
-likewise. Numbering is per type, zero-padded to 3. The filename is the
-identity.
+`product/prds/001-*.md`, `design-002`, `adr-003`, `story-004`, `task-012`,
+`bug-005` likewise. Numbering is per type, zero-padded to 3. The filename is
+the identity.
+
+## Work outside a PRD breakdown
+
+Capability delivery flows PRD → story → task through `/spectacular:plan`.
+Two kinds of work do not start from a PRD:
+
+- **Something broke.** `/spectacular:bug "<what happened>"` files the report
+  with its evidence; `/spectacular:plan bug-NNN` triages it — finds the
+  story, task, or repo the cause lives in — and routes it to fix work. When
+  the story is already known, `/spectacular:plan story-NNN "<defect>"` goes
+  straight there: a defect in an accepted story is a late acceptance FAIL —
+  the story returns to `in-progress`, gets fix tasks, and is re-tested to a
+  fresh PASS. Bugs are never implemented directly; the fix is always a task.
+- **Maintenance with no user-visible change** — an IaC change adding a team
+  member, a dependency or runtime bump, a secret rotation, a data fix:
+  `/spectacular:plan "<task>"` writes a **standalone task**, a task with no
+  `story:`. New or changed behavior is never a standalone task; it belongs
+  to a PRD (a change proposal when the PRD is approved) and then a story.
 
 ## Definitions of Ready and Done
 
@@ -109,13 +129,26 @@ done.
 PASS in the Acceptance log; the human sign-off (never the plugin) flips
 `status: done`.
 
-**Task ready:** its story is ready; its `repo:` is in the registry with a
-contract; Verification (preconditions, steps, expected) is written; its
-`depends_on` tasks are done.
+**Task ready:** its story is ready (a standalone task has none); its `repo:`
+is in the registry with a contract; Verification (preconditions, steps,
+expected) is written; its `depends_on` tasks are done.
 
 **Task done:** Verification passes; exactly one squashed mainline commit
 (Conventional Commits subject, `Task: task-NNN` footer); Learnings appended;
 `status: done`.
+
+**Bug ready (for triage):** a one-line summary; where (page, screen or URL,
+component, the flow); steps to reproduce with the input used — or the
+observation when it cannot be reproduced yet; actual vs expected;
+environment (platform, build or environment, account/role); reproducibility;
+evidence attached or explicitly none. `/spectacular:bug` elicits these in at
+most two rounds; a report may be filed with gaps — they are triage's first
+questions.
+
+**Bug done:** `status: closed` with a Resolution — fixed (every `routed_to`
+target done: the fix task landed, or the story re-accepted with a PASS) or a
+recorded non-fix resolution (not a bug, spec gap → change proposal,
+duplicate, could not reproduce, won't fix).
 
 ## Ways of working (Karpathy guidelines)
 

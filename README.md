@@ -1,8 +1,9 @@
 # spectacular
 
 A Claude Code plugin for AI-assisted SDLC on **multi-repo products**: from idea
-to merged code through nine commands — brief → PRDs → design specs →
-decisions → stories and tasks → implementation → acceptance.
+to merged code through ten commands — brief → PRDs → design specs →
+decisions → stories and tasks → implementation → acceptance — plus bug
+reports and standalone maintenance tasks once the product is live.
 
 The model: one **workspace repo** holds all product documentation (brief, PRDs,
 ADRs, stories, tasks); **code repos** live as its sibling directories, each
@@ -77,8 +78,9 @@ Commands in lifecycle order — full reference in
 | `/spectacular:prd` | PRD map first, then one PRD at a time to approved |
 | `/spectacular:design` | records owner-authored UX as truth; imports ready design code (Figma, Claude Design) |
 | `/spectacular:decide` | just-in-time ADR when a choice blocks progress |
-| `/spectacular:plan` | approved PRD → stories + per-repo tasks; creates missing code repos |
+| `/spectacular:plan` | approved PRD → stories + per-repo tasks; creates missing code repos; fixes a story after a FAIL or later defect; triages a bug report; writes a standalone task |
 | `/spectacular:implement` | in a code repo: one task → one squashed mainline commit |
+| `/spectacular:bug` | files a bug report with its evidence, for triage by plan |
 | `/spectacular:next` | derives state, renders the roadmap, recommends one action |
 | `/spectacular:retro` | one-line friction capture; periodic review |
 | `/spectacular:upgrade` | aligns a workspace with a newer plugin version |

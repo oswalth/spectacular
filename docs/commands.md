@@ -21,17 +21,21 @@ Record the product's UX design as a truth artifact — flows, screens, states, a
 
 Propose the decision map — every decision the brief, PRDs, or plan blockers force, persisted as ADR stubs — or work one decision — drivers, options, trade-off table; the owner picks, the result becomes an ADR recording every rejected option, and the architecture overview is updated.
 
-## `/spectacular:plan [prd-NNN … | story-NNN]`
+## `/spectacular:plan [prd-NNN … | story-NNN ["<defect>"] | bug-NNN | "<standalone task>"]`
 
-Break an approved PRD into stories and per-repo tasks — creating missing code repos with contracts — behind a blocking consistency check; or re-plan a story after an acceptance FAIL.
+Turn intent into ready tasks — break an approved PRD into stories and per-repo tasks (creating missing code repos with contracts) behind a blocking consistency check; fix a story after an acceptance FAIL or a defect found later; triage a bug report and route it to the work that fixes it; or write one standalone task for maintenance work with no story.
 
 ## `/spectacular:implement [task-NNN]`
 
 Execute one task inside a code repo — compile the just-in-time context capsule from the workspace, run a goal-driven loop until verification passes, and land exactly one squashed mainline commit behind the owner's landing gate.
 
+## `/spectacular:bug ["<what happened>"]`
+
+File a bug report as a workspace artifact — map what the reporter says onto the bug Definition of Ready, elicit the missing evidence in at most two short rounds, then write bug-NNN (open) for triage by plan.
+
 ## `/spectacular:next`
 
-Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation.
+Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open bugs, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation.
 
 ## `/spectacular:retro [observation]`
 

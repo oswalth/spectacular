@@ -5,7 +5,11 @@ repo: <registry-name>
 depends_on: []
 ---
 
-# task-NNN — <one repo's share of the story>
+<!-- story: is required for a task that delivers a story. A standalone task
+(maintenance work with no story, written by plan's standalone mode) drops the
+line entirely — repo: and Verification alone make it ready. -->
+
+# task-NNN — <one repo's share of the story, or the maintenance change>
 
 ## Description
 

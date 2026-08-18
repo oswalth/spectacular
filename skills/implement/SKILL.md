@@ -17,14 +17,21 @@ owner's explicit greenlight.
    code repo; repos are created and registered by `/spectacular:plan`.
 2. **Select the task.** The `task-NNN` argument if given; otherwise list this
    repo's ready tasks from the workspace (`repo:` matches the contract's
-   `name:`, `status: todo`, all `depends_on` done, Verification filled). This
-   filter is the task's Definition of Ready (workspace CLAUDE.md) — never
-   start a task that fails it; name the missing piece instead. Exactly one
-   ready → take it; several → show the list and ask.
+   `name:`, `status: todo`, all `depends_on` done, Verification filled, and
+   — when the task has a `story:` — that story ready). This filter is the
+   task's Definition of Ready (workspace CLAUDE.md) — never start a task
+   that fails it; name the missing piece instead. A **standalone task**
+   (no `story:` — maintenance work written by plan) is ready on `repo:`,
+   deps and Verification alone. Exactly one ready → take it; several → show
+   the list and ask.
 3. **Compile the JIT context capsule.** Read exactly these, nothing more:
    - the task file;
-   - its story: goal + the ACs this task serves;
+   - its story: goal + the ACs this task serves — a standalone task has
+     none: skip this, the PRD slice and the design references;
    - the slice of the PRD those ACs come from;
+   - any **open bug** whose `routed_to` names this task or its story
+     (`delivery/bugs/`, front matter scan) — the report is the fix's
+     evidence: reproduction steps, environment, actual vs expected;
    - the design spec sections the task's Design references name (`design-NNN`);
      for any UI task additionally the distilled design system when present —
      `product/designs/system/tokens.json` and `design-language.md` ALWAYS
@@ -41,7 +48,7 @@ owner's explicit greenlight.
 
    The capsule is compiled fresh every time and never stored.
 4. **Mark in-progress.** Task `status: in-progress`; the story too if it was
-   `todo`.
+   `todo` (standalone tasks have none).
 5. **Goal-driven loop.** Before writing code, restate the task's Verification as
    a concrete, runnable check (test command, expected behavior) — extend the
    task's Verification section if it was vague. If the capsule genuinely
@@ -86,7 +93,14 @@ owner's explicit greenlight.
    not a diary).
    If this was the story's last open task, announce that the story is now
    **awaiting acceptance** and print its AC checklist for the human tester, plus
-   how to record the verdict (see below).
+   how to record the verdict (see below). A standalone task has no
+   acceptance step: Verification passing is its done.
+
+   **Bug close-out.** If an open bug's `routed_to` names this task and every
+   target of that bug is now `done`, close it: append `fixed via task-NNN`
+   to its Resolution and set `status: closed` — part of the workspace
+   close-out below. When the bug also targets a story, leave it open: the
+   re-acceptance PASS closes it (Acceptance, below).
 
    The **workspace** edits this step makes (statuses, Learnings) land as
    their own workspace commit (e.g. `docs(task-NNN): done — status +
@@ -116,8 +130,12 @@ A story with all tasks done is *awaiting acceptance* — a derived state, stored
 nowhere. A human tests the whole story against its ACs and records the verdict
 by editing the story file: on PASS, append
 `<date> — <name> — PASS: <note>` to the Acceptance log and set
-`status: done`; on FAIL, append the FAIL line and run
-`/spectacular:plan story-NNN` to re-plan.
+`status: done` — and close any open bug routed to the story (`fixed via
+story-NNN re-acceptance` in its Resolution, `status: closed`); on FAIL,
+append the FAIL line and run `/spectacular:plan story-NNN` to plan the fix.
+A defect found after acceptance is a late FAIL of the same kind:
+`/spectacular:plan story-NNN "<defect>"` when the story is known,
+`/spectacular:bug` → `/spectacular:plan bug-NNN` when it is not.
 
 ## Next step
 

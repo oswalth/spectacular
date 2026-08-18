@@ -1,21 +1,30 @@
 ---
 name: plan
-description: Break an approved PRD into stories and per-repo tasks — creating missing code repos with contracts — behind a blocking consistency check; or re-plan a story after an acceptance FAIL.
-argument-hint: [prd-NNN … | story-NNN]
+description: Turn intent into ready tasks — break an approved PRD into stories and per-repo tasks (creating missing code repos with contracts) behind a blocking consistency check; fix a story after an acceptance FAIL or a defect found later; triage a bug report and route it to the work that fixes it; or write one standalone task for maintenance work with no story.
+argument-hint: [prd-NNN … | story-NNN ["<defect>"] | bug-NNN | "<standalone task>"]
 ---
 
 # /spectacular:plan — delivery breakdown
 
-Turns an approved PRD into delivery artifacts: **stories** (user-visible slices)
-and **tasks** (one repo's share of a story). PRD → story → task is the mandatory
-spine — every story names its `prd:`, every task its `story:` and `repo:`.
+Turns intent into delivery artifacts: **stories** (user-visible slices) and
+**tasks** (one repo's share of a story — or, for maintenance work, a
+standalone task with no story). PRD → story → task is the mandatory spine
+for capability delivery — every story names its `prd:`, every task its
+`repo:`, and every task that delivers a story names its `story:`. plan is
+the only skill that writes tasks, so the Definitions of Ready (workspace
+CLAUDE.md) are enforced in one place.
 
-Mode: a `story-NNN` argument (or a story whose Acceptance log ends in FAIL)
-selects **re-plan**; one or more `prd-NNN` arguments, or none, select
-**breakdown**. A set is for tightly-coupled PRDs (2–3, no more) whose
-stories genuinely interleave — one combined proposal, one gate; the
-owner's review sitting grows with every PRD added, so coupling must earn
-its place.
+Mode is chosen by the **content** of the argument:
+
+- one or more `prd-NNN`, or no argument → **breakdown**;
+- `story-NNN`, optionally followed by a defect description → **fix** for a
+  known story (acceptance FAIL, or a defect found after acceptance);
+- `bug-NNN` → **fix** via triage: find where the cause lives, then route;
+- anything else — free text that is not a reference → **standalone task**.
+
+A breakdown set is for tightly-coupled PRDs (2–3, no more) whose stories
+genuinely interleave — one combined proposal, one gate; the owner's review
+sitting grows with every PRD added, so coupling must earn its place.
 
 ## Breakdown
 
@@ -142,20 +151,115 @@ its place.
    on the owner's explicit approval (workspace commit protocol, CLAUDE.md).
    A newly created code repo gets its own initial commit, likewise proposed.
 
-## Re-plan (after an acceptance FAIL)
+## Fix (acceptance FAIL, later defect, or bug triage)
 
-1. Read the story and its FAIL entry in the Acceptance log.
-2. Diagnose: dispatch repo-reader on the suspect repos with the failure as the
-   question.
-3. Propose reopening tasks (`status:` back to `todo` plus a note pointing at the
-   FAIL entry) and/or new fix tasks. Reopened work mechanically takes the story
-   out of awaiting-acceptance.
-4. Gate, then apply. Loop with the human tester until the story's log ends in
+One loop, two entry points. It ends with fix work that meets the task DoR;
+the human acceptance loop (D-22) then runs again — a fixed story is
+re-tested to a fresh PASS, never assumed.
+
+**Known story** — `story-NNN`, or a story whose Acceptance log ends in FAIL:
+
+1. Read the story and its FAIL entry. If the owner reports the defect as the
+   argument (`plan story-004 "checkout total ignores the discount"`), the
+   FAIL entry does not exist yet: propose it — `<date> — <owner> — FAIL:
+   <defect>` — and, when the story is already `done`, its return to
+   `status: in-progress`; both land under the gate below (a defect in an
+   accepted story is a late acceptance FAIL — the story is not done while
+   one of its ACs is violated). Manual edits remain legitimate.
+2. Diagnose: dispatch repo-reader on the suspect repos (the story's tasks'
+   `repo:` values) with the failure as the question.
+3. Propose reopening tasks (`status:` back to `todo` plus a note pointing at
+   the FAIL entry) and/or new fix tasks under the same story. A fix task's
+   Verification starts from the reproduction: the check that fails today
+   and must pass (Karpathy #4). Reopened or new work mechanically takes the
+   story out of awaiting-acceptance.
+4. Gate — explicit question, explicit approval (gate protocol, CLAUDE.md) —
+   then apply. Loop with the human tester until the story's log ends in
    PASS.
+
+**Bug report** — `bug-NNN` (filed by `/spectacular:bug`):
+
+1. **Read the report.** Gaps against the bug DoR (workspace CLAUDE.md) are
+   your first questions to the reporter or owner — the whole triage spends
+   at most **5** propose-then-ask rounds, including the convergence step
+   below.
+2. **Narrow before you read** — triage compiles what it needs, like the
+   implement capsule; it never reads every story of a large product:
+   - *Index, cheap:* front matter and filename slugs only — PRDs, design
+     specs, stories, tasks — plus the registry. Nothing else yet.
+   - *Candidates:* match the report's *where* (page, screen, flow,
+     component) against those slugs and design-spec screen names →
+     candidate PRD(s) → their stories. Open the **bodies** of candidate
+     stories only (their ACs) and the Learnings of their done tasks —
+     default cap around 5–8 stories; only the owner widens it.
+   - *Repos:* the candidate tasks' `repo:` values → dispatch repo-reader on
+     those repos only (usually one or two), question = the symptom plus the
+     suspected component; it reads only what bears on the question.
+   - *Architecture:* `architecture/overview.md` always; ADRs only those
+     touching the candidate repos.
+   - *Nothing narrows?* Ask the reporter before reading wider; still
+     nothing → ask the owner to name a PRD or repo. Always state what you
+     did not examine.
+3. **Converge.** Confident → name the cause and where it lives (story and
+   violated AC, or repo and component). Not confident → present 2–3
+   candidate causes with their evidence and let the owner pick; that
+   question counts within the 5 rounds. Never route on a guess presented as
+   a finding.
+4. **Route — one gate covering the whole set:**
+   - a story's AC is violated → the known-story loop above: FAIL entry
+     citing `bug-NNN`, story back to `in-progress` if it was done, fix
+     task(s) per repo — or an existing not-yet-done task that already
+     covers the fix;
+   - no AC violated but real work is needed → standalone task(s), per the
+     mode below;
+   - not a defect → close the bug at triage with a Resolution: spec gap
+     (open `changes/NNN-<slug>/proposal.md` from
+     `${CLAUDE_PLUGIN_ROOT}/templates/change-proposal.md` and cite it), not
+     a bug, duplicate of `bug-NNN`, could not reproduce, won't fix — with
+     why.
+   Present the routing and the fix work explicitly; only an explicit
+   approve-like answer applies it. On approval write everything: the
+   story/task edits, `routed_to: [story-NNN | task-NNN …]` in the bug
+   (targets are the work that fixes it — a bug closed at triage gets none),
+   and the bug's **Triage** section — date, what was examined and what was
+   not, candidates, decision. A routed bug stays `open` until its fix is
+   verified: implement closes it when the last routed task lands; a story
+   target closes it with the re-acceptance PASS (`/spectacular:next` prints
+   the edit).
+5. **Propose a commit** — `docs(bug-NNN): triage — routed to <targets>` (or
+   `closed: <resolution>`), the story/task files included — committed only
+   on explicit approval.
+
+## Standalone task (maintenance work with no story)
+
+For work that keeps the product running without changing what users see —
+an IaC change adding a team member, a dependency or runtime bump, a secret
+rotation, a data fix. Argument = the free-text request.
+
+1. **Challenge first, once.** If the request adds or changes user-visible
+   behavior it is not a standalone task: it belongs to a PRD — a `changes/`
+   proposal when the PRD is approved, a new capability otherwise — and then
+   a story. Say so with the justification; the owner's call is final, and
+   say explicitly when the request stands as a standalone task.
+2. **Clarify, at most 3 propose-then-ask questions:** the target repo (from
+   the registry, one recommended with a reason), the Verification
+   (preconditions, steps, expected — how anyone confirms it is done), and
+   `depends_on` if any. Skip what the request already settles.
+3. **Draft** `delivery/tasks/NNN-<slug>.md` from
+   `${CLAUDE_PLUGIN_ROOT}/templates/task.md` **without** the `story:` line —
+   `repo:` and Verification are what make it ready (task DoR, workspace
+   CLAUDE.md). Description names the why in one paragraph and links the
+   ADR or bug it serves when there is one.
+4. **Gate** — explicit question, explicit approval — then write the file,
+   `status: todo`.
+5. **Propose a commit** — `docs(task-NNN): standalone task — <slug>` —
+   committed only on explicit approval.
 
 ## Next step
 
 Recommend `/spectacular:implement` in the specific repo of the highest-ranked
 ready task (all `depends_on` done), naming the task and the repo path — that is
-where idea turns into code. If nothing is ready, name the blocker and the
-command that clears it.
+where idea turns into code; after a fix or standalone run, that is the task
+just written. If nothing is ready, name the blocker and the command that
+clears it. A bug closed at triage with a spec-gap resolution points at its
+change proposal's approval instead.
