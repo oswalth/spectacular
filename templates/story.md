@@ -27,3 +27,9 @@ source frames this story realizes. Drop the section otherwise. -->
 - design-NNN <flow / screen> — <source frame link>
 
 ## Acceptance log
+
+<!-- One line per event, oldest first: `<date> — <name> — READY: all tasks
+done, awaiting acceptance` (written by implement when the last task lands;
+the state itself stays derived) · `<date> — <name> — PASS: <note>` (the
+reviewer; set status: done) · `<date> — <name> — FAIL: <what failed>` (then
+/spectacular:plan story-NNN). -->

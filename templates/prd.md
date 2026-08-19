@@ -23,3 +23,11 @@ depends_on: []
 ## Out of scope
 
 ## Clarifications
+
+## Review
+
+<!-- Team review of the draft (workspace CLAUDE.md, Reviews): one line per
+comment, `- <date> — <name> — <comment> (FR-003 / AC-2 / Scope …)`. The
+author resolves each line in place — ` → <date> applied` or ` → <date>
+declined: <why>`. Empty at approval: drop the section then (git keeps it);
+a declined point worth keeping moves to Clarifications. -->

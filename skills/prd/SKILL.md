@@ -1,6 +1,6 @@
 ---
 name: prd
-description: Propose the PRD map on first run, or develop one PRD from stub to approved — bounded clarify pass, checkable acceptance criteria, explicit out-of-scope. Requires an approved product brief.
+description: Propose the PRD map on first run, or develop one PRD from stub to approved — bounded clarify pass, checkable acceptance criteria, explicit out-of-scope; a draft left for team review is revised from its review comments. Requires an approved product brief.
 argument-hint: [prd-NNN]
 ---
 
@@ -39,7 +39,11 @@ edges IS the product roadmap; no other roadmap artifact exists.
 ## Mode B — stubs exist: develop one PRD
 
 1. Pick the target: the `prd-NNN` argument if given; otherwise suggest the stub
-   whose `depends_on` are all approved and which unblocks the most other stubs.
+   whose `depends_on` are all approved and which unblocks the most other stubs
+   (name any drafts in review too — they belong to their authors, see
+   Revise). Read the workspace fresh first — fetch and fast-forward when it
+   has a remote. A target already at `status: draft` enters **Revise** below
+   instead of steps 2–3.
 2. **Clarify pass.** Ask at most 5 structured questions — only where the brief
    and stub genuinely underdetermine the capability (scope edges, must-vs-nice,
    failure behavior, integration boundaries). Work propose-then-ask: precede
@@ -62,10 +66,48 @@ edges IS the product roadmap; no other roadmap artifact exists.
    exclusion goes under Out of scope explicitly.
 4. **Gate.** Present, revise until the owner approves — approval is an
    explicit answer to an explicit question; a vague go-ahead re-asks (gate
-   protocol, CLAUDE.md) — then set `status: approved`.
-5. **Propose a commit** for the developed PRD (e.g. `develop and approve
-   prd-001 <slug>`), plus any change proposal opened in step 2; commit only on
+   protocol, CLAUDE.md) — then set `status: approved` and drop the empty
+   Review section. The owner may instead **leave it in review** for the
+   team: the PRD stays `status: draft` with its Review section in place,
+   teammates add comment lines there (workspace CLAUDE.md, Reviews), and a
+   later run — by whoever carries the PRD — revises it.
+5. **Propose a commit** — `docs(prd-NNN): approve — <slug>`, or
+   `docs(prd-NNN): draft for review — <slug>` when left in review — with its
+   push in a workspace with a remote (a draft nobody can fetch is not in
+   review), plus any change proposal opened in step 2; commit only on
    explicit approval.
+
+## Revise — a draft with review comments
+
+Entered from Mode B when the target is `status: draft`: a PRD left in review
+by an earlier session — the owner's or a teammate's. Review lines live in
+the PRD's `## Review` section, one per comment, `- <date> — <name> —
+<comment> (FR-003 / AC-2 / Scope …)`; a line is **open** until it carries a
+` → ` resolution.
+
+1. Read the draft and its Review section. No open line → the PRD is ready to
+   approve: go to Mode B step 4.
+2. Propose one resolution per open line, in one list: **apply** — the
+   concrete delta (which FR, AC or section; old → new); **decline** — with
+   the justification; **ask** — when the comment underdetermines the change,
+   one question to its author (the name on the line), at most 5 questions in
+   the run. Challenge a comment that would weaken the capability —
+   justification plus a proposed alternative — and say explicitly when a
+   comment stands as-is. A resolution that amends the approved brief opens
+   a `changes/` proposal, as in Mode B step 2.
+3. **Gate** — an explicit question, an explicit approval naming which
+   resolutions (gate protocol, CLAUDE.md); partial approval is normal. Apply
+   the approved deltas; mark every handled line in place (` → <date>
+   applied` / ` → <date> declined: <why>`); move a declined point worth
+   keeping into Clarifications. Unapproved lines stay open.
+4. Then ask: **approve now, or leave in review?** Approval needs every line
+   resolved and the team's agreement — the call of whoever carries the PRD,
+   nothing is stored about who that is: `status: approved`, Review section
+   dropped (git keeps it). Otherwise `status: draft` stays for the next
+   round.
+5. **Propose a commit** — `docs(prd-NNN): approve — <slug>`, or
+   `docs(prd-NNN): revise draft — <what changed>` — with its push; commit
+   only on explicit approval.
 
 ## Amending an approved PRD
 
@@ -79,6 +121,9 @@ the same session.
 
 End with exactly one recommendation:
 
+- A PRD left in review → say who acts next: reviewers add their lines, then
+  its author runs this skill on it again; a draft whose lines are all
+  resolved → approve it with this skill.
 - Stubs remain → name the next stub to develop with this skill, and why it is
   next (dependencies approved, unblocks the most).
 - The PRD just approved forces a technology or architecture choice → recommend

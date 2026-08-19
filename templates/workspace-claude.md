@@ -54,18 +54,26 @@ landing gates — follows the same rules:
 
 Nothing is committed unprompted — by a skill or by any session working here.
 Each **unit of work** ends with a proposed commit message; the owner reviews
-the diff and approves, and only then does the commit happen. Pushing likewise
-happens only on explicit ask.
+the diff and approves, and only then does the commit happen. In a workspace
+with a remote the proposal carries its **push**: "commit and push" is one
+question, and one explicit approval covers both. Declining the push is the
+owner's call, but an unpushed commit is state the team cannot see (Fresh
+before derived) — the exception, never the default. A workspace without a
+remote pushes nothing.
 
 One commit per unit of work: the scaffold; the approved brief; the PRD-map
-stubs; each developed PRD (plus any change proposal it opened); each ADR with
-its overview update; each plan batch; each bug report and each triage; each
-standalone task; each retro review's applied fixes.
+stubs; each developed PRD — approved, or left as a draft for team review —
+plus any change proposal it opened; each revision of a draft from review
+comments; each ADR with its overview update; each plan batch; each task
+claim (`in-progress`); each bug report and each triage; each standalone
+task; each retro review's applied fixes.
 `/spectacular:implement` is no exception (D-39): once verification passes it
 presents the diff, the verification evidence, and both proposed commits —
 the code-repo commit (one task = exactly one squashed mainline commit) and
-the workspace close-out commit (statuses, Learnings) — and lands them only
-on one explicit greenlight.
+the workspace close-out commit (statuses, Learnings) — and lands them, the
+workspace push included, only on one explicit greenlight. The claim that
+starts a task (`in-progress`) is its own proposed commit and push, asked at
+the start — the team must see a task is taken while it runs.
 
 Messages follow **Conventional Commits 1.0.0** (D-37). In a workspace almost
 everything is `docs` (artifact content) or `chore` (scaffolding, statuses);
@@ -74,7 +82,9 @@ never the subject:
 
 ```
 docs(prd-004): approve — payments
+docs(prd-005): draft for review — reporting
 chore(scaffold): init <product> workspace
+chore(task-012): in-progress
 docs(task-012): done — status + learnings
 
 Refs: story-003
@@ -136,6 +146,38 @@ Three kinds of work do not start from a PRD:
   landed per that repo's `merge_flow`. Anything that changes behavior,
   architecture or dependencies — a refactor included — is a task:
   standalone when it has no story.
+
+## Reviews
+
+Two things here are reviewed by people other than their author. Names are
+written into the lines people add — no reviewer, owner or assignee is stored
+anywhere else.
+
+- **A draft PRD.** Its author leaves it at `status: draft`, committed and
+  pushed; the team reads it on the default branch. A reviewer adds one line
+  per comment to the PRD's `## Review` section —
+  `- <date> — <name> — <comment> (FR-003 / AC-2 / Scope …)` — and commits it
+  (any editor; the GitHub web editor counts). The author then runs
+  `/spectacular:prd prd-NNN`: it proposes a resolution per open line — applied
+  with the delta, or declined with the reason — and marks each line in place
+  (` → <date> applied` / ` → <date> declined: <why>`). When every line is
+  resolved and the team agrees, the author approves: `status: approved`,
+  the Review section dropped (git keeps it), a declined point worth keeping
+  moved to Clarifications. A PRD with open review lines is *in review*, not
+  lingering — `/spectacular:next` tells the two apart. The author is whoever
+  carries the PRD; nothing records it.
+- **A story whose tasks are all done** is *awaiting acceptance* — derived,
+  never stored: `/spectacular:next` lists it with its AC checklist, and the
+  close-out that landed its last task wrote
+  `<date> — <name> — READY: all tasks done, awaiting acceptance` into the
+  story's Acceptance log (an event line, not a status). A reviewer — QA, PO,
+  whoever the team names — tests **every** AC against the real thing and
+  records the verdict in the same log: on PASS `<date> — <name> — PASS:
+  <note>` and `status: done`; on FAIL `<date> — <name> — FAIL: <what failed>`,
+  then `/spectacular:plan story-NNN` reopens tasks and/or adds fix tasks and
+  the story is re-tested to a fresh PASS, never assumed fixed. A task is not
+  accepted on its own — its landing gate and Verification are its done; the
+  story is what gets accepted.
 
 ## Definitions of Ready and Done
 

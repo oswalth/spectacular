@@ -15,7 +15,11 @@ owner's explicit greenlight.
 1. **Locate the workspace.** Read `.spectacular/contract.md` here; its
    `workspace:` path leads back. No contract → refuse: this is not a registered
    code repo; repos are created and registered by `/spectacular:plan`.
-2. **Select the task.** The `task-NNN` argument if given; otherwise list this
+2. **Select the task.** Read the workspace fresh first: if it has a remote,
+   `git fetch` and fast-forward when behind (quietly, under a timeout; a
+   checkout with local changes is left alone and reported) — a claim a
+   teammate pushed must be visible before readiness is judged. Then: the
+   `task-NNN` argument if given; otherwise list this
    repo's ready tasks from the workspace (`repo:` matches the contract's
    `name:`, `status: todo`, all `depends_on` done, Verification filled, and
    — when the task has a `story:` — that story ready). This filter is the
@@ -59,8 +63,16 @@ owner's explicit greenlight.
    - the Learnings sections of this story's already-done tasks.
 
    The capsule is compiled fresh every time and never stored.
-4. **Mark in-progress.** Task `status: in-progress`; the story too if it was
-   `todo` (standalone tasks have none).
+4. **Claim — mark in-progress and push it.** Task `status: in-progress`; the
+   story too if it was `todo` (standalone tasks have none). The claim is a
+   unit of work: propose `chore(task-NNN): in-progress` and, when the
+   workspace has a remote, its push — one explicit question ("claim
+   task-NNN: commit and push?"), one explicit approval covers both (commit
+   and gate protocol, workspace CLAUDE.md). The push is what tells the team
+   the task is taken; claimed only on disk it reads `todo` to everyone else
+   for as long as the work runs. Push rejected → pull (rebase) and re-read
+   the task: `in-progress` from the remote means someone claimed it first —
+   drop the local edits, say so, go back to step 2; otherwise push again.
 5. **Plan first, then the goal-driven loop.** With the capsule compiled and
    before any further read, lookup, or command, print a numbered plan
    (Karpathy #4): each step names what it changes and the check that
@@ -98,15 +110,16 @@ owner's explicit greenlight.
      goes in the subject);
    - what landing will do per the contract's `merge_flow` (below);
    - the workspace close-out commit that follows in step 7 (statuses,
-     Learnings).
+     Learnings) — and its push, when the workspace has a remote.
 
    Then wait for the owner's explicit approval — an approve-like answer to
    this explicit question; "ok, continue"-style replies do not open the
    gate, re-ask (gate protocol, workspace CLAUDE.md). No commit, push, PR,
    or merge happens before it — "verification passed" is a report, not a
    license. One
-   greenlight covers landing the whole task: this code-repo commit and the
-   step-7 workspace commit. On approval, land per `merge_flow`:
+   greenlight covers landing the whole task: this code-repo commit, the
+   step-7 workspace commit and the workspace push. On approval, land per
+   `merge_flow`:
    - `pr`: push the branch, open a PR with `gh`, squash-merge it (`gh pr merge
      --squash`).
    - `local-rebase`: squash the branch to one commit, rebase onto the mainline,
@@ -123,9 +136,13 @@ owner's explicit greenlight.
    story-level ones (repo-level facts landed in the contract's Toolchain
    notes with the code — step 6): what this story's next task must know —
    surprises, decisions — not a diary.
-   If this was the story's last open task, announce that the story is now
-   **awaiting acceptance** and print its AC checklist for the human tester, plus
-   how to record the verdict (see below). A standalone task has no
+   If this was the story's last open task, the story is now **awaiting
+   acceptance** — a derived state, but the team must see it without running
+   next: append `<date> — <name> — READY: all tasks done, awaiting
+   acceptance` to the story's Acceptance log (name = the git user landing
+   it; an event line, not a status — derivation stays the source), put `— story-NNN awaiting acceptance` in
+   the close-out subject, and print the AC checklist for the human tester
+   plus how to record the verdict (see below). A standalone task has no
    acceptance step: Verification passing is its done.
 
    **Bug close-out.** If an open bug's `routed_to` names this task and every
@@ -134,12 +151,13 @@ owner's explicit greenlight.
    close-out below. When the bug also targets a story, leave it open: the
    re-acceptance PASS closes it (Acceptance, below).
 
-   The **workspace** edits this step makes (statuses, Learnings) land as
-   their own workspace commit (e.g. `docs(task-NNN): done — status +
-   learnings`) under the step-6 greenlight — it covered both commits, so
-   commit now without re-asking. A greenlight never carries across tasks or
-   sessions (D-39). Pushing the workspace stays on explicit ask (workspace
-   commit protocol, CLAUDE.md).
+   The **workspace** edits this step makes (statuses, Learnings, the READY
+   line, a bug close) land as their own workspace commit (e.g.
+   `docs(task-NNN): done — status + learnings`, or `docs(task-NNN): done —
+   story-NNN awaiting acceptance`) under the step-6 greenlight — it covered
+   both commits and the workspace push, so commit and push now without
+   re-asking (a workspace without a remote pushes nothing). A greenlight
+   never carries across tasks or sessions (D-39).
 8. **Discovered problem in workspace truth?** If the work reveals an
    architecture or spec problem, never edit workspace truth directly — write
    `changes/NNN-<slug>/proposal.md` from
@@ -160,8 +178,10 @@ owner's explicit greenlight.
 ## Acceptance (context for step 7)
 
 A story with all tasks done is *awaiting acceptance* — a derived state, stored
-nowhere. A human tests the whole story against its ACs and records the verdict
-by editing the story file: on PASS, append
+nowhere; the READY line step 7 wrote into its Acceptance log records when it
+got there, `/spectacular:next` lists it. A reviewer — whoever the team names
+(workspace CLAUDE.md, Reviews) — tests the whole story against its ACs and
+records the verdict by editing the story file: on PASS, append
 `<date> — <name> — PASS: <note>` to the Acceptance log and set
 `status: done` — and close any open bug routed to the story (`fixed via
 story-NNN re-acceptance` in its Resolution, `status: closed`); on FAIL,

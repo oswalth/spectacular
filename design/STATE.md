@@ -16,12 +16,13 @@ contradict what was agreed in conversation.
 
 CLAUDE.md loads automatically. Read Decisions, Deferred and Open questions here, then
 design/spec.md for the parts you touch; the Session log is evidence, read on demand.
-Status: the plugin is published to the team (D-48) and at 0.12.0 (D-49: code-repo
-CLAUDE.md + README shape, onboard, scoped next, read-fresh, language); S-6 dogfood
-continues in the pilot's directories, not here — remaining: ≥1 story through
-acceptance PASS on the current plugin, and the first real teammate onboarding
-(D-49's onboard has not run for real yet). Work here is processing review feedback
-and retro briefs. Do not re-derive settled Decisions and do not re-explore ../speck
+Status: the plugin is published to the team (D-48) and at 0.13.0 (D-49: code-repo
+CLAUDE.md + README shape, onboard, scoped next, read-fresh, language; D-50: team
+review of draft PRDs, task claim + shared-workspace push rule, acceptance
+visibility); S-6 dogfood continues in the pilot's directories, not here —
+remaining: ≥1 story through acceptance PASS on the current plugin, the first real
+teammate onboarding, and the first team-reviewed PRD. Work here is processing
+review feedback and retro briefs. Do not re-derive settled Decisions and do not re-explore ../speck
 or ../speculation beyond what this file records.
 
 ## Ways of working
@@ -191,8 +192,19 @@ commands at all.
   routing unit is the repo, severity is a triage judgment recorded in the
   Triage notes. Held again 2026-08-19 (D-49): onboarding derives access from
   GitHub and scoped next uses the registry `role` — nothing about people is
-  stored. Trigger: a real team needs per-person routing or a
-  severity-driven ranking that the owner cannot make by reading next.
+  stored. Held again 2026-08-19 (D-50): "the person responsible for a PRD"
+  and "someone reviews the story" are carried by names written into the
+  lines people add (Review lines, Acceptance log), as the log always did; the
+  PRD's author is whoever carries it. Trigger: a real team needs per-person
+  routing or a severity-driven ranking that the owner cannot make by reading
+  next.
+- Stored story review status (D-50): a stored `status: review` on stories
+  (set by implement at the last task, back to `in-progress` by plan's fix
+  mode, validated by next) was proposed as the alternative to the derived
+  awaiting-acceptance state and not taken — D-18/D-22 hold; the visibility
+  gap is closed by the READY event line in the Acceptance log, the close-out
+  commit subject, the shared-workspace push and the Reviews section. Trigger:
+  the team still misses stories awaiting acceptance after those are in use.
 - Dedicated design-system repo (D-35, frozen family U): imported design code
   stays workspace-resident reference material. Trigger: it becomes a
   build-time dependency consumed by multiple repos (a real component
@@ -327,6 +339,9 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   approved (PRDs add an initial `stub` — D-20); delivery artifacts todo → in-progress
   → done. "Blocked" and "awaiting acceptance" are always derived, never stored; epics
   store no status at all.
+  Held 2026-08-19 (D-50): a stored story `review` status was proposed for team
+  visibility and deferred (see Deferred); implement writes a READY *event line*
+  into the Acceptance log instead — a record, the derivation stays the source.
 - D-19 (2026-08-01) Delivery hierarchy: PRD → story → task is the mandatory spine
   (story.prd and task.story/task.repo required). PRD = durable spec of a capability
   (never "done", amended via A1); epic = closable delivery batch. Epics are adopted as
@@ -355,6 +370,11 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   Amended 2026-08-18 (D-46): a defect found after acceptance is a *late FAIL* of
   the same loop — the story returns to `in-progress` and is re-tested to a fresh
   PASS; re-plan mode is renamed fix mode and also entered from a bug report.
+  Amended 2026-08-19 (D-50): when a story's last task lands, implement writes
+  `date — who — READY: all tasks done, awaiting acceptance` into the Acceptance
+  log and names the state in the close-out subject, pushed; the workspace
+  CLAUDE.md Reviews section documents the reviewer's procedure (find via next,
+  test every AC, PASS/FAIL line, FAIL → plan story-NNN).
 - D-24 (2026-08-03) S-4.5 pre-build notes ratified with changes. Approved: marketplace
   manifest (note 1); acceptance sign-off as a manual story-file edit, no dedicated
   skill (note 3); docs generation from name/description/argument-hint plus a new
@@ -402,6 +422,11 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   edits get a proposed workspace commit at close-out. Root cause fixed: v0.1
   init explicitly instructed two autonomous commits while no other skill
   committed at all — wrong in both directions (dogfood observations 2 and 7).
+  Amended 2026-08-19 (D-50): in a workspace with a remote the proposal carries
+  its push — one question, one explicit approval covers both; declining the
+  push is the exception (a team derives state from the remote — D-49 Fresh
+  before derived). Grain gains each task claim (`in-progress`), each draft
+  left for review and each draft revision.
 - D-27 (2026-08-03, amends D-11 and D-23) Frozen naming-family taxonomy: the
   letter→family mapping is plugin-owned and product-independent, shipped as
   templates/naming-families.md — 16 families (A app services · B browser apps ·
@@ -933,6 +958,59 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   language. D-33 stays deferred with its trigger partly met by git; D-46
   deferral held. → v0.12.0 (minor: new skill, new templates, workspace
   template sections).
+- D-50 (2026-08-19, retro round 9, in-chat, first team friction) Team review
+  of draft PRDs, task claim + shared-workspace push rule, acceptance made
+  visible. Observations (Vladimir, onboarding his team): (1) several people
+  develop draft PRDs from stubs, push them, others comment, the PRD's
+  responsible person works the comments in — possibly in another session —
+  and only then is it approved; (2) implement flips `in-progress` locally
+  and never asks about pushing, so a task running a day or two is invisible
+  to the team; start and finish should reach the remote; (3) stories have no
+  review step — nothing makes someone review a finished story, gather
+  feedback, reopen or add tasks. Root-caused against prd (Mode B is one
+  person, one session, stub → approved; a `draft` is legal since D-18 but
+  no path resumes one and nothing says where comments live; step 5 commits
+  only an approved PRD), implement (step 4 edits disk only, first workspace
+  commit at close-out, push on ask; step 2 never fetched the workspace),
+  the workspace CLAUDE.md (D-26's push clause written for a solo workspace;
+  acceptance documented only as the story DoD), next (every draft is
+  "lingering"). Verdicts: (1) confirmed, structural; (2) confirmed, and the
+  root is D-26's push clause colliding with D-49's Fresh before derived,
+  not implement alone; (3) partly overturned — the loop exists (D-22
+  acceptance + plan fix mode), what hurt is visibility: the state is derived
+  and nothing in the file, the log or the remote says it; that the team did
+  not know the step exists is the evidence. "Responsible person" and
+  "someone reviews" do not fire the people-model trigger (D-46 held — names
+  ride the lines). Three owner calls, all taken as recommended: review
+  comments in the file, not hosting-side PR threads (files are the
+  interface, P-2, next can see it, no GitHub dependency; the PR route would
+  put the draft off main where Fresh-before-derived cannot see it and add a
+  branch flow to the workspace); derived acceptance state kept, made visible
+  (stored `review` deferred with a trigger); the push rule general, not
+  implement-only. Resolution, all approved ("approve all"): (a) workspace
+  CLAUDE.md template — Commit protocol: in a workspace with a remote every
+  proposal carries its push, one approval covers both, unpushed is the
+  exception; grain + examples; new **Reviews** section (draft PRD review
+  and revision; story acceptance procedure; names in lines, nothing
+  stored); (b) implement — workspace fetched before the DoR check; step 4 is
+  a **claim gate** (`chore(task-NNN): in-progress` + push under one explicit
+  question; rejected push → pull, re-read, a teammate's claim sends it back
+  to selection); landing greenlight covers the close-out push; last task of
+  a story → READY event line in the Acceptance log + `— story-NNN awaiting
+  acceptance` in the subject; (c) templates — prd.md `## Review` section
+  (line format, resolved in place, dropped at approval); story.md documents
+  the Acceptance log verbs READY/PASS/FAIL; (d) prd — Mode B reads fresh, a
+  `draft` target enters the **revise** path (one resolution per open line:
+  apply with delta / decline with reason / ask its author, ≤5 questions,
+  challenge kept; gate; mark lines; approve now or leave in review); the
+  gate gains "leave in review"; commits `docs(prd-NNN): approve | draft for
+  review | revise draft` with push; Next step covers drafts in review; (e)
+  next — reads the Review section of drafts only, derives *in review* (open
+  lines, the author's move) vs lingering, lists counts; (f) README, spec.md,
+  CHANGELOG/upgrades 0.13.0. Not built, recorded as a watch item: parallel
+  plan runs by two people mint the same story/task numbers. → v0.13.0
+  (minor: template changes — CLAUDE.md Reviews section and push rule, prd
+  Review section; no artifact migration).
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -1451,3 +1529,31 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   (restart to apply). Open evidence: the first real `/spectacular:onboard`
   run and the pilot's `/spectacular:upgrade` to 0.12.0 (registry remotes,
   code-repo CLAUDE.md/README sets via PRs, Language section).
+- S-9 (round 9) 2026-08-19: Retro review in this repo — first friction from
+  the team onboarding, in-chat (three observations: team review of draft
+  PRDs across sessions; in-progress invisible to the team — implement
+  neither asks nor pushes; no review step for stories). Evidence: prd,
+  implement, next, plan skills; workspace CLAUDE.md, prd and story
+  templates; D-18/D-22/D-26/D-39/D-41/D-46/D-49. Verdicts in D-50: (1)
+  confirmed structural, (2) confirmed with the root in D-26's solo-era push
+  clause vs D-49's Fresh before derived, (3) partly overturned — the D-22
+  loop already does what was asked; the gap is visibility. One gate (items
+  A–E + Q1 in-file vs PR comments, Q2 derived vs stored review status, Q3
+  general vs implement-only push rule): "approve all", Q1–Q3 as
+  recommended. Applied in one pass: workspace-claude (push rule, grain,
+  examples, Reviews section), prd.md (Review section), story.md (log
+  verbs); implement (fetch, claim gate, close-out push, READY line +
+  subject), prd (fresh read, revise path, leave-in-review, CC commit forms,
+  next step), next (Review section read, in-review class, output,
+  candidates); README (prd row, team-review paragraph); docs/commands.md
+  regenerated; spec.md (statuses/bodies, commit protocol, new team-review
+  bullet, acceptance flow, prd/implement/next); CHANGELOG + upgrades 0.13.0,
+  plugin.json 0.13.0; here: D-50, D-18/D-22/D-26 notes, Deferred (people
+  model held; stored review status), resume line. Commits proposed per
+  protocol; on Vladimir's "commit, push to remote and update plugin
+  locally": feat + chore(release): 0.13.0 committed, tag v0.13.0, pushed to
+  github.com/oswalth/spectacular with tags; local marketplace refreshed and
+  the plugin updated 0.12.0 → 0.13.0 at user scope (restart to apply). Open
+  evidence: the first PRD actually reviewed by the team through the Review
+  section, the first claim push racing another developer, and the pilot's
+  `/spectacular:upgrade` to 0.13.0 (CLAUDE.md Reviews section + push rule).

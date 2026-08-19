@@ -15,7 +15,7 @@ Set up a teammate or a new machine on an existing workspace — clone the regist
 
 ## `/spectacular:prd [prd-NNN]`
 
-Propose the PRD map on first run, or develop one PRD from stub to approved — bounded clarify pass, checkable acceptance criteria, explicit out-of-scope. Requires an approved product brief.
+Propose the PRD map on first run, or develop one PRD from stub to approved — bounded clarify pass, checkable acceptance criteria, explicit out-of-scope; a draft left for team review is revised from its review comments. Requires an approved product brief.
 
 ## `/spectacular:design [prd-NNN]`
 

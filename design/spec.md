@@ -150,8 +150,13 @@ routed_to) / **routed** (fix state read off the targets) / **fixed-but-open**
 (all targets done), epic status (from member stories), the roadmap itself.
 
 Story body: goal, acceptance criteria (mapped from the PRD), **Acceptance log**
-(`date — who — PASS/FAIL: note`). The task list is NOT duplicated in the story body —
-it is derived from task files' `story:` links (P-2).
+(`date — who — READY/PASS/FAIL: note` — READY written by implement when the last task
+lands: an event record, the awaiting-acceptance state itself stays derived — D-50).
+The task list is NOT duplicated in the story body — it is derived from task files'
+`story:` links (P-2).
+PRD body (draft): a **Review** section for team review — one line per comment,
+`- date — name — comment (FR/AC ref)`, resolved in place (` → date applied |
+declined: why`), dropped at approval (D-50).
 Task body: description, verification (how "done" is checked — Karpathy #4), **Learnings**
 (appended by implement on completion; feeds later capsules — A2; story-level only —
 repo-level facts go to the contract's Toolchain notes, D-47).
@@ -184,12 +189,19 @@ and the task's Verification. All artifact shapes live in templates/ only.
   drafts.
 - **Workspace commit protocol (D-26):** skills never commit unprompted; every unit of
   work ends with a proposed commit message, committed only on explicit approval.
-  Grain: scaffold · approved brief · PRD-map stubs · each developed PRD (+ its change
-  proposals) · each ADR + overview update · each plan batch · each retro review's
-  fixes. No exceptions since D-39: implement's code-repo commit (one task = one
-  squashed mainline commit stays the grain — D-21) lands behind a landing gate, one
-  greenlight covering it and the workspace status/Learnings close-out commit.
-  Recorded in the workspace CLAUDE.md template so ad-hoc sessions inherit it.
+  Grain: scaffold · approved brief · PRD-map stubs · each developed PRD (approved, or
+  left as a draft for review) (+ its change proposals) · each draft revision from
+  review comments · each ADR + overview update · each plan batch · each task claim ·
+  each retro review's fixes. No exceptions since D-39: implement's code-repo commit
+  (one task = one squashed mainline commit stays the grain — D-21) lands behind a
+  landing gate, one greenlight covering it and the workspace status/Learnings
+  close-out commit. **Push (D-50):** in a workspace with a remote every proposal
+  carries its push — one question, one approval covers both; declining the push is
+  the exception (unpushed state is invisible to a team deriving from the remote); no
+  remote → nothing pushed. Defined once in the workspace CLAUDE.md template, which
+  every skill's "propose a commit" line references; prd and implement name the push
+  explicitly. Recorded in the workspace CLAUDE.md template so ad-hoc sessions
+  inherit it.
 - **Propose-then-ask interviewing (D-28):** init's BA interview and the clarify passes
   in prd, design, decide, and plan frame before asking — synthesis of what's known + a
   strawman, then 2–3 questions referencing the frame, then (init, per topic) a
@@ -213,8 +225,23 @@ and the task's Verification. All artifact shapes live in templates/ only.
   system/design-language.md (one-page rules); implement's UI-task capsule always
   carries the distilled pair and opens raw code only on component demand.
   Templates: design-tokens.json, design-language.md.
+- **Team review of draft PRDs (D-50):** a PRD may be left `draft` for the team —
+  committed and pushed; reviewers add lines to its `## Review` section (any editor);
+  `prd prd-NNN` on a draft enters the revise path: one proposed resolution per open
+  line (apply with the delta / decline with the reason / ask its author, ≤5
+  questions), challenge kept, gated, lines marked in place, declined points worth
+  keeping to Clarifications; then approve (all lines resolved, team agrees — the
+  author's call; nothing stored about who) or leave in review. `next` distinguishes
+  a draft *in review* (open lines, its author's move) from a lingering one by
+  reading the Review section of drafts only. In-file comments, not hosting-side
+  review threads: files are the interface, P-2, no GitHub dependency. Brief, design
+  and ADR drafts get the same treatment when a team reviews them (P-4).
 - **Acceptance flow (D-22):** all tasks done → story is *awaiting acceptance* (derived);
-  `next` names it and lists the ACs to test. A human (QA/PO) tests the whole story;
+  implement writes `date — who — READY: all tasks done, awaiting acceptance` into the
+  Acceptance log and names it in the close-out subject (D-50 — the file says it, the
+  derivation stays the source); `next` names it and lists the ACs to test; the
+  workspace CLAUDE.md Reviews section tells a reviewer how. A human (QA/PO) tests the
+  whole story;
   explicit sign-off flips `done` + logs PASS — a manual edit of the story file, no
   dedicated skill in v0.1; `next` prints exactly what to edit (D-24). On FAIL: log
   the failure, then `plan`
@@ -340,12 +367,18 @@ Precondition: brief approved.
 No PRDs yet → propose the PRD map: capabilities, one-line scopes, `depends_on` edges;
 gate; on approval write one **stub** PRD per capability (D-20; stubs may carry an
 optional Notes-for-development section — D-30b) → proposed commit (D-26).
-Stubs exist → pick target (argument, or suggest per roadmap); clarify pass (A3: bounded
-structured questions, propose-then-ask — D-28; answers written back into the artifact;
-an answer amending the approved brief opens a changes/ proposal in the same session —
-D-30b); draft full PRD (requirements, checkable ACs, explicit out-of-scope); gate →
-approved → proposed commit.
-Next: next stub to develop, `/spectacular:decide` if the PRD forces a decision,
+Stubs exist → read the workspace fresh; pick target (argument, or suggest per roadmap,
+naming drafts in review); clarify pass (A3: bounded structured questions,
+propose-then-ask — D-28; answers written back into the artifact; an answer amending
+the approved brief opens a changes/ proposal in the same session — D-30b); draft full
+PRD (requirements, checkable ACs, explicit out-of-scope); gate → approved (Review
+section dropped) or left in review (`draft`, Review section present) → proposed
+commit + push (`docs(prd-NNN): approve — …` / `draft for review — …`).
+Target already `draft` → **revise** (D-50): read Review lines; one resolution per
+open line (apply/decline/ask, ≤5 questions, challenge kept); gate; mark lines in
+place; approve now or leave in review; proposed commit + push.
+Next: a draft in review → who acts next (reviewers, then its author; all resolved →
+approve); next stub to develop; `/spectacular:decide` if the PRD forces a decision;
 `/spectacular:plan` once approved.
 
 ### design — opus
@@ -415,9 +448,12 @@ Next: `/spectacular:implement` in the repo of the highest-ranked ready task.
 
 ### implement — sonnet (owner escalates to opus after two failed goal-loops)
 Runs in a code repo; finds the workspace via `contract.md`.
-Flow: select task (argument, or: this repo's tasks with status todo, deps done,
-Verification filled; story ready when there is one — standalone tasks have none) →
-compile the JIT capsule (by section — D-47) → task `in-progress` (story too, if first)
+Flow: read the workspace fresh (fetch + fast-forward) → select task (argument, or:
+this repo's tasks with status todo, deps done, Verification filled; story ready when
+there is one — standalone tasks have none) → compile the JIT capsule (by section —
+D-47) → **claim** (D-50): task `in-progress` (story too, if first), proposed as
+`chore(task-NNN): in-progress` + push under one explicit question; a rejected push →
+pull, re-read — claimed by someone else → back to selection
 → print the numbered plan before any further read, lookup or command (step + check,
 Verification restated as runnable commands — Karpathy #4) → branch per task →
 goal-driven loop with just-in-time reconnaissance (workspace CLAUDE.md Ways of working
@@ -432,9 +468,10 @@ anything lands → squash to one commit (CC subject +
 task `done` + append Learnings → close any open bug whose every routed_to target is
 now done (`fixed via task-NNN`; a story-routed bug waits for the re-acceptance PASS)
 → workspace commit for the status/Learnings/bug
-edits under the same greenlight (D-26 as amended by D-39; grain per D-21) → if that
-was the story's last task: announce *awaiting acceptance* and print the AC checklist
-for the human tester (a standalone task has no acceptance step).
+edits, pushed, under the same greenlight (D-26 as amended by D-39 and D-50; grain per
+D-21) → if that was the story's last task: READY line in the story's Acceptance log,
+`— story-NNN awaiting acceptance` in the close-out subject, and print the AC
+checklist for the human tester (a standalone task has no acceptance step).
 A discovered architecture/spec problem becomes `changes/<id>/proposal.md` (draft) —
 never a direct edit to workspace truth (A1). A contract-convention gap is amended in
 `contract.md` directly, gated — rides the task branch or its own `chore(contract):`
@@ -456,8 +493,11 @@ Workspace or code repo (via contract). Argument `[repo-name | role]` fixes the s
 code repo = that repo, in the workspace = the whole project; unknown → list names and
 roles. If the workspace has a remote, fetch and report a behind checkout first. Reads
 registry + all front matter only — no
-bodies except where derivation requires ACs **(stated)**.
-Derives: drafts awaiting approval, plannable PRDs (approved, no stories — D-42),
+bodies except where derivation requires ACs, or the Review section of a PRD draft
+(D-50) **(stated)**.
+Derives: drafts awaiting approval — PRD drafts with open Review lines are *in review*
+(counted; the author's move, never "approve") — plannable PRDs (approved, no stories
+— D-42),
 pending decisions (ADR stubs — D-42/D-44), ready vs blocked stories/tasks
 (standalone tasks labeled), stories awaiting acceptance, untriaged / routed /
 fixed-but-open bugs (D-46), open changes; warns on unresolvable references

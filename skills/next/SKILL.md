@@ -25,8 +25,9 @@ nothing is stored.
    stale (workspace CLAUDE.md, Fresh before derived).
 2. **Read front matter only** — brief, PRDs, design specs, ADRs, stories,
    tasks, bugs, change proposals, plus the registry. Open an artifact body
-   only where derivation needs it (the AC checklist of a story awaiting
-   acceptance).
+   only where derivation needs it: the AC checklist of a story awaiting
+   acceptance, and the `## Review` section of a PRD draft (an open line is
+   one without a ` → ` resolution).
 3. **Validate while reading** (warn at the top of the output; never halt):
    references that resolve to no file (including a bug's `routed_to`);
    statuses outside their vocabulary (brief/design: draft·approved; PRD/ADR:
@@ -34,7 +35,10 @@ nothing is stored.
    change: draft·approved·applied). This is the only workspace validation
    in v0.1.
 4. **Derive** (never trust a stored summary):
-   - drafts awaiting approval (brief, PRDs, designs, ADRs, changes);
+   - drafts awaiting approval (brief, PRDs, designs, ADRs, changes) — a PRD
+     draft with open Review lines is **in review** (count them), not
+     lingering: its action is revise, by its author (`/spectacular:prd
+     prd-NNN`), never approve;
    - **plannable** = PRD `approved` with no stories naming it in `prd:` — an
      approved spec whose breakdown nobody has run (`/spectacular:plan`);
    - **pending decisions** = ADRs still `stub` — the decision map waiting to
@@ -45,7 +49,8 @@ nothing is stored.
    - **awaiting acceptance** = story `in-progress` with all its tasks `done`
      (tasks found via their `story:` links; a PASS sign-off would have
      flipped it to `done`) — a story reopened by a FAIL after acceptance
-     re-enters this state exactly the same way;
+     re-enters this state exactly the same way; the READY line implement
+     writes into the Acceptance log is a record of when, never the source;
    - **untriaged bugs** = bug `open` with empty `routed_to` (needs
      `/spectacular:plan bug-NNN`) · **routed bugs** = `open` with targets,
      their fix state read off the targets (task todo/in-progress/done;
@@ -65,11 +70,11 @@ nothing is stored.
    bothered.
 5. **Output:**
    - Roadmap as text: last thing done → in flight → ready next. Ready next
-     lists every available action type — approvals, acceptances, untriaged
-     bugs, ready tasks (standalone ones marked), plannable PRDs, pending
-     decisions, developable stubs — never the PRD pipeline alone: the owner
-     sees the whole option space even though the recommendation below stays
-     single.
+     lists every available action type — approvals, drafts in review (with
+     their open-comment counts), acceptances, untriaged bugs, ready tasks
+     (standalone ones marked), plannable PRDs, pending decisions, developable
+     stubs — never the PRD pipeline alone: the owner sees the whole option
+     space even though the recommendation below stays single.
    - Mermaid graph: one node per PRD labeled with its reference, slug, and
      story rollup (`2/5 stories done`); edges from `depends_on`; mark each
      node's status. Bugs and standalone tasks are not in the graph — they
@@ -92,8 +97,9 @@ that exist (init, onboard, prd, design, decide, plan, implement, bug, next,
 retro, upgrade). In a scoped run the recommendation is scope-local — the
 best ready action on the scope's repos, or, when nothing is ready there,
 the blocker by name and the command (or the person's area) that clears
-it. Candidates come from every class step 4 derives — approve a draft,
-accept a story, close a fixed bug, triage an untriaged bug, apply a change,
+it. Candidates come from every class step 4 derives — approve a draft, revise
+a draft in review (its author's move — say so), accept a story, close a
+fixed bug, triage an untriaged bug, apply a change,
 implement a ready task, plan a plannable PRD, work a pending decision,
 develop a ready stub — never from the PRD pipeline alone. Rank candidate
 actions by: unblocks the most downstream work → highest reversal cost (settle

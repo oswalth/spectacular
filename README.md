@@ -63,7 +63,7 @@ Commands in lifecycle order — full reference in
 |---------|------|
 | `/spectacular:init` | empty dir → workspace scaffold + product brief (interview) |
 | `/spectacular:onboard` | in a cloned workspace: clone the repos you can reach, check and install prerequisites under a gate, verify integrations, orient |
-| `/spectacular:prd` | PRD map first, then one PRD at a time to approved |
+| `/spectacular:prd` | PRD map first, then one PRD at a time to approved — a draft can be left for team review and revised from its comments |
 | `/spectacular:design` | records owner-authored UX as truth; imports ready design code (Figma, Claude Design) |
 | `/spectacular:decide` | just-in-time ADR when a choice blocks progress |
 | `/spectacular:plan` | approved PRD → stories + per-repo tasks; creates missing code repos; fixes a story after a FAIL or later defect; triages a bug report; writes a standalone task |
@@ -86,6 +86,15 @@ A typical first run: `mkdir acme-product && cd acme-product`, then
 capabilities, `/spectacular:plan` the first approved PRD (it will offer to
 create `../acme-api` and friends), then `/spectacular:implement` inside the
 code repo. `/spectacular:next` tells you where you are whenever you are lost.
+
+Teams review in the files: a draft PRD left in review collects comment lines
+in its `## Review` section and its author works them in with
+`/spectacular:prd`; a story whose tasks are all done is *awaiting
+acceptance* — marked in its Acceptance log, listed by `/spectacular:next` —
+and a reviewer records PASS or FAIL there. In a workspace with a remote every
+commit proposal carries its push, and `/spectacular:implement` claims a task
+(`in-progress`, pushed) before working it, so the state one person changes
+is the state the team derives.
 
 Every command ends with a justified next action, and PRDs, ADRs, the brief, and
 breakdowns all gate on your explicit approval. A read-only **repo-reader**
