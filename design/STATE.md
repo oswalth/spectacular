@@ -1338,5 +1338,7 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   moved there; README publication edits; retro SKILL.md issues clause;
   manifests; docs/release.md step 5; spec.md layout + lint section;
   denylist header; D-4/D-12/OQ-14/Deferred updated. Release
-  chore(release): 0.11.1 (patch). Pushed to github.com/oswalth/spectacular
-  (private) with tags on his ask; local plugin cache updated.
+  chore(release): 0.11.1 (patch), tag v0.11.1. Repo created and pushed
+  with all tags on his ask: github.com/oswalth/spectacular (private);
+  readers added by Vladimir by hand. Local plugin cache not touched (not
+  asked) — the local marketplace still points at the checkout.
