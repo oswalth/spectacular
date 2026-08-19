@@ -47,7 +47,9 @@ sitting grows with every PRD added, so coupling must earn its place.
    plausibly involved,
    dispatch the **repo-reader** subagent with the repo path and one specific
    question (what relevant capability exists, where the integration points are).
-   Never guess at code you can inspect.
+   Never guess at code you can inspect — and read it fresh: fetch first and
+   hand repo-reader the default-branch checkout (workspace CLAUDE.md, Ways
+   of working §5), never a developer's half-done branch.
 3. **Clarify pass.** When the PRD admits materially different breakdowns —
    slicing strategy, phasing, what ships first, story granularity — run at
    most 5 propose-then-ask questions: frame the option you recommend and
@@ -73,14 +75,22 @@ sitting grows with every PRD added, so coupling must earn its place.
    sections and source frames they realize (`design-NNN` + links).
 6. **Missing repo?** Propose creating it (consult `conventions.md` for the name
    if present, else `<product>-<role>`, e.g. `acme-api`): sibling directory per
-   `.spectacular/profile.md`, `git init`, minimal README, and
+   `.spectacular/profile.md`, `git init`, and three plugin-owned files —
    `.spectacular/contract.md` from
-   `${CLAUDE_PLUGIN_ROOT}/templates/contract.md` — fill the workspace
-   back-pointer, the registry name, and the stack/commands from the ADRs that
-   forced the repo. The owner picks `merge_flow` at creation (`pr` needs a
+   `${CLAUDE_PLUGIN_ROOT}/templates/contract.md` (workspace back-pointer,
+   registry name, stack/commands from the ADRs that forced the repo),
+   `CLAUDE.md` from `${CLAUDE_PLUGIN_ROOT}/templates/code-claude.md` and
+   `README.md` from `${CLAUDE_PLUGIN_ROOT}/templates/code-readme.md` (fill
+   repo name, one-liner, role, product name, workspace directory; the README
+   mirrors the contract's commands and carries the Prerequisites from the
+   interview below). The owner picks `merge_flow` at creation (`pr` needs a
    remote and `gh`; `local-rebase` needs neither). Append the repo to the
-   registry. History stays linear either way, and task branches are always
-   squashed.
+   registry: `name | path | remote | role | one-liner` — `remote` is the
+   clone URL once the repo has one (empty until then; `/spectacular:upgrade`
+   backfills it), `role` is the area key: a short stable label (api, web,
+   mobile, infra, …), reused when the repo joins an existing area, since
+   `/spectacular:next <role>` and `/spectacular:onboard` scope by it.
+   History stays linear either way, and task branches are always squashed.
 
    **Repo-bootstrap interview** — fill the contract's Conventions before the
    repo's initial commit; propose-then-ask, never a blank page:
@@ -98,11 +108,19 @@ sitting grows with every PRD added, so coupling must earn its place.
      recommended and a one-line justification; the owner picks. A dimension
      that turns out genuinely contested and hard to reverse is a decision,
      not an interview answer — recommend `/spectacular:decide` for it.
+   - *Prerequisites last:* from the decided stack, propose the tools a
+     machine must have before the contract's commands run — runtime and
+     version, package manager, container runtime, cloud CLIs, …, one line
+     each with the version constraint and why; the owner confirms. They
+     land in the README's Prerequisites section before the initial commit;
+     `/spectacular:onboard` checks them on every new machine.
 
    **Scaffold first task.** The new repo's first task materializes the
    contract — project skeleton, tooling, test harness with the decided
    fixture/test-data strategy, build & packaging — and its Verification
-   checks each convention the interview recorded. For a UI repo, when
+   checks each convention the interview recorded, plus one line: a machine
+   with only the README's Prerequisites installed runs the contract's
+   build, test and run commands. For a UI repo, when
    `product/designs/system/tokens.json` exists: the contract's conventions
    name it as the theme source, and the theme bootstrap (materialize the
    tokens into the repo's stack — CSS variables/Tailwind, or the platform
@@ -167,7 +185,8 @@ re-tested to a fresh PASS, never assumed.
    accepted story is a late acceptance FAIL — the story is not done while
    one of its ACs is violated). Manual edits remain legitimate.
 2. Diagnose: dispatch repo-reader on the suspect repos (the story's tasks'
-   `repo:` values) with the failure as the question.
+   `repo:` values) with the failure as the question — read fresh (workspace
+   CLAUDE.md, Ways of working §5).
 3. Propose reopening tasks (`status:` back to `todo` plus a note pointing at
    the FAIL entry) and/or new fix tasks under the same story. A fix task's
    Verification starts from the reproduction: the check that fails today
@@ -194,7 +213,9 @@ re-tested to a fresh PASS, never assumed.
      default cap around 5–8 stories; only the owner widens it.
    - *Repos:* the candidate tasks' `repo:` values → dispatch repo-reader on
      those repos only (usually one or two), question = the symptom plus the
-     suspected component; it reads only what bears on the question.
+     suspected component; it reads only what bears on the question, at the
+     remote default branch (read fresh — workspace CLAUDE.md, Ways of
+     working §5).
    - *Architecture:* `architecture/overview.md` always; ADRs only those
      touching the candidate repos.
    - *Nothing narrows?* Ask the reporter before reading wider; still

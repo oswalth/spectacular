@@ -68,7 +68,9 @@ owner's explicit greenlight.
    runnable commands — extend the task's Verification section if it was
    vague. If the capsule genuinely underdetermines the task — two readings
    implying different code — stop and ask the owner before building; never
-   pick an interpretation silently. Branch `task-NNN-<slug>`, then execute
+   pick an interpretation silently. Branch `task-NNN-<slug>` from the
+   fetched `origin/<default>` (read fresh — workspace CLAUDE.md, Ways of
+   working §5; no remote → from the local mainline), then execute
    the plan step by step with one line of narration per step, using the
    contract's build/test/run commands; loop until the verification passes.
    Reconnaissance is just-in-time and per step (workspace CLAUDE.md, Ways
@@ -85,8 +87,10 @@ owner's explicit greenlight.
    - what changed — the files touched and a short diff summary;
    - the Learnings, triaged: repo-level facts (toolchain, versions, CLI and
      lint traps, layout) as a diff to the contract's Toolchain notes riding
-     this branch; story-level ones — what this story's next task must know
-     — for the task file at close-out;
+     this branch; a tool or version requirement this task introduced as a
+     diff to the README's Prerequisites, likewise on this branch; story-level
+     ones — what this story's next task must know — for the task file at
+     close-out;
    - the verification evidence — the check that ran and its passing result;
    - the proposed code-repo commit message, per Conventional Commits 1.0.0 —
      subject `type(scope): summary` with the type matching the change

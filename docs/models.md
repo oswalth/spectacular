@@ -11,13 +11,14 @@ Review this table at every retro; the model landscape moves.
 | Command | Recommended | Escalate |
 |---------|-------------|----------|
 | `/spectacular:init` | opus | — (judgment-dense, low volume, everything downstream builds on the brief) |
+| `/spectacular:onboard` | sonnet | — (derived checks plus gated machine changes; platform-specific install judgment) |
 | `/spectacular:prd` | opus | — (ACs steer all delivery work) |
 | `/spectacular:design` | opus | — (design truth gates all UI delivery; mapping visuals to requirements is judgment-dense) |
 | `/spectacular:decide` | opus | fable for foundational, hard-to-reverse ADRs |
 | `/spectacular:plan` | sonnet | opus when cross-repo coupling is non-trivial, or a bug triage spans repos |
 | `/spectacular:implement` | sonnet | opus after a task fails its goal-driven loop twice |
 | `/spectacular:bug` | haiku | sonnet if the evidence elicitation misses obvious gaps |
-| `/spectacular:next` | haiku | sonnet if ranking quality disappoints |
+| `/spectacular:next` | haiku | sonnet if ranking quality disappoints (scoped runs included) |
 | `/spectacular:retro` | haiku (append) | sonnet for review mode |
 | `/spectacular:upgrade` | sonnet | — (mechanical scan plus gated edits) |
 | repo-reader (subagent) | sonnet | — |

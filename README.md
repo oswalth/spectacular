@@ -1,9 +1,10 @@
 # spectacular
 
 A Claude Code plugin for AI-assisted SDLC on **multi-repo products**: from idea
-to merged code through ten commands — brief → PRDs → design specs →
+to merged code through eleven commands — brief → PRDs → design specs →
 decisions → stories and tasks → implementation → acceptance — plus bug
-reports and standalone maintenance tasks once the product is live.
+reports and standalone maintenance tasks once the product is live, and
+onboarding for whoever joins.
 
 The model: one **workspace repo** holds all product documentation (brief, PRDs,
 ADRs, stories, tasks); **code repos** live as its sibling directories, each
@@ -26,15 +27,31 @@ The repo is private — installation rides your existing GitHub credentials
 **Private-repo gotcha:** background auto-update needs git credentials without a
 prompt. Run `gh auth setup-git` once, or keep your SSH key loaded in an agent.
 
+**Joining an existing product** (a teammate, or you on a new machine): clone
+the product's workspace repo, then run `/spectacular:onboard` inside it. It
+clones the code repos you can reach (GitHub decides — nothing about people is
+stored), narrowed to the areas you work in, checks each repo's README
+prerequisites and installs missing tools only on your explicit approval,
+verifies the integrations the artifacts imply (`gh`, a design-tool MCP), and
+points you at `/spectacular:next <role>` — your work, nothing else.
+
 ## Update
 
 ```
 /plugin marketplace update spectacular
 ```
 
-After updating, run `/spectacular:upgrade` in each workspace to align it with
-the new version — the per-version migration notes live in
-[docs/upgrades.md](docs/upgrades.md).
+Then, **once per workspace**, `/spectacular:upgrade` in the workspace checkout:
+it walks every per-version migration note from the workspace's pin to the
+installed version ([docs/upgrades.md](docs/upgrades.md) — a 0.8 → 0.15 jump
+walks them all, in order), drift-scans the workspace *and every registered
+code repo* (contract, `CLAUDE.md`, `README.md`) against the current
+templates, and lands the gated fixes per repo following each repo's
+`merge_flow` — a pull request for `pr` repos, one mainline commit for
+`local-rebase` repos. Merge the PRs; teammates pull and update the plugin on
+their machines. Code repos carry no plugin version of their own — the
+workspace pin is the single authority; a repo not checked out on the
+upgrading machine is reported, not silently skipped.
 
 ## Use
 
@@ -45,13 +62,14 @@ Commands in lifecycle order — full reference in
 | Command | Does |
 |---------|------|
 | `/spectacular:init` | empty dir → workspace scaffold + product brief (interview) |
+| `/spectacular:onboard` | in a cloned workspace: clone the repos you can reach, check and install prerequisites under a gate, verify integrations, orient |
 | `/spectacular:prd` | PRD map first, then one PRD at a time to approved |
 | `/spectacular:design` | records owner-authored UX as truth; imports ready design code (Figma, Claude Design) |
 | `/spectacular:decide` | just-in-time ADR when a choice blocks progress |
 | `/spectacular:plan` | approved PRD → stories + per-repo tasks; creates missing code repos; fixes a story after a FAIL or later defect; triages a bug report; writes a standalone task |
 | `/spectacular:implement` | in a code repo: one task → one squashed mainline commit |
 | `/spectacular:bug` | files a bug report with its evidence, for triage by plan |
-| `/spectacular:next` | derives state, renders the roadmap, recommends one action |
+| `/spectacular:next` | derives state, renders the roadmap, recommends one action — scoped to a repo or an area (`next web`) on request |
 | `/spectacular:retro` | one-line friction capture; periodic review |
 | `/spectacular:upgrade` | aligns a workspace with a newer plugin version |
 
@@ -72,6 +90,15 @@ code repo. `/spectacular:next` tells you where you are whenever you are lost.
 Every command ends with a justified next action, and PRDs, ADRs, the brief, and
 breakdowns all gate on your explicit approval. A read-only **repo-reader**
 subagent inspects code repos on behalf of prd/decide/plan; it never writes.
+Code repos are always read **fresh** — fetched and read at their remote
+default branch, never at whatever a local checkout happens to hold.
+
+Each code repo carries a small `CLAUDE.md` that imports the workspace's rules
+and the repo's contract, so any session there — with or without a task —
+knows where truth lives and how work lands; housekeeping (docs, comments,
+formatting, the contract) needs no task, anything that changes behavior does.
+Conversation language is each person's own Claude Code setting; the
+workspace chooses its artifact language at init (English proposed).
 
 ## Evolving the plugin
 

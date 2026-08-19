@@ -30,13 +30,14 @@ spectacular/
 ├── CLAUDE.md                      # plugin-repo rules: two zones, Ways of working #1–#9,
 │                                  #   retro loop, add-a-skill/agent/template, manual
 │                                  #   checks (D-48 — self-sufficiency for a team, D-41)
-├── skills/<name>/SKILL.md         # the ten skills (D-8: no plain commands;
+├── skills/<name>/SKILL.md         # the eleven skills (D-8: no plain commands;
 │                                  #   design + upgrade added by D-32/D-34,
-│                                  #   bug by D-46)
+│                                  #   bug by D-46, onboard by D-49)
 ├── agents/repo-reader.md          # the one subagent
 ├── templates/                     # workspace artifact templates (brief, prd, adr,
 │                                  #   story, task, bug, change-proposal, contract,
-│                                  #   overview, workspace-claude, naming-families)
+│                                  #   overview, workspace-claude, naming-families,
+│                                  #   code-claude + code-readme — D-49)
 │                                  #   — single source of each artifact's shape;
 │                                  #   added S-5 on Vladimir's feedback;
 │                                  #   naming-families (frozen letter taxonomy)
@@ -56,11 +57,13 @@ Skills are invoked as `/spectacular:<name>`.
 
 ```
 <workspace>/
-├── CLAUDE.md                  # ways of working for sessions here; embeds Karpathy guidelines
+├── CLAUDE.md                  # ways of working for sessions here; embeds Karpathy guidelines;
+│                              #   Language section (artifact language — D-49)
 ├── README.md                  # human orientation
 ├── .spectacular/
 │   ├── profile.md             # container layout (sibling-dir default) + plugin version pin (P-5)
-│   ├── registry.md            # code-repo registry: name, relative path, role, one-liner (R-2)
+│   ├── registry.md            # code-repo registry: name, path, remote (clone URL — D-49),
+│                              #   role (= area key for scoped next / onboard — D-49), one-liner
 │   └── observations.md        # retro append target (created on first use)
 ├── conventions.md             # optional naming conventions (D-11, D-27: activated
 │                              #   families + theme + pools; taxonomy frozen in the
@@ -88,6 +91,18 @@ Directories are created lazily by the skill that first writes into them **(state
 init runs `git init` and makes the initial commit.
 
 ## Code-repo side (written by plan at creation/registration)
+
+Three plugin-owned files (D-49): `.spectacular/contract.md` (below), `CLAUDE.md` from
+templates/code-claude.md — a short routing file that **imports** the contract and the
+workspace CLAUDE.md (`@.spectacular/contract.md`, `@../<workspace>/CLAUDE.md`; Claude
+Code's memory imports, external import approved once per machine), states where truth
+lives (never copied into the repo), how to find the *why* (overview + ADR outcome
+sections), task work vs housekeeping, and that architecture problems go back to the
+workspace — and `README.md` from templates/code-readme.md with a **Prerequisites**
+section (tool, version constraint, why — assumed installed before any command; proposed
+by plan's bootstrap interview, verified by the scaffold task, extended at implement's
+landing gate, scanned by upgrade, checked by onboard). All three are scaffolding
+upgrade keeps aligned, landed per the repo's `merge_flow`.
 
 `<code-repo>/.spectacular/contract.md`
 
@@ -209,6 +224,32 @@ and the task's Verification. All artifact shapes live in templates/ only.
   **late FAIL** of the same loop (D-46): `plan story-NNN "<defect>"` writes the FAIL
   entry, returns the story to `in-progress`, adds fix tasks under the gate; the story
   is re-tested to a fresh PASS — never assumed fixed.
+- **Housekeeping in a code repo (D-49, D-37a refined):** docs, comments, formatting,
+  README, CLAUDE.md, the contract and its Toolchain notes need no task: edited under the
+  commit protocol, CC type matching the change (`docs`/`style`/`chore`), no `Task:`
+  footer, landed per the repo's `merge_flow`. Anything that changes behavior,
+  architecture or dependencies — a refactor included — is a task (standalone when it
+  has no story). Stated in the workspace CLAUDE.md template and the code-repo CLAUDE.md.
+- **Language (D-49):** the workspace chooses its artifact language at init (English
+  proposed) and records it in CLAUDE.md's Language section: everything that lands in a
+  repo — artifacts, front matter, commit messages, code comments, READMEs, Learnings,
+  retro observations — follows it; the conversation follows the person's own Claude
+  Code `language` setting (or the language they write in); translations on request
+  stay in chat. No per-command language argument.
+- **Read fresh (D-49):** code repos are read at their remote default branch, never at
+  whatever a local checkout holds — `git fetch` first; in place when the checkout is on
+  the default branch, clean and current; else a detached temporary worktree of
+  `origin/<default>` in scratch; absent locally → shallow clone from the registry
+  `remote` into scratch; fetch failing → local, flagged stale; a `local-rebase` mainline
+  ahead of the remote is freshest locally. Applies to repo-reader dispatch (plan, decide),
+  upgrade, and implement's task branches (start from fetched `origin/<default>`).
+  Defined once in the workspace CLAUDE.md template (§5, last bullet); next fetches the
+  workspace itself and reports a behind checkout. Git over the network, not the GitHub
+  API/MCP: repo-reader greps a filesystem, and git already carries the credentials.
+- **Onboarding access (D-49):** nothing about people is stored (D-46's deferral holds).
+  onboard derives access from what GitHub grants (`git ls-remote` per registry `remote`)
+  and narrows to the person's chosen areas (registry `role`); prerequisites, integrations
+  and orientation follow from the chosen repos only.
 - **Standalone tasks (D-45):** maintenance work with no user-visible change (IaC
   team-member add, dependency bump, rotation, data fix) is a task **without
   `story:`** — `repo:` + Verification make it ready; written only by plan's
@@ -254,18 +295,19 @@ and the task's Verification. All artifact shapes live in templates/ only.
   one fires, plan says so explicitly — that firing IS the build trigger for the epic
   machinery (P-4).
 
-## The ten skills
+## The eleven skills
 
 Every skill: runnable in a fresh session, all context from artifacts (A6); ends with at
 least one concrete, justified next action naming only commands that exist (R-5, P-3).
 Model column = documentation-only recommendation (D-14). Lifecycle order:
-init → prd → design → decide → plan → implement → bug → next → retro → upgrade.
+init → onboard → prd → design → decide → plan → implement → bug → next → retro → upgrade.
 
 ### init — opus
 Empty directory only (D-6; non-empty → refuse, name the brownfield deferral).
-Flow: scaffold (CLAUDE.md embedding Karpathy guidelines + §5 just-in-time reconnaissance
-+ commit protocol, README,
-profile with plugin version pin, empty registry) → `git init` + proposed scaffold
+Flow: product name + artifact language (English proposed — D-49) → scaffold (CLAUDE.md
+embedding Karpathy guidelines + §5 just-in-time reconnaissance + commit protocol +
+Language, README, profile with plugin version pin, empty registry with the `remote`
+column) → `git init` + proposed scaffold
 commit (D-26) → BA interview (problem, users, goals, non-goals, constraints;
 propose-then-ask per topic with confirmed mini-summaries — D-28) →
 `product/brief.md` (draft; capability sketch 2–4 lines per capability — D-30a) →
@@ -273,6 +315,25 @@ optional naming step (D-27: frozen family taxonomy from templates/naming-familie
 activate families, pick a viability-checked theme, write pools) → approval gate
 presenting the depth ladder (D-30a) → proposed closing commit.
 Next: approve brief if still draft; then `/spectacular:prd` for the map.
+
+### onboard — sonnet
+Workspace checkout only (profile.md present; else "clone the workspace first"). A
+teammate or a new machine joins an existing product (D-49). Writes nothing into the
+workspace; changes the machine only under gates. Flow: plugin vs pin (plugin older →
+update first; pin older → note, upgrade is the owner's job later) → fetch/ff the
+workspace → reachability per registry row (path present / no remote recorded /
+`git ls-remote` reachable / refused = no access — derived, nothing stored) → area: the
+`[role]` argument or one question over the reachable roles, default all → clone the
+chosen absent repos as siblings → prerequisites from each chosen README's
+`## Prerequisites` (check non-interactively under a timeout; table present / missing /
+mismatch / unknown; install commands proposed per platform and run **only on explicit
+approval naming the tools**; manual steps named) → integrations derived from artifacts
+(`merge_flow: pr` → `gh auth status`; UI repo + Figma/Claude Design sources → design-tool
+MCP connected? — never configured; login steps named in prerequisite lines) →
+orientation (brief one-liner, workspace CLAUDE.md, code-repo CLAUDE.md external-import
+approval, `language` setting). Idempotent: a machine doctor.
+Next: `/spectacular:next <role>` (bare when they took everything); name upgrade for
+the owner when the pin lagged.
 
 ### prd — opus
 Precondition: brief approved.
@@ -390,7 +451,11 @@ Next: `/spectacular:plan bug-NNN` (or `plan story-NNN "<defect>"` when the story
 known).
 
 ### next — haiku (sonnet if ranking quality disappoints)
-Workspace or code repo (via contract). Reads registry + all front matter only — no
+Workspace or code repo (via contract). Argument `[repo-name | role]` fixes the scope
+(D-49): a registry name = one repo, a role = every repo of that area; no argument in a
+code repo = that repo, in the workspace = the whole project; unknown → list names and
+roles. If the workspace has a remote, fetch and report a behind checkout first. Reads
+registry + all front matter only — no
 bodies except where derivation requires ACs **(stated)**.
 Derives: drafts awaiting approval, plannable PRDs (approved, no stories — D-42),
 pending decisions (ADR stubs — D-42/D-44), ready vs blocked stories/tasks
@@ -404,8 +469,12 @@ action type, never the PRD pipeline alone — D-42) AND a Mermaid graph of PRDs
 with story rollup (D-10); candidates from every derived class (approve/accept/close-fixed-bug/triage/apply →
 implement → plan → decide → develop stub), ranked by unblocks → reversal cost → size
 (speck's ranking, D-3) — untriaged bugs rank with lingering drafts, above new work;
-exactly ONE recommendation with justification. In a code repo,
-filtered to that repo's tasks.
+exactly ONE recommendation with justification. Scoped run: the same derivation narrowed
+to the scope's repos — tasks with `repo:` in scope (blockers named across repos), stories
+with ≥1 such task (awaiting acceptance included), bugs routed to them; the graph draws
+only PRDs with stories touching the scope; workspace-level classes (drafts, plannable,
+pending decisions, stubs, changes, untriaged bugs) collapse to one footer line with
+counts; the recommendation is scope-local, or names the blocker and what clears it.
 
 ### retro — haiku (append) / sonnet (review)
 Modes chosen by argument CONTENT (D-30c). One short observation → append verbatim
@@ -423,13 +492,19 @@ repo, review mode IS the R-3 plugin-evolution loop (trigger fired
 Workspace only (profile.md present). Aligns the workspace with the installed plugin
 version (D-32): compare pin vs installed → collect docs/upgrades.md sections from pin
 to installed → drift-scan workspace files against current templates (CLAUDE.md
-sections; conventions.md vs the frozen taxonomy; .spectacular files; each registry
-repo's contract.md vs the contract template — D-40, code repos have no pin of their
-own) → propose the
+sections incl. Language; conventions.md vs the frozen taxonomy; .spectacular files incl.
+the registry `remote` column, empty remotes proposed from local clones' origin; each
+registry repo read fresh — absent locally = reported unreachable, never skipped — its
+contract.md vs the contract template, CLAUDE.md vs code-claude, README Prerequisites
+section present, content proposed from manifests/Stack as inferred — D-40, code repos
+have no pin of their own; D-49) → propose the
 migration set split by ownership (plugin-owned scaffolding: direct gated edits;
 approved truth: changes/ proposals, concrete defects only — conformance alone never
-rewrites approved truth; code-repo contracts: gated per-repo `chore(contract): …`
-commits, structure only) → apply, bump pin → one proposed commit. Equal versions run
+rewrites approved truth; code-repo files: one gated change set per repo landed per its
+`merge_flow` — `pr`: branch `chore/spectacular-X.Y.Z` + push + `gh pr create` inside the
+approval, `local-rebase`: one mainline commit — structure only) → apply, bump pin → one
+proposed commit; an open PR reappears as drift on an equal-version rerun by design.
+Equal versions run
 the drift scan as a verification pass (D-32 as amended: hand-migrated workspaces can
 claim the right pin while missing pieces; findings follow the gated flow, no pin
 change). Not its job: validating upgraded skills — the next lifecycle stage does that.
@@ -439,7 +514,8 @@ Next: `/spectacular:next`.
 
 Read-only. Input: repo path + a specific question. Output: findings relevant to that
 question (architecture, capabilities, integration points). Never writes. Dispatched by
-prd / decide / plan.
+prd / decide / plan. The path it receives is the fresh default-branch checkout the
+dispatching skill prepared (read-fresh rule, D-49); it reads it as given.
 
 Deferred, design settled (see STATE.md Deferred): a commit-hash-keyed cache at
 `<code-repo>/.spectacular/summary.md` — repo-reader stamps its findings with the HEAD

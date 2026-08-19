@@ -65,7 +65,9 @@ the same gate; a re-scan never rewrites existing stubs.
 3. **Investigate.** Never assemble options from memory alone when the decision
    is hard to reverse: research the candidates' current state (versions,
    pricing, constraints, platform requirements) with web search, and dispatch
-   **repo-reader** where registered code informs the choice. For
+   **repo-reader** where registered code informs the choice — read fresh:
+   fetch first and hand it the default-branch checkout (workspace
+   CLAUDE.md, Ways of working §5). For
    cheap-to-reverse decisions the artifacts may suffice — say so explicitly.
 4. **Drivers.** List what actually constrains the choice, each traced to the
    brief, a PRD, a clarify answer, or a stated constraint — not generic

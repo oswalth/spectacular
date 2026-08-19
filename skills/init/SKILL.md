@@ -19,14 +19,20 @@ non-empty directory.
 
 ## Steps
 
-1. **Ask for the product name.** One question, nothing else yet.
+1. **Ask for the product name and the artifact language.** One message,
+   nothing else yet. Propose **English** for artifacts (the templates, the
+   commit grammar and most tooling are English; a team that chooses another
+   language does so consciously, for every artifact and commit). The
+   conversation language is each person's own Claude Code setting, never a
+   workspace choice — the template's Language section says so.
 
 2. **Scaffold.** Create:
    - `CLAUDE.md` — copy the template at
      `${CLAUDE_PLUGIN_ROOT}/templates/workspace-claude.md`, replacing
-     `<product-name>`.
+     `<product-name>` and `<artifact-language>`.
    - `README.md` — 3–5 lines: product name, "documentation workspace of a
-     multi-repo product", pointers to `CLAUDE.md` and `/spectacular:next`.
+     multi-repo product", pointers to `CLAUDE.md`, `/spectacular:next`, and
+     `/spectacular:onboard` for anyone joining on a new machine.
      Fill the product one-liner in after the interview (step 4).
    - `.spectacular/profile.md` — read the installed plugin version from
      `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json`, then write:
@@ -47,9 +53,15 @@ non-empty directory.
      ```markdown
      # Code-repo registry
 
-     | name | path | role | one-liner |
-     |------|------|------|-----------|
+     | name | path | remote | role | one-liner |
+     |------|------|--------|------|-----------|
      ```
+
+     `remote` is the clone URL (filled by plan when the repo gets one — a
+     fresh clone of this workspace reconstructs the constellation from it);
+     `role` is the **area key** — a short stable label (api, web, mobile,
+     infra, …) shared by the repos of one area; `/spectacular:next <role>`
+     and `/spectacular:onboard` scope by it.
 
    Other directories (`product/`, `architecture/`, `delivery/`, `changes/`) are
    created lazily by whichever skill first writes into them — do not create them

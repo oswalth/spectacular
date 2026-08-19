@@ -16,11 +16,13 @@ contradict what was agreed in conversation.
 
 CLAUDE.md loads automatically. Read Decisions, Deferred and Open questions here, then
 design/spec.md for the parts you touch; the Session log is evidence, read on demand.
-Status: the plugin is published to the team (D-48); S-6 dogfood continues in the pilot's
-directories, not here — remaining: ≥1 story through acceptance PASS on the current
-plugin. Work here is processing review feedback and retro briefs. Do not re-derive
-settled Decisions and do not re-explore ../speck or ../speculation beyond what this
-file records.
+Status: the plugin is published to the team (D-48) and at 0.12.0 (D-49: code-repo
+CLAUDE.md + README shape, onboard, scoped next, read-fresh, language); S-6 dogfood
+continues in the pilot's directories, not here — remaining: ≥1 story through
+acceptance PASS on the current plugin, and the first real teammate onboarding
+(D-49's onboard has not run for real yet). Work here is processing review feedback
+and retro briefs. Do not re-derive settled Decisions and do not re-explore ../speck
+or ../speculation beyond what this file records.
 
 ## Ways of working
 
@@ -181,11 +183,15 @@ commands at all.
   manual form hurts, or a second person gains write access to the plugin
   repo — read-only teammates hand briefs over as GitHub issues.
 - GitHub MCP (D-33): no current need — sibling layout reads across repos on
-  disk; merge_flow: pr rides the gh CLI. Trigger: first remote-only repo, a
-  collaborator without local siblings, or CI-status needs.
+  disk; merge_flow: pr rides the gh CLI. The "collaborator without local
+  siblings" trigger fired 2026-08-19 (team onboarding) and is met without an
+  MCP: registry `remote` + git fetch/clone (D-49 read-fresh, onboard).
+  Remaining triggers: first remote-only repo, or CI-status needs.
 - People model for bugs and tasks (D-46): no `assignee:`/`severity:` fields;
   routing unit is the repo, severity is a triage judgment recorded in the
-  Triage notes. Trigger: a real team needs per-person routing or a
+  Triage notes. Held again 2026-08-19 (D-49): onboarding derives access from
+  GitHub and scoped next uses the registry `role` — nothing about people is
+  stored. Trigger: a real team needs per-person routing or a
   severity-driven ranking that the owner cannot make by reading next.
 - Dedicated design-system repo (D-35, frozen family U): imported design code
   stays workspace-resident reference material. Trigger: it becomes a
@@ -580,6 +586,11 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   retro's plugin-repo section, upgrades.md header, contract template
   comments), not only the design zone, so the procedure survives release —
   design/ is excluded from released history (D-12).
+  D-37 amended (2026-08-19, D-49): (h) the `Task:` footer is mandatory for
+  a code-repo commit that realizes a task; housekeeping commits (docs,
+  comments, formatting, README, CLAUDE.md, contract, Toolchain notes) carry
+  none — the rule had already been relaxed in practice by D-38d and D-40's
+  `chore(contract)` commits; now it is stated.
 - D-38 (2026-08-04) Repo-internal engineering conventions are elicited at
   repo birth and carried by the contract (retro round 2, pilot; in-chat
   observation, Vladimir-ratified with refinements). The gap: stack ADRs
@@ -643,7 +654,9 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   against the current template; fixes are gated per repo as their own
   `chore(contract): …` commits, structure only — undecided Conventions are
   findings, never auto-filled. The workspace pin stays the single version
-  authority (P-5 holds).
+  authority (P-5 holds). Reaffirmed 2026-08-19 (D-49) on the owner's own
+  reasoning; the scan now also covers the code-repo CLAUDE.md and README,
+  and lands per `merge_flow`.
 - D-41 (2026-08-11, retro round 4, second workspace) Gate protocol,
   discussion-first, uniform challenge. Observation (Vladimir, interrupting a
   retro review that applied three proposed fixes after his reply "keep on
@@ -855,6 +868,71 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   not fire the machinery trigger when that user is read-only — briefs
   travel as issues; the manual loop stays. → v0.11.1 (patch: nothing
   workspace-facing).
+- D-49 (2026-08-19, retro round 8, in-chat, team onboarding) Code repos
+  become self-sufficient session homes; the team joins through the
+  plugin. Observations (Vladimir, in-chat): (1) code repos have no
+  CLAUDE.md — an ad-hoc session had to be pointed by hand at the contract,
+  overview and ADRs; (2) no sanctioned path for small changes without a
+  task; (3) a new teammate is being onboarded — clone, tools, integrations,
+  per access level; (4) code-repo READMEs must state prerequisites; (5) the
+  upgrade flow across versions and repos, PRs, whether code repos need a
+  pin; plus three new asks: conversation in the teammate's language with
+  English artifacts, next scoped per area/repo, reads via GitHub first.
+  Root-caused against plan step 6 (git init + minimal README + contract —
+  nothing a session auto-loads), implement (capsule reads the workspace
+  CLAUDE.md, so only skill-driven sessions inherited the rules; branched
+  from wherever the checkout sat), the registry (no remote URL — a fresh
+  workspace clone cannot reconstruct the constellation; D-33's
+  "collaborator without local siblings" trigger), upgrade (per-repo commits
+  ignored `merge_flow`), next (code-repo mode filtered tasks only), the
+  workspace template (no artifact-language rule), Claude Code's memory
+  imports (verified in docs: relative to the importing file, external
+  imports approved once per project, four hops) and its `language` setting
+  (verified in the installed 2.1.235 binary: "Preferred language for
+  Claude responses"). Verdicts: (1) confirmed — structural, contra D-41
+  self-sufficiency; (2) refined — D-45's standalone task is too heavy for a
+  docstring and the "mandatory Task footer" was already relaxed by
+  D-38d/D-40: the line is drawn, refactors challenged onto the task side
+  (Karpathy §4) and the owner agreed; (3) confirmed, two gaps (registry
+  remote; procedure) — access is derived from GitHub, never stored (D-46
+  holds); the P-4 tension (prospective need) was stated and overridden by
+  the real onboarding; (4) stands as stated; (5) mostly already designed
+  (D-32/D-40: one run in the workspace, notes walked in order, per-repo
+  scan) — two gaps (merge_flow; documentation), D-40 reaffirmed; language
+  → user-level setting + artifact language chosen at init (Vladimir's
+  refinement over a fixed English rule), no per-command argument; scoped
+  next by registry name or role; "GitHub first" challenged — wrong for
+  local-rebase mainlines and for the workspace, and repo-reader needs a
+  filesystem — refined to git fetch-first with a temporary worktree of
+  origin/<default>, local as flagged fallback. Resolution, all approved
+  (A–G + Q1–Q4): (a) templates/code-claude.md — imports
+  `@.spectacular/contract.md` + `@../<workspace>/CLAUDE.md` (define once),
+  routing (truth in the workspace, never copied; why = overview + ADR
+  outcome sections; task vs housekeeping; architecture problems go back to
+  the workspace; contract gaps repo-local), fallback pointer; plan writes
+  it, upgrade scans it; (b) housekeeping rule — D-37 (h), workspace
+  template commit protocol + "Work outside a PRD breakdown" third bullet;
+  (c) templates/code-readme.md with Prerequisites — bootstrap interview
+  proposes them, scaffold task verifies "a machine with only these runs
+  build/test/run", implement's landing gate adds what a task introduced,
+  upgrade scans; (d) registry `remote` column (plan fills, upgrade
+  backfills from origin) and `role` = area key; (e) skill onboard (sonnet):
+  plugin vs pin → fresh workspace → reachability per registry remote
+  (ls-remote; refused = no access) → area pick over reachable roles →
+  clone chosen → README prerequisites checked, installs only under a gate
+  naming the tools → integrations derived (gh, design-tool MCP — never
+  configured) → orientation; idempotent; (f) upgrade lands code-repo change
+  sets per `merge_flow` (PR / mainline commit), reports unreachable repos,
+  scans CLAUDE.md/README/registry; README Update paragraph; (g) workspace
+  template: Language section (`<artifact-language>` filled by init), Fresh
+  before derived, §5 read-fresh bullet; init asks the artifact language;
+  next `[repo-name | role]` scoped derivation with a one-line
+  workspace-level footer, workspace fetch; implement branches from fetched
+  origin/<default>; repo-reader dispatch lines (plan, decide) and the
+  agent's "read as given"; retro translates observations into the artifact
+  language. D-33 stays deferred with its trigger partly met by git; D-46
+  deferral held. → v0.12.0 (minor: new skill, new templates, workspace
+  template sections).
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -1342,3 +1420,28 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   with all tags on his ask: github.com/oswalth/spectacular (private);
   readers added by Vladimir by hand. Local plugin cache not touched (not
   asked) — the local marketplace still points at the checkout.
+- S-8 (round 8) 2026-08-19: Retro review in this repo — Vladimir's in-chat
+  suggestions after working in the pilot's api repo and while onboarding a
+  new teammate (five observations + three new asks; see D-49). Evidence:
+  plan/implement/upgrade/next skills, the templates, D-32/D-37/D-40/D-45/
+  D-46, Claude Code docs for CLAUDE.md `@` imports and the installed binary
+  for the `language` setting. First gate (A–G + three owner calls):
+  approved with "agree" on the verdicts (refactors task-side, onboard now,
+  import-based CLAUDE.md) and one refinement — onboarding must respect
+  access levels; second gate (Q1–Q4): derived access + role as area key,
+  user-level conversation language + artifact language chosen at init,
+  scoped next by name/role with a footer, fetch-first via git instead of
+  GitHub reads — all agreed. Applied in one pass: templates code-claude /
+  code-readme (new), workspace-claude (Language, Fresh before derived,
+  housekeeping bullet, commit-protocol footer wording, §5 read-fresh);
+  skills init (language question, registry `remote` + role semantics,
+  README pointer), plan (three plugin-owned files, prerequisites in the
+  interview, scaffold verification line, read-fresh dispatch), implement
+  (branch from fetched origin, README prerequisites at the gate), decide
+  (read-fresh dispatch), upgrade (scans + merge_flow landing + unreachable
+  repos), next (scope argument, scoped derivation, footer, workspace
+  fetch), retro (observation language), onboard (new); repo-reader note;
+  generate-docs LIFECYCLE + commands.md; models.md; README; upgrades.md
+  0.12.0; CHANGELOG 0.12.0; plugin.json 0.12.0; spec.md throughout;
+  D-33/D-37/D-40/D-46 notes here. Commits proposed per protocol (feat +
+  chore(release): 0.12.0).

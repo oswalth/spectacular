@@ -9,6 +9,10 @@ Recommended models per command: see [models.md](models.md).
 
 Bootstrap a new spectacular workspace in an empty directory — scaffold, git init, a business-analyst interview producing the product brief, and an optional naming-conventions step. Start here for a new product.
 
+## `/spectacular:onboard [role]`
+
+Set up a teammate or a new machine on an existing workspace — clone the registered code repos the person can reach (access is whatever GitHub grants, narrowed to the areas they work in), check every chosen repo's README prerequisites and install the missing ones only under a gate, verify the integrations the artifacts imply, and orient toward a scoped next. Idempotent — rerun it as a machine doctor.
+
 ## `/spectacular:prd [prd-NNN]`
 
 Propose the PRD map on first run, or develop one PRD from stub to approved — bounded clarify pass, checkable acceptance criteria, explicit out-of-scope. Requires an approved product brief.
@@ -33,9 +37,9 @@ Execute one task inside a code repo — compile the just-in-time context capsule
 
 File a bug report as a workspace artifact — map what the reporter says onto the bug Definition of Ready, elicit the missing evidence in at most two short rounds, then write bug-NNN (open) for triage by plan.
 
-## `/spectacular:next`
+## `/spectacular:next [repo-name | role]`
 
-Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open bugs, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation.
+Derive project state from artifact front matter — pending approvals, ready vs blocked work, stories awaiting acceptance, open bugs, open changes — render the roadmap as text and a Mermaid graph, and make exactly one justified recommendation; scoped to one repo or one area (registry role) on request, so a developer sees only their work.
 
 ## `/spectacular:retro [observation]`
 

@@ -28,33 +28,51 @@ Runs **in a workspace** (profile.md present); otherwise refuse.
 3. **Drift scan** regardless of the notes — report anything they don't
    explain:
    - workspace `CLAUDE.md` vs `templates/workspace-claude.md`: missing or
-     outdated sections;
+     outdated sections (Language included — an existing workspace names the
+     language its artifacts already use);
    - `conventions.md` (if present) vs `templates/naming-families.md`: letters
      must carry their frozen family meaning;
-   - `.spectacular/` files present and well-formed;
-   - each repo in `.spectacular/registry.md`: its `.spectacular/contract.md`
-     present and structured per `templates/contract.md` — front-matter fields
-     complete, Conventions as the dimension list, a Toolchain notes section
-     (an empty heading is fine — implement fills it). Code repos carry no version
-     pin of their own (D-40): the workspace pin covers the constellation, and
-     this pass is how their contract drift gets caught.
+   - `.spectacular/` files present and well-formed; the registry carries the
+     `remote` column — an empty `remote` is proposed from the local clone's
+     `git remote get-url origin` (derived, never invented);
+   - each repo in `.spectacular/registry.md`, **read fresh** (fetch; default
+     branch — workspace CLAUDE.md, Ways of working §5): a repo absent
+     locally is reported as *unreachable — clone it (`/spectacular:onboard`)
+     and re-run*, never silently skipped; its `.spectacular/contract.md`
+     present and structured per `templates/contract.md` — front-matter
+     fields complete, Conventions as the dimension list, a Toolchain notes
+     section (an empty heading is fine — implement fills it); its
+     `CLAUDE.md` present and aligned with `templates/code-claude.md`; its
+     `README.md` carrying a Prerequisites section (structure — the content
+     is *proposed* from manifests and the contract's Stack, marked inferred,
+     for the owner to confirm). Code repos carry no version pin of their own
+     (D-40): the workspace pin covers the constellation, and this pass is
+     how their drift gets caught.
 4. **Propose the migration set**, split by ownership:
    - **Plugin-owned scaffolding** (CLAUDE.md sections, conventions structure,
-     profile) → direct edits, applied under this gate.
+     profile, registry columns) → direct edits, applied under this gate.
    - **Approved truth artifacts** (brief, PRDs, ADRs, designs) → a `changes/`
      proposal, and only where the new standard exposes a concrete defect.
      Template conformance alone never rewrites approved truth — approved is
      approved.
-   - **Code-repo contracts** → gated edits in that repo, each proposed as its
-     own `chore(contract): …` commit there (a contract is code-repo-local,
-     not workspace truth). Structure only — never fill Conventions content
-     the owner hasn't decided; a missing decision is a finding to report, not
-     a blank to complete.
+   - **Code-repo files** (contract, `CLAUDE.md`, `README.md`) → gated edits
+     in that repo, one change set per repo, landed per the repo's contract
+     `merge_flow`: `pr` → branch `chore/spectacular-X.Y.Z`, push and
+     `gh pr create` inside this gate's approval (the PR is merged by the
+     repo's normal review); `local-rebase` → one commit on the mainline
+     (`chore(spectacular): align with plugin vX.Y.Z`; a contract-only fix
+     keeps `chore(contract): …`). Code-repo files are code-repo-local, not
+     workspace truth. Structure only — never fill Conventions content the
+     owner hasn't decided; a missing decision is a finding to report, not a
+     blank to complete.
 5. **Apply** the approved items — approval is explicit and names which
-   items; a vague go-ahead re-asks (gate protocol, CLAUDE.md). Set the pin
-   to the installed version.
-6. **Propose one commit** — `upgrade workspace to spectacular vX.Y.Z`; commit
-   only on explicit approval (workspace commit protocol, CLAUDE.md).
+   items, PRs included; a vague go-ahead re-asks (gate protocol,
+   CLAUDE.md). Set the pin to the installed version. A PR still open shows
+   up as drift on the next equal-version run — that is the verification
+   mode doing its job, not an error.
+6. **Propose one commit** — `chore(spectacular): upgrade workspace to
+   vX.Y.Z`; commit only on explicit approval (workspace commit protocol,
+   CLAUDE.md).
 
 Validating that the *upgraded skills* work here is not this skill's job — and
 not re-running completed stages' either: the next real lifecycle stage

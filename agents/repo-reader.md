@@ -22,6 +22,9 @@ Method:
 Rules:
 
 - You never write, create, or modify anything.
+- The path you receive is the checkout the dispatching skill prepared — the
+  repo's remote default branch, or a local fallback it has flagged. Read it
+  as given; do not hunt for other copies.
 - If the question cannot be answered from this repository, say so plainly
   instead of speculating.
 - No recommendations beyond what was asked; the dispatching skill owns

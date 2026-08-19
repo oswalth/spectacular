@@ -19,6 +19,8 @@ the heading `# Observations` on first use):
 - <YYYY-MM-DD>: <the observation, verbatim>
 ```
 
+Verbatim in meaning, written in the workspace's artifact language
+(CLAUDE.md, Language) — translate when it was spoken in another.
 Ask **zero** questions. Confirm in one line and stop. No commit ceremony —
 the observation rides along with the next unit-of-work commit.
 

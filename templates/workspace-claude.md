@@ -14,10 +14,27 @@ them, and each code repo points back here via its `.spectacular/contract.md`.
 - **Orientation:** run `/spectacular:next` to derive current state and get one
   recommended action.
 - **Self-sufficient by design.** Everything a session needs lives in this
-  repo's artifacts (and the registered repos' contracts). Process rules are
-  never carried in one person's session memory or machine-local config — a
-  rule worth keeping becomes an artifact or template change, so any teammate
-  on any machine gets identical behavior.
+  repo's artifacts (and the registered repos' `CLAUDE.md` and contracts).
+  Process rules are never carried in one person's session memory or
+  machine-local config — a rule worth keeping becomes an artifact or
+  template change, so any teammate on any machine gets identical behavior.
+- **Fresh before derived.** A workspace shared through a remote is pulled
+  before state is derived from it — `/spectacular:next` fetches and says
+  when this checkout is behind. Code repos are read at their remote default
+  branch, never at whatever a local checkout happens to hold (Ways of
+  working §5).
+
+## Language
+
+Artifacts are written in **<artifact-language>** — chosen at init, for the
+whole team. Everything that lands in a repo follows it regardless of the
+language a conversation happens in: artifacts and their front matter,
+commit messages, code comments, READMEs, Learnings, retro observations. The
+conversation itself follows the user — the `language` setting of their
+Claude Code (`/config` → Language, or `"language"` in
+`~/.claude/settings.json`) or, absent one, the language they write in. Gate
+questions, explanations and summaries come in that language; a translation
+of an artifact is given in chat on request and never written to a file.
 
 ## Gate protocol
 
@@ -63,8 +80,10 @@ docs(task-012): done — status + learnings
 Refs: story-003
 ```
 
-Code-repo commits use the type matching the change (`feat`, `fix`, …) with a
-mandatory `Task: task-NNN` footer. Workspaces carry **no versions and no
+Code-repo commits use the type matching the change (`feat`, `fix`, …); a
+commit that realizes a task carries the mandatory `Task: task-NNN` footer,
+a housekeeping commit (see Work outside a PRD breakdown) carries none.
+Workspaces carry **no versions and no
 tags** — state is artifact statuses plus the plugin pin; tags mark releases,
 and a workspace releases nothing. Code repos version and release per their
 contract (`versioning`, `release_flow`). Commit messages never carry
@@ -96,7 +115,7 @@ the identity.
 ## Work outside a PRD breakdown
 
 Capability delivery flows PRD → story → task through `/spectacular:plan`.
-Two kinds of work do not start from a PRD:
+Three kinds of work do not start from a PRD:
 
 - **Something broke.** `/spectacular:bug "<what happened>"` files the report
   with its evidence; `/spectacular:plan bug-NNN` triages it — finds the
@@ -110,6 +129,13 @@ Two kinds of work do not start from a PRD:
   `/spectacular:plan "<task>"` writes a **standalone task**, a task with no
   `story:`. New or changed behavior is never a standalone task; it belongs
   to a PRD (a change proposal when the PRD is approved) and then a story.
+- **Housekeeping in a code repo** — docs, comments, formatting, `README.md`,
+  `CLAUDE.md`, the contract and its Toolchain notes — needs no task: it is
+  edited under the commit protocol, with the Conventional Commits type
+  matching the change (`docs`, `style`, `chore`) and no `Task:` footer,
+  landed per that repo's `merge_flow`. Anything that changes behavior,
+  architecture or dependencies — a refactor included — is a task:
+  standalone when it has no story.
 
 ## Definitions of Ready and Done
 
@@ -220,3 +246,14 @@ Plan first, write early, let the gates discover. Applies to every code repo.
 - Knowledge bought this way is repo-level: it goes to the repo contract's
   Toolchain notes at the landing gate, so the next task never pays for it
   again.
+- Read a code repo **fresh** — at its remote default branch, not at whatever
+  the local checkout holds: `git fetch` first (quietly, under a timeout). A
+  checkout on the default branch, clean and not behind, is read in place;
+  anything else is read through a detached temporary worktree of
+  `origin/<default>` outside the repo — a developer's half-done branch is
+  never taken for the repo's state. A repo missing locally is shallow-cloned
+  from the registry's `remote` into scratch (`/spectacular:onboard` clones
+  it properly); fetch failing → read the local checkout and say it may be
+  stale; a `local-rebase` repo whose mainline is ahead of the remote is
+  freshest locally — say so. Task branches start from the fetched
+  `origin/<default>`.
