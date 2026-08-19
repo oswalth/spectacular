@@ -7,6 +7,58 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.12.0 — 2026-08-19
+
+- Code repos get a `CLAUDE.md` (D-49, retro-driven): written by plan at
+  creation from `templates/code-claude.md`, it imports the repo's contract
+  and the workspace `CLAUDE.md` (define once, never duplicate) and routes
+  any session — with or without a task — to where truth lives and how work
+  lands. Housekeeping (docs, comments, formatting, README, CLAUDE.md,
+  contract, Toolchain notes) needs no task and no `Task:` footer; anything
+  that changes behavior, architecture or dependencies — a refactor
+  included — stays a task (D-37a refined).
+- Code-repo `README.md` shape (`templates/code-readme.md`) with a
+  **Prerequisites** section: tools and version constraints assumed
+  installed before any command. plan proposes them from the decided stack
+  in the repo-bootstrap interview; the scaffold task verifies a machine
+  with only those runs build/test/run; implement's landing gate adds a
+  requirement a task introduced; upgrade scans for the section.
+- New skill `/spectacular:onboard`: a teammate or a new machine joins an
+  existing workspace — access derived from what GitHub lets the person
+  reach (nothing about people is stored), narrowed to the areas they work
+  in (registry `role`); clones the chosen repos, checks README
+  prerequisites and installs missing tools only under a gate, verifies
+  integrations the artifacts imply (`gh`, design-tool MCP), orients toward
+  a scoped `next`. Idempotent — a machine doctor.
+- Registry gains a `remote` column (clone URL; plan fills it, upgrade
+  backfills from local clones); `role` is the area key.
+- `/spectacular:next [repo-name | role]`: scoped runs show only the scope's
+  tasks, stories, bugs and PRDs, with blockers named across repos and
+  workspace-level items collapsed to one footer line; the recommendation
+  is scope-local. A code-repo run defaults to that repo. next also fetches
+  the workspace and says when the checkout is behind.
+- Read code repos **fresh** — fetch first, read the remote default branch
+  (in place when the checkout is on it, clean and current; else through a
+  detached temporary worktree; shallow clone from the registry `remote`
+  when absent; flagged local fallback when offline). Applies to repo-reader
+  dispatch (plan, decide), upgrade, and implement's task branches, which
+  start from the fetched `origin/<default>`. GitHub MCP stays deferred —
+  git over the network meets the "collaborator without local siblings"
+  trigger.
+- upgrade lands code-repo changes per each repo's `merge_flow` — a PR on
+  `pr` repos, one mainline commit on `local-rebase` — and reports repos not
+  checked out locally instead of skipping them; its drift scan now covers
+  the code-repo `CLAUDE.md`, the README Prerequisites section and the
+  registry `remote` column. README Update documents the one-command flow.
+- Language: the workspace chooses its **artifact language** at init
+  (English proposed) and records it in `CLAUDE.md` — everything that lands
+  in a repo follows it; the conversation follows each person's own Claude
+  Code `language` setting. retro's verbatim append translates into the
+  artifact language when needed.
+- Docs: models.md row for onboard (sonnet), commands.md regenerated,
+  README (joining a product, the update flow, code-repo CLAUDE.md,
+  language).
+
 ## 0.11.1 — 2026-08-19
 
 - Published (D-48): the repo moves to a private GitHub repository shared

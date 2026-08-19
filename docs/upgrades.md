@@ -8,6 +8,33 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.12.0
+
+- `CLAUDE.md`: add the **Language** section (name the language your
+  artifacts already use — English unless the team chose otherwise), the
+  **Fresh before derived** bullet under "How this workspace works", the
+  **Housekeeping in a code repo** bullet under "Work outside a PRD
+  breakdown", the reworded code-repo footer sentence in **Commit
+  protocol** (a task commit carries `Task: task-NNN`, a housekeeping commit
+  carries none), and the last bullet of Ways of working §5 (read code
+  repos fresh) — copy each from `templates/workspace-claude.md`.
+- `.spectacular/registry.md`: add the `remote` column between `path` and
+  `role` (`| name | path | remote | role | one-liner |`); fill each row from
+  the local clone's `git remote get-url origin` — the upgrade proposes the
+  values. `role` is now the area key used by `/spectacular:next <role>` and
+  `/spectacular:onboard`: keep it a short stable label shared by the repos
+  of one area (api, web, mobile, infra, …).
+- Code repos, one change set per repo landed per its `merge_flow` (a PR on
+  `pr` repos, one mainline commit on `local-rebase` repos): add `CLAUDE.md`
+  from `templates/code-claude.md` (fill repo name, one-liner, role, product
+  name, workspace directory — it imports the contract and the workspace
+  `CLAUDE.md`; Claude Code asks once per machine to allow the external
+  import); give `README.md` the shape of `templates/code-readme.md`, at
+  least a **Prerequisites** section — the upgrade proposes its content from
+  manifests and the contract's Stack, you confirm. No contract migration.
+- No artifact migrations. Scoped `next`, `onboard` and the read-fresh rule
+  need nothing from existing artifacts.
+
 ## 0.11.0
 
 - `CLAUDE.md`: add **§5 Just-in-time reconnaissance** at the end of
