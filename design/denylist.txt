@@ -1,8 +1,9 @@
 # Personal-name denylist (D-12 revised, D-23): lint rule 5 greps SHIPPED files
 # (skills/, docs/, README, .claude-plugin/) case-insensitively for these tokens.
 # One token per line; lines starting with # are ignored.
-# Add the pilot name at dogfood time. This file lives in the design zone and is
-# excluded at release — the lint rule skips silently when it is absent.
+# Add the pilot name at dogfood time. This file lives in the design zone — shared
+# with the team as part of the decision log, excluded from any public release,
+# where the lint rule skips silently when it is absent (D-12 rev, D-48).
 wardx
 gdansk
 speck

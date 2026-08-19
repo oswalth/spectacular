@@ -3,6 +3,7 @@
   "owner": {
     "name": "oswalth"
   },
+  "description": "The spectacular plugin's own marketplace — AI-assisted SDLC for multi-repo products.",
   "plugins": [
     {
       "name": "spectacular",

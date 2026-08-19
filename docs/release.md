@@ -24,11 +24,14 @@ what keeps CHANGELOG.md and docs/upgrades.md in sync by construction.
 4. **`docs/upgrades.md`**: add a section iff the release changes
    workspace-facing behavior. Check the invariant now: every upgrades.md
    section has a matching CHANGELOG entry (upgrades ⊆ changelog).
-5. **Denylist check** (OQ-14): grep shipped files case-insensitively against
-   `design/denylist.txt` (design/ itself is excluded from the released
-   history — D-12).
+5. **Manual checks** (lint and CI deferred — D-48): grep shipped files
+   case-insensitively against `design/denylist.txt` (the design zone is
+   shared with the team as the decision log but never ships publicly —
+   D-12 as revised), regenerate `docs/commands.md` and confirm no diff,
+   run `claude plugin validate .` — the full list is in CLAUDE.md
+   "Manual checks".
 6. Propose the release commit `chore(release): X.Y.Z` and stop — the owner
-   reviews the diff (commit protocol, Ways of working #6).
+   reviews the diff (commit protocol, CLAUDE.md Ways of working #6).
 7. On explicit approval: commit, then tag `vX.Y.Z` on that commit. Push
    (including `--tags`) only on explicit ask.
 

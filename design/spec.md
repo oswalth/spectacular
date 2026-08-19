@@ -26,6 +26,10 @@ mode, post-acceptance defects as late FAILs.
 spectacular/
 ├── .claude-plugin/                # plugin.json + marketplace.json — the repo is its
 │                                  #   own marketplace (D-4, D-24; install flow in README)
+├── .claude/                       # repo-boundary PreToolUse hook (Ways of working #7)
+├── CLAUDE.md                      # plugin-repo rules: two zones, Ways of working #1–#9,
+│                                  #   retro loop, add-a-skill/agent/template, manual
+│                                  #   checks (D-48 — self-sufficiency for a team, D-41)
 ├── skills/<name>/SKILL.md         # the ten skills (D-8: no plain commands;
 │                                  #   design + upgrade added by D-32/D-34,
 │                                  #   bug by D-46)
@@ -40,9 +44,10 @@ spectacular/
 ├── scripts/                       # docs generator only in v0.1, python3 stdlib
 │                                  #   (lint + CI deferred — D-24)
 ├── docs/                          # published docs (R-7), partly generated (P-6)
-├── README.md                      # install / update from private GitHub repo (D-4)
-└── design/                        # design zone — committed during development,
-                                   #   excluded from the released history (D-12 rev, OQ-14)
+├── README.md                      # install / update from the private GitHub repo (D-4),
+│                                  #   "Evolving the plugin" (D-48)
+└── design/                        # design zone — the plugin's decision log; shared with
+                                   #   the team, never shipped publicly (D-12 rev, D-48)
 ```
 
 Skills are invoked as `/spectacular:<name>`.
@@ -444,11 +449,14 @@ Build trigger: retro observations of repeated costly scans.
 
 ## Lint and docs (P-3, P-6, D-12; enforcement deferred — D-24)
 
-v0.1 ships NO lint scripts and NO CI (D-24): Vladimir is the only user, tests
-everything himself, and the commit protocol (STATE.md Ways of working #6) puts his
-review in front of every commit — that review is the interim guard. The five designed
-rules below are deferred as a block; written trigger: the repo is published beyond
-private personal use. Kept here as the spec of what gets built when the trigger fires:
+v0.1 ships NO lint scripts and NO CI (D-24): the owner is the only writer, tests
+everything, and the commit protocol (CLAUDE.md Ways of working #6) puts owner review in
+front of every commit — that review is the interim guard. The five designed rules below
+are deferred as a block; the original trigger (published beyond private personal use)
+fired at the 2026-08-19 team share and the owner deferred again (D-48f) — new trigger: a
+second person with write access, or a public release. Until then CLAUDE.md "Manual
+checks" and docs/release.md step 5 run the checkable subset by hand. Kept here as the
+spec of what gets built when the trigger fires:
 1. Placeholder allowlist — example names in shipped files must come from the fixed
    vocabulary below (D-12a). (Until the trigger, Vladimir eyeballs example names at
    review time — D-24 note 2.)
@@ -458,8 +466,8 @@ private personal use. Kept here as the spec of what gets built when the trigger 
    row per shipped skill (R-8).
 5. Personal-name denylist (D-12 as revised, D-23) — `design/denylist.txt` (committed
    with the design zone; pilot name added at dogfood time) grepped case-insensitively
-   against shipped files only. The rule skips silently when the file is absent — which
-   is exactly the state of the released repo, since design/ is excluded at release.
+   against shipped files only. The rule skips silently when the file is absent — the
+   state of a public release, where design/ is excluded (D-12 rev, D-48).
    No local hooks. Until the trigger: checked manually as part of the release
    procedure (OQ-14; step 5 of docs/release.md — D-37).
 

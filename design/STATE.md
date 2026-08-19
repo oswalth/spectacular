@@ -3,59 +3,32 @@
 Single source of truth for the design phase of **spectacular**, the third attempt at a
 Claude Code plugin for AI-assisted SDLC (idea → brief → PRDs → architecture → breakdown →
 implementation → release), after two failed attempts: `../speculation` (v0.3.0) and
-`../speck` (v0.2.1). The original brief is `../spectacular/tmp.md`; this file condenses it.
+`../speck` (v0.2.1). The original brief (`tmp.md`, deleted at publication — D-48; in git
+history before v0.11.1) is condensed here.
 
-Read this file top to bottom and you are fully caught up — the only satellite files are
-design/karpathy-guidelines.md (working principles) and design/spec.md (S-3 build spec).
-Update it at the end of every design session: move settled items into Decisions, refresh
-Open questions, append to the Session log. It must never contradict what was agreed in
-conversation.
+This file plus design/spec.md (S-3 build spec) and design/karpathy-guidelines.md are the
+complete design context; the repo's CLAUDE.md (auto-loaded) carries the ways of working
+and the retro loop. Update this file at the end of every design session: move settled
+items into Decisions, refresh Open questions, append to the Session log. It must never
+contradict what was agreed in conversation.
 
 ## How to resume in a fresh session
 
-Open Claude Code in this repo and paste:
+CLAUDE.md loads automatically. Read Decisions, Deferred and Open questions here, then
+design/spec.md for the parts you touch; the Session log is evidence, read on demand.
+Status: the plugin is published to the team (D-48); S-6 dogfood continues in the pilot's
+directories, not here — remaining: ≥1 story through acceptance PASS on the current
+plugin. Work here is processing review feedback and retro briefs. Do not re-derive
+settled Decisions and do not re-explore ../speck or ../speculation beyond what this
+file records.
 
-> Read design/STATE.md end to end, then design/spec.md — together they are the
-> complete design context for the spectacular plugin. Follow STATE.md's "Ways of
-> working". The v0.2.0 build (S-6 retro round, D-26…D-30) is complete on disk;
-> S-6 dogfood is IN PROGRESS in the pilot's directory, not this repo — the
-> pilot has run init → PRD map → one developed PRD → one ADR; plan → implement
-> → acceptance remain. In this repo the remaining work is processing whatever
-> review feedback or pilot retro observations Vladimir brings. Do not re-derive
-> settled Decisions and do not re-explore ../speck or ../speculation beyond
-> what this file records. Before the session ends, update STATE.md.
+## Ways of working
 
-## Ways of working (from Vladimir's brief)
-
-1. Always ask for clarification; never assume.
-2. Do not overcomplicate.
-3. Follow the Karpathy guidelines — full text in design/karpathy-guidelines.md
-   (think before coding · simplicity first · surgical changes · goal-driven execution).
-4. Plan for context rot: this file is the mechanism.
-5. This directory is the plugin repo.
-6. Commit protocol (added 2026-08-03): Claude never commits or pushes on its own.
-   Flow: make changes → suggest a commit message → Vladimir reviews the diff and
-   approves or challenges → commit (and push) only on his explicit ask.
-7. Repo boundary (added 2026-08-03): sessions in this repo never MODIFY
-   project/workspace repos — suggestion-only (name the plugin skill to run
-   there, or give precise manual steps). Reading them for analysis stays
-   allowed. Enforced structurally by the PreToolUse hook in
-   .claude/settings.json + .claude/hooks/repo-boundary.py (blocks outside
-   Write/Edit/NotebookEdit and mutating Bash referencing outside paths).
-8. Change strategy (added 2026-08-03, D-37): Conventional Commits everywhere;
-   tags mark releases only — a commit's version is derived via git describe,
-   never stamped. Plugin releases follow docs/release.md: one atomic release
-   commit keeps plugin.json, CHANGELOG.md, docs/upgrades.md and the tag in
-   sync. No AI-attribution trailers (`Co-Authored-By: Claude …`,
-   `Generated with …`) in any repo — plugin, workspace, or code (D-37e).
-9. Gate protocol + self-sufficiency (added 2026-08-11, D-41): at any approval
-   gate — in this repo's sessions too — only an explicit approve-like answer
-   approves; a vague go-ahead ("ok", "keep working") re-asks, and every gate
-   ends with an explicit question so the session never looks stuck. Process
-   rules are never carried in session memory or machine-local config:
-   Vladimir may have a team on the plugin and the projects, so all three
-   repo kinds (plugin, workspace, code) must be self-sufficient and behave
-   identically on any machine or account.
+Moved verbatim (impersonal wording) to the repo's CLAUDE.md on 2026-08-19 (D-48), so
+they load in every session on any machine. Numbering #1–#9 is unchanged and is what
+docs/release.md and the repo-boundary hook cite. Origin, for the record: #1–#5 from the
+original brief; #6 commit protocol and #7 repo boundary added 2026-08-03; #8 change
+strategy D-37; #9 gate protocol + self-sufficiency D-41.
 
 ## Requirements (given in the brief — challengeable, but not to be silently dropped)
 
@@ -204,8 +177,9 @@ commands at all.
   observations processed in the S-6 retro round). The loop now runs in its
   manual v0.2 form: retro review mode executed in the plugin repo under the
   commit protocol (D-30c). Dedicated machinery (automated handoff ingestion,
-  reload prompting) stays deferred; new trigger: the manual form hurts, or the
-  plugin gains a second user.
+  reload prompting) stays deferred; trigger refined 2026-08-19 (D-48g): the
+  manual form hurts, or a second person gains write access to the plugin
+  repo — read-only teammates hand briefs over as GitHub issues.
 - GitHub MCP (D-33): no current need — sibling layout reads across repos on
   disk; merge_flow: pr rides the gh CLI. Trigger: first remote-only repo, a
   collaborator without local siblings, or CI-status needs.
@@ -220,10 +194,11 @@ commands at all.
   workspace unwieldy.
 - Lint + CI (all five designed rules kept in spec.md "Lint and docs": placeholder
   allowlist, no-vapor, footer, docs-sync, denylist grep). Deferred by D-24 —
-  Vladimir tests everything himself for now; the commit protocol (Ways of working
-  #6) is the interim guard, and the denylist is checked manually as part of the
-  release procedure (OQ-14). Trigger: the repo is published beyond private
-  personal use (team share or public).
+  the commit protocol (Ways of working #6) is the interim guard; the manual
+  checklist lives in CLAUDE.md and docs/release.md step 5. The original trigger
+  (team share) fired 2026-08-19 and the owner deferred again (D-48f): the owner
+  is the only writer and reviews every diff. New trigger: a second person with
+  write access, or a public release.
 
 ## Reference: lean AI-assisted SDLC order (corrected)
 
@@ -252,6 +227,7 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
 - D-4 (2026-07-30, resolves OQ-4) Distribution: private GitHub repo, used by Vladimir
   only at first; shared with the team if it proves out. No public marketplace for now.
   Implication: install/update flow must work from a private GitHub repo.
+  Fulfilled 2026-08-19 (D-48): oswalth/spectacular, private, team read access.
 - D-5 (2026-07-30) Principles P-2…P-6 adopted as written — all six principles active.
 - D-6 (2026-07-30, resolves OQ-8) v0.1 is greenfield only: new workspace, new code
   repos, all created through the plugin. Brownfield support needs a written trigger
@@ -299,6 +275,10 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   Amended 2026-08-03 (D-24): the CI grep, like all lint/CI, is deferred to
   publication; until then the denylist file stays committed and is checked manually
   at release time.
+  Revised 2026-08-19 (D-48): the design zone IS shared with the team — it is the
+  plugin's decision log and what the retro loop root-causes against; "never a byte"
+  now applies to a public release only (fresh repo, one clean commit, if that day
+  comes). Shipped content stays impersonal and denylist-clean regardless.
 - D-13 (2026-07-31, supersedes OQ-11's "record the pilot" intent) Pilot details never
   enter the spectacular repo at all — not even the design zone. The plugin design is
   project-blind; pilot specifics are provided in conversation only at dogfood time,
@@ -843,6 +823,38 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   implement stands. Not done: splitting scaffold tasks (manner, not size,
   was the defect) and any numeric time-box (the plan is the time-box).
   → v0.11.0.
+- D-48 (2026-08-19, retro round 7, publication) The plugin is published
+  to a private GitHub repo (oswalth/spectacular) shared read-only with
+  the owner's team — D-4 fulfilled. Root cause of the readiness gaps:
+  D-12 (design zone never ships, reasoned as "personal by nature") and
+  D-24 (lint/CI deferred until team share) were decided for a single-user
+  repo, while D-41 requires the plugin repo to be self-sufficient for a
+  team — and a team that extends the plugin via retro needs the decision
+  log that D-12 excluded. Resolutions: (a) OQ-14 resolved for the team
+  share — same repo, history intact, pushed as is; D-12 revised: the
+  design zone is shared with the team as the plugin's decision log; the
+  "never a byte" guarantee narrows to a public release, for which the
+  fresh-repo-with-one-clean-commit option stays on record. (b) tmp.md
+  deleted — condensed in STATE.md since S-1, unreferenced otherwise, and
+  the only absolute client-machine path in the repo. (c) The plugin repo
+  gains a CLAUDE.md (auto-loaded, impersonal): two-zone rule, Ways of
+  working #1–#9 moved there verbatim (numbering kept), how a retro round
+  runs here, checklists for adding a skill / agent / template, the manual
+  checks. STATE.md keeps a pointer. (d) README: local-checkout section
+  removed as marked, owner filled in, "Evolving the plugin" section
+  (briefs reach the repo in-chat or as GitHub issues — read-only teammates
+  cannot push), docs/release.md now referenced (D-24 note 4 had been
+  violated since 0.6.0), squash wording aligned to the CC grammar.
+  retro SKILL.md names issues as a brief carrier. (e) Manifests: author,
+  repository, marketplace description (validate warnings). (f) Lint + CI:
+  trigger fired, owner consciously deferred again — the only writer is
+  the owner, who reviews every diff (commit protocol); new trigger: a
+  second person with write access, or a public release. The five rules
+  stay specified in spec.md; the manual checklist lives in CLAUDE.md and
+  docs/release.md step 5. (g) R-3 trigger refined: a second *user* does
+  not fire the machinery trigger when that user is read-only — briefs
+  travel as issues; the manual loop stays. → v0.11.1 (patch: nothing
+  workspace-facing).
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -871,7 +883,8 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   Vladimir provides them in-chat when the tracer bullet first runs.
 - OQ-12 resolved → D-14.
 - OQ-13 resolved → D-23 (spec review, 2026-08-03).
-- OQ-14 Release mechanics for v0.1 (deliberately decided at release time — not
+- OQ-14 resolved 2026-08-19 → D-48 (team share: same repo, history intact). Original
+  framing kept: Release mechanics for v0.1 (deliberately decided at release time — not
   blocking): fresh published repo receiving one clean v0.1 commit (keeps private
   iteration history; airtight against design-zone leakage) vs same-repo orphan
   squash + force-push (one repo, but destroys the iteration history and
@@ -1301,4 +1314,29 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   contract / task templates, models.md, spec.md; release files staged for
   chore(release): 0.11.0 (minor — template changes are workspace-facing;
   upgrade note: CLAUDE.md §5, per-repo Toolchain notes heading via the
-  drift scan). Commits proposed per protocol, uncommitted.
+  drift scan). Commits proposed per protocol; landed on his ask as
+  bf44b5f (feat) + fe843e4 (chore(release): 0.11.0), tag v0.11.0.
+- S-7 (round 7) 2026-08-19: Retro review in this repo — publication
+  readiness. Vladimir wants a private GitHub repo shared read-only with
+  his team; asks whether tmp.md and design/STATE.md belong, and how to
+  keep the repo lean yet extensible via retro. Root-caused against the
+  tree, D-12/D-24/OQ-14/R-3 and a manual run of the five deferred lint
+  rules over shipped files (all clean except: README does not reference
+  docs/release.md — D-24 note 4 violated since 0.6.0). Findings: tmp.md
+  is unreferenced beyond this file's pointer, condensed here since S-1,
+  and carries a client-machine absolute path → delete; STATE.md is the
+  plugin's decision log and the retro loop's evidence → stays, but the
+  plugin repo has no CLAUDE.md, so its ways of working live only in the
+  design zone (contra D-41 self-sufficiency); D-24's lint+CI trigger and
+  D-12's design-zone exclusion collide with a team that must extend the
+  plugin; OQ-14 must resolve now. Proposal presented under an explicit
+  gate (items A–H + the one owner decision: design zone visible to the
+  team with history intact, vs clean root). Vladimir: all items except D
+  (lint + CI — deferred again, new trigger recorded), history intact;
+  Claude creates the GitHub repo and pushes, he adds readers by hand.
+  Applied as D-48: tmp.md deleted; CLAUDE.md written, Ways of working
+  moved there; README publication edits; retro SKILL.md issues clause;
+  manifests; docs/release.md step 5; spec.md layout + lint section;
+  denylist header; D-4/D-12/OQ-14/Deferred updated. Release
+  chore(release): 0.11.1 (patch). Pushed to github.com/oswalth/spectacular
+  (private) with tags on his ask; local plugin cache updated.

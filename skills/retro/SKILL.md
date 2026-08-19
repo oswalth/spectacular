@@ -58,10 +58,11 @@ confirmation, append them all, then offer to run review mode on the spot.
 ## Running inside the spectacular plugin repo
 
 Run from the plugin repo itself rather than a workspace, review mode IS the
-plugin-evolution loop: observations arrive in-chat or as handoff briefs
-carried over from a workspace, root-causing runs against the skills and
-templates, and the fixes are plugin changes — made under the plugin repo's
-own ways of working. Plugin changes ship via the release procedure in
+plugin-evolution loop: observations arrive in-chat, as handoff briefs
+carried over from a workspace, or as issues on the plugin's GitHub repo;
+root-causing runs against the skills and templates, and the fixes are
+plugin changes — made under the plugin repo's own ways of working (its
+CLAUDE.md). Plugin changes ship via the release procedure in
 `docs/release.md`: derive the bump from CC types, update CHANGELOG.md (and
 docs/upgrades.md iff workspace-facing), one atomic release commit, tag.
 

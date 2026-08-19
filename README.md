@@ -11,47 +11,17 @@ linked back via a small contract file. State is always **derived from artifact
 files** — there is no status database, and manually editing any artifact is
 always legitimate.
 
-## Install and update from a local checkout (temporary)
-
-> **Note:** this section covers running the plugin straight from a local clone,
-> before the repo is published to GitHub. Remove it at publication.
-
-For development and daily use from the checkout, load the plugin without
-installing:
-
-```bash
-claude --plugin-dir ./spectacular
-```
-
-After editing plugin files, run `/reload-plugins` in the session to pick up the
-changes — no restart needed. Sanity-check the manifests any time with
-`claude plugin validate .` from the repo root.
-
-Alternatively, install from the checkout as a local marketplace (the path must
-start with `./`):
-
-```
-/plugin marketplace add ./spectacular
-/plugin install spectacular@spectacular
-```
-
-Installed plugins are copied into `~/.claude/plugins/cache`, so local edits are
-not picked up automatically — run `/plugin marketplace update spectacular`
-after changes, and if they still don't appear, uninstall and reinstall. The
-`--plugin-dir` flow avoids this entirely and is the recommended one while the
-plugin lives only on this machine.
-
 ## Install
 
 The plugin repo is its own marketplace. From any Claude Code session:
 
 ```
-/plugin marketplace add <owner>/spectacular
+/plugin marketplace add oswalth/spectacular
 /plugin install spectacular@spectacular
 ```
 
-Works with a private GitHub repo — installation rides your existing GitHub
-credentials (`gh` login or SSH key).
+The repo is private — installation rides your existing GitHub credentials
+(`gh` login or SSH key), so you need read access to it.
 
 **Private-repo gotcha:** background auto-update needs git credentials without a
 prompt. Run `gh auth setup-git` once, or keep your SSH key loaded in an agent.
@@ -103,9 +73,24 @@ Every command ends with a justified next action, and PRDs, ADRs, the brief, and
 breakdowns all gate on your explicit approval. A read-only **repo-reader**
 subagent inspects code repos on behalf of prd/decide/plan; it never writes.
 
+## Evolving the plugin
+
+Friction is captured where it happens: `/spectacular:retro <one line>` in
+your workspace is a zero-question append; the bare form reviews what has
+accumulated, fixes what is workspace-level and writes **plugin handoff
+briefs** for what needs to change here. Hand a brief over by opening an
+issue on this repo (paste the brief) or bringing it to a maintainer. A
+maintainer runs `/spectacular:retro` in a checkout of this repo — review
+mode there root-causes the briefs against the skills and templates and
+changes the plugin under [CLAUDE.md](CLAUDE.md) (ways of working, commit and
+gate protocol, checklists for new skills, agents and templates). Releases
+follow [docs/release.md](docs/release.md); the design zone `design/` holds
+the decision log that every such change is made against.
+
 ## Notes
 
 - v0.1 is greenfield-only: workspace and code repos are created by the plugin.
 - Task branches are always squashed — one task = exactly one mainline commit
-  (`task-NNN: …`), via PR or local rebase per each repo's contract.
+  (Conventional Commits subject, `Task: task-NNN` footer), via PR or local
+  rebase per each repo's contract.
 - `docs/commands.md` is generated: `python3 scripts/generate-docs.py`.
