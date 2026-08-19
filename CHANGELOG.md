@@ -7,6 +7,27 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.11.1 — 2026-08-19
+
+- Published (D-48): the repo moves to a private GitHub repository shared
+  read-only with the team; install is `/plugin marketplace add
+  oswalth/spectacular` + `/plugin install spectacular@spectacular`. README
+  loses the local-checkout section, gains "Evolving the plugin" (how
+  handoff briefs reach this repo — in-chat or as GitHub issues) and now
+  references `docs/release.md`; the squash note reads Conventional Commits
+  subject + `Task:` footer.
+- Plugin-repo `CLAUDE.md`: two-zone rule, Ways of working #1–#9 (moved from
+  the design zone so they load on any machine), how a retro round runs
+  here, checklists for adding a skill / agent / template, the manual checks
+  that stand in for the deferred lint. `design/` is shared with the team as
+  the decision log; `tmp.md` (the founding brief, condensed in STATE.md) is
+  removed.
+- retro: the plugin-repo paragraph names GitHub issues as a brief carrier.
+- Manifests: `author`, `repository`, marketplace `description`;
+  `docs/release.md` step 5 is the manual-checks step (denylist grep, docs
+  regeneration, `claude plugin validate .`).
+- No workspace-facing change — nothing to upgrade.
+
 ## 0.11.0 — 2026-08-18
 
 - implement reads the capsule by section (D-47, retro-driven): the
