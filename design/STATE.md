@@ -1443,5 +1443,11 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   fetch), retro (observation language), onboard (new); repo-reader note;
   generate-docs LIFECYCLE + commands.md; models.md; README; upgrades.md
   0.12.0; CHANGELOG 0.12.0; plugin.json 0.12.0; spec.md throughout;
-  D-33/D-37/D-40/D-46 notes here. Commits proposed per protocol (feat +
-  chore(release): 0.12.0).
+  D-33/D-37/D-40/D-46 notes here. Commits proposed per protocol; on
+  Vladimir's "commit, release, push, update local plugin": feat d8e8004,
+  chore(release): 0.12.0 8de1573, tag v0.12.0, pushed to
+  github.com/oswalth/spectacular with tags; local marketplace (now GitHub
+  source) refreshed and the plugin updated 0.11.1 → 0.12.0 at user scope
+  (restart to apply). Open evidence: the first real `/spectacular:onboard`
+  run and the pilot's `/spectacular:upgrade` to 0.12.0 (registry remotes,
+  code-repo CLAUDE.md/README sets via PRs, Language section).
