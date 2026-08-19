@@ -8,6 +8,24 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.13.0
+
+- `CLAUDE.md`: in **Commit protocol** replace the "Pushing likewise happens
+  only on explicit ask" sentence with the shared-workspace push rule and
+  extend the grain list (draft left for review, draft revisions, task claim)
+  and the implement paragraph; add the **Reviews** section before
+  "Definitions of Ready and Done" — copy each from
+  `templates/workspace-claude.md`.
+- PRDs: no migration for approved PRDs. A PRD currently `draft` that the
+  team is going to review gets the `## Review` section from
+  `templates/prd.md` (heading plus the template's comment) — the upgrade
+  proposes it per draft.
+- Stories: no migration. The Acceptance log comment in `templates/story.md`
+  is documentation; a story already awaiting acceptance may be given its
+  READY line by hand (`<date> — <name> — READY: all tasks done, awaiting
+  acceptance`) so the file says what `next` derives.
+- Tasks, bugs, registry, code repos: nothing.
+
 ## 0.12.0
 
 - `CLAUDE.md`: add the **Language** section (name the language your

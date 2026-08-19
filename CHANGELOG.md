@@ -7,6 +7,35 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.13.0 — 2026-08-19
+
+- Team review of draft PRDs (D-50, retro-driven): a PRD can be left at
+  `status: draft` for the team; reviewers add one line per comment to its
+  new `## Review` section (`templates/prd.md`); `/spectacular:prd prd-NNN`
+  on a draft enters a **revise** path — one proposed resolution per open
+  line (apply with the delta, decline with the reason, or ask its author),
+  gated, lines marked in place — then approve or leave in review.
+  `/spectacular:next` tells a draft *in review* (open comments, its
+  author's move) from a lingering one. Names ride the lines; no owner or
+  reviewer is stored.
+- Shared-workspace push rule (workspace `CLAUDE.md` template, Commit
+  protocol): in a workspace with a remote every commit proposal carries its
+  push — one question, one approval covers both; unpushed state is the
+  exception. Grain gains the task claim and draft revisions.
+- `/spectacular:implement` reads the workspace fresh before the readiness
+  check, **claims** the task at start — `chore(task-NNN): in-progress`
+  committed and pushed under its own explicit question, a rejected push
+  detecting a teammate's claim — and the landing greenlight covers the
+  close-out push. When the last task of a story lands it writes
+  `<date> — <name> — READY: all tasks done, awaiting acceptance` into the
+  story's Acceptance log and says so in the commit subject; the state
+  itself stays derived (D-18/D-22 held).
+- Workspace `CLAUDE.md` template gains a **Reviews** section: how a draft
+  PRD is reviewed and revised, how a story awaiting acceptance is found,
+  tested and recorded (PASS → done; FAIL → `/spectacular:plan story-NNN`).
+  `templates/story.md` documents the Acceptance log verbs (READY / PASS /
+  FAIL).
+
 ## 0.12.0 — 2026-08-19
 
 - Code repos get a `CLAUDE.md` (D-49, retro-driven): written by plan at
