@@ -147,6 +147,33 @@ Three kinds of work do not start from a PRD:
   architecture or dependencies — a refactor included — is a task:
   standalone when it has no story.
 
+## Dropping work that is no longer wanted
+
+Delivery work has a fourth, terminal status: **`dropped`** — the story or task
+will not be delivered, because its PRD was amended, the approach was
+superseded, or it is simply no longer wanted. Terminal like `done`, but nothing
+shipped; never reachable from `done`.
+
+**A dropped item counts for nothing.** It is not ready work, it does not cover
+an AC, it does not hold its story back from done, and `/spectacular:next` stops
+listing it. The file stays where it is and git keeps the history — retiring
+work is a status change, never a deletion.
+
+A dropped item records why, in a `## Dropped` section: one line,
+`<date> — <name> — <why>`. Dropping a **story** drops its tasks with it. An
+item still `todo` whose `depends_on` names a dropped item can never become
+ready — `/spectacular:next` warns about it, and the owner either drops it too
+or edits its `depends_on`.
+
+Dropping is a manual edit — front matter plus the line, exactly like recording
+an acceptance verdict; files are the interface. `/spectacular:plan` also
+*proposes* drops, under the usual gate, when a breakdown against an amended PRD
+or a fix diagnosis leaves existing work serving nothing. Nothing is ever
+dropped silently.
+
+Bugs do not use this: a bug that will not be fixed is `closed` with a "won't
+fix" Resolution, as it always was.
+
 ## Reviews
 
 Two things here are reviewed by people other than their author. Names are
@@ -193,7 +220,8 @@ covering designed UI references the approved design spec sections it
 implements (when its PRD has a design spec); its `depends_on` stories are
 done.
 
-**Story done:** all its tasks are done; a human tested every AC and logged
+**Story done:** all its tasks are done (a `dropped` task does not hold it
+back); a human tested every AC and logged
 PASS in the Acceptance log; the human sign-off (never the plugin) flips
 `status: done`.
 

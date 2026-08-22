@@ -24,7 +24,10 @@ owner's explicit greenlight.
    `name:`, `status: todo`, all `depends_on` done, Verification filled, and
    — when the task has a `story:` — that story ready). This filter is the
    task's Definition of Ready (workspace CLAUDE.md) — never start a task
-   that fails it; name the missing piece instead. The check reads front
+   that fails it; name the missing piece instead. A `dropped` task is not
+   `todo` and never appears here; a task held back by a `dropped` dependency
+   is reported as exactly that — it needs a decision in the workspace, not a
+   workaround in this repo. The check reads front
    matter only — dependency and story statuses, never their bodies. A
    **standalone task** (no `story:` — maintenance work written by plan) is
    ready on `repo:`, deps and Verification alone. Exactly one ready → take

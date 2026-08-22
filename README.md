@@ -96,6 +96,10 @@ commit proposal carries its push, and `/spectacular:implement` claims a task
 (`in-progress`, pushed) before working it, so the state one person changes
 is the state the team derives.
 
+Work that stops being wanted is **dropped**, not deleted: the story or task
+takes the terminal `dropped` status plus one line saying why, and
+`/spectacular:next` stops offering it as ready.
+
 Every command ends with a justified next action, and PRDs, ADRs, the brief, and
 breakdowns all gate on your explicit approval. A read-only **repo-reader**
 subagent inspects code repos on behalf of prd/decide/plan; it never writes.

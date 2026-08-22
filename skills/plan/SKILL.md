@@ -38,8 +38,17 @@ sitting grows with every PRD added, so coupling must earn its place.
 2. **Context:** read the target PRD(s), their approved design specs
    (`product/designs/` with `prd:` matching), `architecture/overview.md`,
    ADRs touching them, and `.spectacular/registry.md`. Also read every
-   *other* approved PRD's front matter and scope, and all existing stories
-   and tasks — ordering rarely stops at a PRD boundary, and the
+   *other* approved PRD's front matter and scope, and — for the stories and
+   tasks already on disk — **front matter only, scanned in bulk**: one pass
+   over `delivery/stories/` and `delivery/tasks/` yields every status,
+   `prd:`, `story:`, `repo:` and `depends_on` at once, which is the whole
+   input the dependency graph and the ordering need. Open a body only for
+   the few that matter — items still open (`todo`, `in-progress`) and the
+   direct `depends_on` neighbours of the stories this run will touch.
+   Terminal items (`done`, `dropped`) are read as front matter and nothing
+   more: a product that has shipped for a year holds hundreds of them and
+   re-reading them on every breakdown buys nothing. Ordering rarely stops at
+   a PRD boundary, and the
    `depends_on` links proposed below are expected to cross it. If the PRD
    has user-facing surface and no
    design spec, say so and recommend `/spectacular:design` first — the owner
@@ -138,8 +147,8 @@ sitting grows with every PRD added, so coupling must earn its place.
    story still naming exactly one `prd:`.
 8. **Blocking consistency check** — repair your own proposal and re-check until
    all four pass; only then gate:
-   - every PRD AC maps to ≥ 1 story;
-   - every story has ≥ 1 task;
+   - every PRD AC maps to ≥ 1 story that is not `dropped`;
+   - every story has ≥ 1 task that is not `dropped`;
    - every task's `repo:` exists in the registry;
    - the combined story+task dependency graph — proposed items plus
      everything already on disk — is acyclic;
@@ -275,6 +284,22 @@ rotation, a data fix. Argument = the free-text request.
    `status: todo`.
 5. **Propose a commit** — `docs(task-NNN): standalone task — <slug>` —
    committed only on explicit approval.
+
+## Dropping superseded work
+
+Not a mode — something breakdown and fix both propose when they run into it.
+`dropped` is the terminal status for delivery work that will not happen
+(workspace CLAUDE.md, *Dropping work that is no longer wanted*). Breakdown
+meets it when an approved PRD has been amended and stories or tasks written
+against the old text no longer serve any AC; fix meets it when the diagnosis
+says the work was aimed at the wrong thing and the fix supersedes it.
+
+Either way it is proposed, never applied silently: name the items and the
+reason that will go into each file, fold them into the same gate as the rest
+of the run, and on approval write `status: dropped` plus the `## Dropped`
+line. Dropping a story drops its tasks with it, and an item still `todo`
+whose `depends_on` names a dropped one is called out — the owner drops it too
+or re-points the dependency; it can never become ready otherwise.
 
 ## Next step
 

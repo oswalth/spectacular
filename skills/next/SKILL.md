@@ -24,16 +24,22 @@ nothing is stored.
    behind `origin/<default>` — state derived from a stale checkout is
    stale (workspace CLAUDE.md, Fresh before derived).
 2. **Read front matter only** — brief, PRDs, design specs, ADRs, stories,
-   tasks, bugs, change proposals, plus the registry. Open an artifact body
+   tasks, bugs, change proposals, plus the registry. Read it in **bulk**, not
+   file by file: one scan per directory (`grep`/`head` across the glob) yields
+   every status and link at once and stays affordable as `delivery/` grows into
+   the hundreds — a shipping product accumulates far more terminal items than
+   live ones. Open an artifact body
    only where derivation needs it: the AC checklist of a story awaiting
    acceptance, and the `## Review` section of a PRD draft (an open line is
    one without a ` → ` resolution).
 3. **Validate while reading** (warn at the top of the output; never halt):
    references that resolve to no file (including a bug's `routed_to`);
    statuses outside their vocabulary (brief/design: draft·approved; PRD/ADR:
-   stub·draft·approved; story/task: todo·in-progress·done; bug: open·closed;
-   change: draft·approved·applied). This is the only workspace validation
-   in v0.1.
+   stub·draft·approved; story/task: todo·in-progress·done·dropped; bug:
+   open·closed; change: draft·approved·applied); and any `todo` or
+   `in-progress` item whose `depends_on` names a `dropped` item — it can never
+   become ready, so the owner either drops it too or edits its `depends_on`.
+   This is the only workspace validation in v0.1.
 4. **Derive** (never trust a stored summary):
    - drafts awaiting approval (brief, PRDs, designs, ADRs, changes) — a PRD
      draft with open Review lines is **in review** (count them), not
@@ -45,12 +51,16 @@ nothing is stored.
      be worked (`/spectacular:decide`);
    - **ready** = `todo` with every `depends_on` done · **blocked** = the rest,
      with the blocking reference named — standalone tasks (no `story:`)
-     derive the same way and are labeled as such;
-   - **awaiting acceptance** = story `in-progress` with all its tasks `done`
-     (tasks found via their `story:` links; a PASS sign-off would have
-     flipped it to `done`) — a story reopened by a FAIL after acceptance
-     re-enters this state exactly the same way; the READY line implement
-     writes into the Acceptance log is a record of when, never the source;
+     derive the same way and are labeled as such. A **`dropped`** item is
+     neither: it counts for nothing in this step — not ready, not blocked,
+     not covering an AC, not holding a story back (workspace CLAUDE.md,
+     Dropping work that is no longer wanted);
+   - **awaiting acceptance** = story `in-progress` with all its tasks `done`,
+     a `dropped` task holding nothing back (tasks found via their `story:`
+     links; a PASS sign-off would have flipped it to `done`) — a story
+     reopened by a FAIL after acceptance re-enters this state the same way;
+     the READY line implement writes into the Acceptance log is a record of
+     when, never the source;
    - **untriaged bugs** = bug `open` with empty `routed_to` (needs
      `/spectacular:plan bug-NNN`) · **routed bugs** = `open` with targets,
      their fix state read off the targets (task todo/in-progress/done;
@@ -75,6 +85,11 @@ nothing is stored.
      (standalone ones marked), plannable PRDs, pending decisions, developable
      stubs — never the PRD pipeline alone: the owner sees the whole option
      space even though the recommendation below stays single.
+     Completeness is over action *types*, never instances: when one type has
+     more than ~10 instances, show the ten the ranking below puts first and
+     give the rest as a count (`+31 more ready tasks`). Say that you
+     truncated, and never truncate a type to zero — a type reduced to a
+     count would vanish from the option space.
    - Mermaid graph: one node per PRD labeled with its reference, slug, and
      story rollup (`2/5 stories done`); edges from `depends_on`; mark each
      node's status. Bugs and standalone tasks are not in the graph — they

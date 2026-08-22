@@ -33,3 +33,10 @@ implements. Drop the section otherwise. -->
 <!-- Story-level only: what this story's next task must know. Repo-level
 facts — toolchain, versions, CLI and lint traps, layout — go to the repo
 contract's Toolchain notes at the landing gate. Not a diary. -->
+
+## Dropped
+
+<!-- Only when status: dropped — this task will not be delivered (its PRD was
+amended, the approach was superseded, it is no longer wanted). One line:
+`<date> — <name> — <why>`. Terminal like done, but nothing shipped. Drop the
+section otherwise. -->

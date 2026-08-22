@@ -16,10 +16,11 @@ contradict what was agreed in conversation.
 
 CLAUDE.md loads automatically. Read Decisions, Deferred and Open questions here, then
 design/spec.md for the parts you touch; the Session log is evidence, read on demand.
-Status: the plugin is published to the team (D-48) and at 0.13.0 (D-49: code-repo
+Status: the plugin is published to the team (D-48) and at 0.14.0 (D-49: code-repo
 CLAUDE.md + README shape, onboard, scoped next, read-fresh, language; D-50: team
 review of draft PRDs, task claim + shared-workspace push rule, acceptance
-visibility); S-6 dogfood continues in the pilot's directories, not here —
+visibility; D-51: `dropped` terminal delivery status; D-52: delivery-scale reading
+discipline, no archive); S-6 dogfood continues in the pilot's directories, not here —
 remaining: ≥1 story through acceptance PASS on the current plugin, the first real
 teammate onboarding, and the first team-reviewed PRD. Work here is processing
 review feedback and retro briefs. Do not re-derive settled Decisions and do not re-explore ../speck
@@ -210,6 +211,16 @@ commands at all.
   build-time dependency consumed by multiple repos (a real component
   library FE/mobile import at build), or its size/tooling makes the
   workspace unwieldy.
+- Delivery archiving — archive-by-move (`delivery/archive/…`, references
+  resolving through a second directory) or per-PRD subdirectories
+  (`delivery/prd-NNN/{stories,tasks}/`). Both were weighed and not taken in
+  D-52: the reading discipline there removes the token cost without a
+  workspace-facing layout migration, and moving files is stored state about
+  what matters (contra P-2). Only the human-browsing problem is left
+  unsolved, and `next` — not `ls` — is the interface. Trigger:
+  `delivery/tasks/` passes ~150 files, or a retro observation that the
+  directory is unbrowsable or next's output unreadable *after* D-52's
+  bounding is in use.
 - Lint + CI (all five designed rules kept in spec.md "Lint and docs": placeholder
   allowlist, no-vapor, footer, docs-sync, denylist grep). Deferred by D-24 —
   the commit protocol (Ways of working #6) is the interim guard; the manual
@@ -342,6 +353,10 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   Held 2026-08-19 (D-50): a stored story `review` status was proposed for team
   visibility and deferred (see Deferred); implement writes a READY *event line*
   into the Acceptance log instead — a record, the derivation stays the source.
+  Amended 2026-08-22 (D-51): the delivery vocabulary gains a fourth, terminal
+  value — `dropped` (story and task only) — for work that will not be
+  delivered. `done` and `dropped` are the two terminal states; "blocked" and
+  "awaiting acceptance" stay derived as before.
 - D-19 (2026-08-01) Delivery hierarchy: PRD → story → task is the mandatory spine
   (story.prd and task.story/task.repo required). PRD = durable spec of a capability
   (never "done", amended via A1); epic = closable delivery batch. Epics are adopted as
@@ -1011,6 +1026,63 @@ Cross-cutting, any time: retro/feedback (product and process), derived roadmap /
   plan runs by two people mint the same story/task numbers. → v0.13.0
   (minor: template changes — CLAUDE.md Reviews section and push rule, prd
   Review section; no artifact migration).
+- D-51 (2026-08-22, retro round 10, in-chat) Delivery work gains a fourth,
+  terminal status: **`dropped`**. Observation (Vladimir, from the pilot): no
+  way to "outdate" old tasks, and `delivery/tasks/` heading for hundreds of
+  files once 20 PRDs are broken down. Root-caused against the artifacts and
+  split in two — the volume half is D-52; this is the lifecycle half, and it
+  is a correctness bug, not clutter. Evidence: statuses are `todo ·
+  in-progress · done` (D-18) with no terminal will-not-deliver value, so a
+  task written against a PRD later amended through `changes/` stays `todo`
+  for ever and next keeps deriving it **ready** and may recommend
+  implementing it; a `changes/` REMOVED delta amends the PRD and propagates
+  nothing downward; the only exit was deleting the file, which loses the
+  reason. The asymmetry is the tell — bugs already have the escape hatch
+  (`closed` + a non-fix Resolution including "won't fix", D-46), stories and
+  tasks never got one. Resolution: `dropped` on story and task — terminal
+  like `done`, never reachable from it, nothing shipped; a `## Dropped`
+  section holds one `date — who — why` line (the bug Resolution's shape and
+  the Acceptance log's line form); dropping a story drops its tasks; a
+  dropped item counts for nothing wherever state is derived — not ready, not
+  blocked, not covering an AC, not holding a story back; a `todo` item whose
+  `depends_on` names a dropped one is warned about by next, since it can
+  never become ready (drop it too, or re-point the dependency). Deliberately
+  *not* built: a new plan mode and any file movement — dropping is a manual
+  edit like the acceptance verdict (files are the interface), and plan
+  proposes drops inside its existing gates when a breakdown against an
+  amended PRD or a fix diagnosis leaves work serving nothing. Truth
+  artifacts are excluded: a PRD is amended via A1/D-17, never dropped.
+  Applied to story.md, task.md, workspace-claude.md (new *Dropping work that
+  is no longer wanted* section, `Story done` parenthetical), next (vocabulary,
+  warning, derivation), plan (consistency check, *Dropping superseded work*),
+  implement (selection). D-18 amended accordingly. → v0.14.0.
+- D-52 (2026-08-22, retro round 10, in-chat) Delivery scale is handled by
+  **reading discipline, not by an archive**. Same observation as D-51, volume
+  half. Arithmetic corrected at the gate: the pilot's shape (1 PRD → 6 stories
+  → ~20 tasks) over 20 PRDs is ~120 stories and ~400 tasks accumulated across
+  the product's whole life — hundreds, not the feared thousands, and 500
+  markdown files is nothing for git, grep or ls. File count was therefore
+  rejected as the problem. The real costs, found in the artifacts: (1) plan
+  step 2 mandated reading *all existing stories and tasks* in full — the only
+  O(N) body read in the plugin, ~150k tokens at 400 tasks and painful from
+  about 100; (2) next's *output* grows unbounded (ready/blocked listings)
+  while its input was already front matter only. Options weighed and not
+  taken: archive-by-move and per-PRD subdirectories — both fix browsing, both
+  cost a workspace-facing layout migration, and moving files is stored state
+  about what matters (contra P-2); epics (D-19) rejected for this purpose —
+  their count trigger is >~12 stories per PRD while the pilot runs 6, and a
+  container designed as a closable delivery batch is not an archive.
+  Resolution: nothing moves on disk; what narrows is what the skills read.
+  plan reads existing stories and tasks as front matter only — the entire
+  input the dependency graph needs — and opens a body only for still-open
+  items and the run's direct `depends_on` neighbours; terminal items (`done`,
+  `dropped`) never have their bodies read. next scans front matter in bulk
+  (one pass per directory, never file by file) and bounds each action type in
+  its output to ~10 instances plus a count — completeness is over types, never
+  instances, and no type is truncated to zero. implement's capsule was already
+  bounded (A2) and is unchanged. Archive-by-move and per-PRD directories
+  deferred with a written trigger (see Deferred). Numbering headroom raised at
+  the same gate and left open — OQ-16. → v0.14.0.
 
 ## Principles (all adopted — D-2, D-5)
 
@@ -1066,6 +1138,17 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   D-19 amended to "mandatory spine for capability delivery". P-1/P-4
   tension noted (delivery back half not yet run for real): build now iff a
   real case exists, else defer with that trigger — Vladimir's call.
+- OQ-16 (opened 2026-08-22, retro round 10) Numbering headroom. References are
+  `<type>-<NNN>` zero-padded to 3 (D-15), which reads as a 999-per-type
+  ceiling; a 20-PRD product lands around 400 tasks, so tasks reach half of it.
+  Resolution *by glob* is unaffected — `task-1024` → `delivery/tasks/1024-*.md`
+  still resolves — so only the padding convention would need relaxing to "at
+  least 3 digits". Raised alongside D-51/D-52 and deliberately left out of that
+  approval; cheap now, and cheap later too. Related watch item from D-50:
+  parallel plan runs by two people mint the same story/task numbers. Trigger:
+  a workspace passes ~700 items of any one type, or the collision watch item
+  fires — whichever comes first, since both are answered by the same change to
+  how numbers are minted.
 
 ## Session plan
 
@@ -1557,3 +1640,39 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   evidence: the first PRD actually reviewed by the team through the Review
   section, the first claim push racing another developer, and the pilot's
   `/spectacular:upgrade` to 0.13.0 (CLAUDE.md Reviews section + push rule).
+- S-10 (round 10) 2026-08-22: Retro review in this repo — one in-chat
+  observation from the pilot (Vladimir): no way to "outdate" old tasks, and
+  `delivery/tasks/` heading for hundreds of files once 20 PRDs are broken
+  down ("might end up with thousands"). Evidence read before answering: task,
+  story, prd and workspace-claude templates; plan, next, implement, upgrade
+  skills; spec.md (references/numbering, front matter and statuses,
+  cross-cutting mechanics, plan/next sections); STATE.md D-15/D-18/D-19/
+  D-22/D-45/D-46/D-50, Deferred, P-2/P-4. Two challenges made at the gate and
+  both accepted: (1) the arithmetic — the pilot's 1 PRD → 6 stories → ~20
+  tasks over 20 PRDs is ~120 stories and ~400 tasks across the product's
+  whole life, hundreds rather than thousands, and 500 markdown files is
+  nothing for git, grep or ls, so file count is not the problem; (2) the
+  observation is two problems, and the lifecycle half is the sharper one — a
+  correctness bug (next derives a superseded `todo` task as **ready** and can
+  recommend it), while the volume half is a token cost concentrated in one
+  line of plan. Five options presented with trade-offs (A retire status ·
+  B archive-by-move · C derived archive/reading discipline · D epics ·
+  E per-PRD subdirectories); D rejected outright at presentation (its count
+  trigger is >~12 stories per PRD, the pilot runs 6, and a closable delivery
+  batch is not an archive). Gate answer: "A+C is good" → option 1 as
+  recommended, B and E deferred with a written trigger. Applied in one pass:
+  templates (story.md, task.md `## Dropped`; workspace-claude *Dropping work
+  that is no longer wanted* + `Story done` parenthetical), next (bulk
+  front-matter scan, vocabulary, blocked-by-dropped warning, ready/blocked and
+  awaiting-acceptance derivation, output bounded per action type), plan
+  (front-matter-only bulk read of existing delivery artifacts, consistency
+  check ignores dropped, new *Dropping superseded work* subsection),
+  implement (selection reports a dropped dependency instead of working
+  around it), README (one paragraph), spec.md (status table, derived list,
+  body sections, two new cross-cutting bullets, plan/next sections);
+  CHANGELOG + upgrades 0.14.0, plugin.json 0.14.0; here: D-51, D-52, the D-18
+  amendment, the Deferred archiving entry, OQ-16 (numbering headroom — raised
+  at the gate, deliberately outside the approval), resume line. Not built and
+  recorded: no new plan mode for dropping, no archive directory, no file
+  movement (stored state about what matters, contra P-2). Commits proposed per
+  protocol.

@@ -138,8 +138,8 @@ identity, so nothing can drift; lint checks that references resolve.
 | PRD | `status: stub \| draft \| approved` · `depends_on: [prd-…]` (roadmap graph source) |
 | design | `status: draft \| approved` · `prd:` (required) · `sources: [links]` (D-34) |
 | ADR | `status: stub \| draft \| approved` · `prd:` (optional — which PRD forced it); stubs persist the decision map (D-44), mirroring D-20 |
-| story | `status: todo \| in-progress \| done` · `prd:` (required) · `depends_on: [story-…]` · `epic:` (optional; unused until epic machinery exists — D-19) |
-| task | `status: todo \| in-progress \| done` · `story:` (absent on a standalone task — D-45) · `repo:` (registry name) · `depends_on: [task-…]` |
+| story | `status: todo \| in-progress \| done \| dropped` (D-51) · `prd:` (required) · `depends_on: [story-…]` · `epic:` (optional; unused until epic machinery exists — D-19) |
+| task | `status: todo \| in-progress \| done \| dropped` (D-51) · `story:` (absent on a standalone task — D-45) · `repo:` (registry name) · `depends_on: [task-…]` |
 | bug | `status: open \| closed` · `routed_to: [story-… \| task-…]` (the work that fixes it, written by triage — D-46) |
 | change | `status: draft \| approved \| applied` · `targets: [refs]` **(stated)** |
 
@@ -147,7 +147,10 @@ Never stored, always derived (P-2): **blocked** (dep not done), **awaiting accep
 (story in-progress ∧ all its tasks done — a PASS would have flipped it; a story
 reopened by a late FAIL re-enters the same way), bug **untriaged** (open, no
 routed_to) / **routed** (fix state read off the targets) / **fixed-but-open**
-(all targets done), epic status (from member stories), the roadmap itself.
+(all targets done), epic status (from member stories), the roadmap itself. A
+`dropped` item (D-51) counts for nothing in any of these — not ready, not blocked,
+not covering an AC, not holding a story back; a `todo` item whose `depends_on` names
+one is warned about, since it can never become ready.
 
 Story body: goal, acceptance criteria (mapped from the PRD), **Acceptance log**
 (`date — who — READY/PASS/FAIL: note` — READY written by implement when the last task
@@ -160,6 +163,8 @@ declined: why`), dropped at approval (D-50).
 Task body: description, verification (how "done" is checked — Karpathy #4), **Learnings**
 (appended by implement on completion; feeds later capsules — A2; story-level only —
 repo-level facts go to the contract's Toolchain notes, D-47).
+Story and task bodies both carry a **Dropped** section when `status: dropped` — one
+line, `date — who — why` (D-51); absent otherwise.
 
 Adopted document standards (S-5 research round, ratified 2026-08-03 — D-25):
 ADRs follow MADR 4.0 section structure (spectacular front matter and status
@@ -251,6 +256,29 @@ and the task's Verification. All artifact shapes live in templates/ only.
   **late FAIL** of the same loop (D-46): `plan story-NNN "<defect>"` writes the FAIL
   entry, returns the story to `in-progress`, adds fix tasks under the gate; the story
   is re-tested to a fresh PASS — never assumed fixed.
+- **Retiring delivery work (D-51):** `dropped` is the fourth, terminal delivery status
+  — the story or task will not be delivered (PRD amended, approach superseded, no
+  longer wanted). Terminal like `done`, never reachable from it, and nothing shipped.
+  A dropped item counts for nothing anywhere state is derived; dropping a story drops
+  its tasks; the reason is one `date — who — why` line in a `## Dropped` section. The
+  file never moves and is never deleted — retiring is a status change, git keeps the
+  rest. Normally a manual edit (files are the interface, like the acceptance verdict);
+  `plan` proposes drops under its gate when a breakdown against an amended PRD or a fix
+  diagnosis leaves work serving nothing, and `next` warns on a `todo` item depending on
+  a dropped one. Bugs keep their own exit (`closed` + a "won't fix" Resolution, D-46).
+  Templates: story.md, task.md, workspace-claude.md (*Dropping work that is no longer
+  wanted*).
+- **Reading discipline at delivery scale (D-52):** delivery directories grow
+  monotonically — a 20-PRD product reaches several hundred stories and tasks, nearly all
+  terminal. No archive directory and no file movement (that would be stored state about
+  what matters, contra P-2); what narrows is what the skills *read*. `next` scans front
+  matter in bulk (one pass per directory, never file by file) and bounds each action
+  type in its output to ~10 instances plus a count, completeness being over types, never
+  instances. `plan` reads existing stories and tasks as front matter only — that is the
+  entire input to the dependency graph — and opens a body only for items still open and
+  the direct `depends_on` neighbours of the run. `implement`'s capsule was already
+  bounded (A2). Archive-by-move and per-PRD subdirectories are deferred with a written
+  trigger (STATE.md Deferred).
 - **Housekeeping in a code repo (D-49, D-37a refined):** docs, comments, formatting,
   README, CLAUDE.md, the contract and its Toolchain notes need no task: edited under the
   commit protocol, CC type matching the change (`docs`/`style`/`chore`), no `Task:`
@@ -423,9 +451,10 @@ Breakdown precondition: every target PRD approved; it takes one PRD or a
 tightly-coupled set of 2–3 (D-43) — never all plannable PRDs at once (JIT batches
 keep gates reviewable).
 Breakdown: read target PRD(s) + overview/ADRs + registry (repo-reader on relevant
-repos) + every other approved PRD's front matter/scope + all existing stories and
-tasks — cross-PRD `depends_on` expected; execution order stays derived by next,
-never stored (D-43) →
+repos) + every other approved PRD's front matter/scope + existing stories and tasks as
+**front matter only, scanned in bulk** (bodies only for still-open items and the run's
+direct `depends_on` neighbours — D-52) — cross-PRD `depends_on` expected; execution
+order stays derived by next, never stored (D-43) →
 clarify pass when the PRD admits materially different breakdowns (D-41) →
 propose stories (user-visible slices; AC coverage; `depends_on`, cross-PRD allowed)
 and per-story tasks routed per repo → missing repo? propose creation: scaffold sibling dir, `git init`,
@@ -435,8 +464,13 @@ registered repos' contracts; common + stack-derived dimensions, open list;
 recommended option + justification per question; contested hard-to-reverse dimension
 → decide) and a scaffold first task materializes them, Verification checking each —
 theme bootstrap folds in for UI repos (D-38) → epic-trigger check
-(above) → A4 blocking check, repair until green → gate → write files (`todo`) →
+(above) → A4 blocking check, repair until green (coverage counts only non-`dropped`
+stories and tasks — D-51) → gate → write files (`todo`) →
 proposed commit for the batch (D-26).
+Dropping superseded work (D-51) is not a mode: breakdown and fix both propose drops
+when an amended PRD or a fix diagnosis leaves existing work serving nothing — named at
+the same gate, `status: dropped` + the `## Dropped` line on approval, a story's tasks
+dropped with it, dependents called out.
 Fix (D-22, D-46): read the story's acceptance FAIL — or write it from the defect
 argument, returning a done story to in-progress — → diagnose with repo-reader →
 propose reopened tasks (back to `todo`, note pointing at the failure) and/or new fix
@@ -492,20 +526,25 @@ Workspace or code repo (via contract). Argument `[repo-name | role]` fixes the s
 (D-49): a registry name = one repo, a role = every repo of that area; no argument in a
 code repo = that repo, in the workspace = the whole project; unknown → list names and
 roles. If the workspace has a remote, fetch and report a behind checkout first. Reads
-registry + all front matter only — no
+registry + all front matter only, **scanned in bulk** — one pass per directory, never
+file by file (D-52) — no
 bodies except where derivation requires ACs, or the Review section of a PRD draft
 (D-50) **(stated)**.
 Derives: drafts awaiting approval — PRD drafts with open Review lines are *in review*
 (counted; the author's move, never "approve") — plannable PRDs (approved, no stories
 — D-42),
 pending decisions (ADR stubs — D-42/D-44), ready vs blocked stories/tasks
-(standalone tasks labeled), stories awaiting acceptance, untriaged / routed /
+(standalone tasks labeled; a `dropped` item is neither — D-51), stories awaiting
+acceptance, untriaged / routed /
 fixed-but-open bugs (D-46), open changes; warns on unresolvable references
-(including `routed_to`) or invalid statuses (this is
+(including `routed_to`), invalid statuses, and a `todo`/`in-progress` item whose
+`depends_on` names a `dropped` one (D-51) (this is
 the only workspace validation in v0.1 — no standalone validator, avoiding speculation's
 fixture trap **(stated)**).
 Output: roadmap as text (last done → in flight → ready; ready lists every available
-action type, never the PRD pipeline alone — D-42) AND a Mermaid graph of PRDs
+action type, never the PRD pipeline alone — D-42; completeness is over *types*: each
+is bounded to ~10 instances plus a count, never truncated to zero — D-52) AND a
+Mermaid graph of PRDs
 with story rollup (D-10); candidates from every derived class (approve/accept/close-fixed-bug/triage/apply →
 implement → plan → decide → develop stub), ranked by unblocks → reversal cost → size
 (speck's ranking, D-3) — untriaged bugs rank with lingering drafts, above new work;

@@ -33,3 +33,9 @@ done, awaiting acceptance` (written by implement when the last task lands;
 the state itself stays derived) · `<date> — <name> — PASS: <note>` (the
 reviewer; set status: done) · `<date> — <name> — FAIL: <what failed>` (then
 /spectacular:plan story-NNN). -->
+
+## Dropped
+
+<!-- Only when status: dropped — this slice will not be delivered. One line:
+`<date> — <name> — <why>`; its tasks are dropped with it. Drop the section
+otherwise. -->
