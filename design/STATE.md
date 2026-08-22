@@ -1675,4 +1675,12 @@ written trigger that has not fired. Nothing here blocks S-5 — go to the Sessio
   at the gate, deliberately outside the approval), resume line. Not built and
   recorded: no new plan mode for dropping, no archive directory, no file
   movement (stored state about what matters, contra P-2). Commits proposed per
-  protocol.
+  protocol; on Vladimir's "approve both, push and update the plugin locally":
+  feat + chore(release): 0.14.0 committed, tag v0.14.0, pushed to
+  github.com/oswalth/spectacular with the tag; local marketplace refreshed and
+  the plugin updated 0.13.0 → 0.14.0 at user scope (restart to apply). OQ-16
+  (numbering headroom) was not part of that approval and stays parked. Open
+  evidence: the first real drop in the pilot (does plan actually notice
+  orphaned work after an amendment, or does it stay a manual edit?), and
+  whether next's per-type bounding reads well once a type genuinely exceeds
+  ten.
