@@ -1,7 +1,7 @@
 {
   "name": "spectacular",
   "description": "AI-assisted SDLC for multi-repo products: brief → PRDs → decisions → stories and tasks → implementation → acceptance, with all state derived from artifact files.",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "author": {
     "name": "oswalth"
   },

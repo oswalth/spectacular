@@ -7,6 +7,52 @@ Conventional Commit types since the last release tag (D-37). Release procedure:
 from commit subjects and upgrade notes; 0.2.0, 0.3.0 and 0.4.1 shipped inside
 session commits and have no tags of their own.
 
+## 0.14.0
+
+### Added
+
+- **`dropped` — a terminal status for delivery work that will not happen**
+  (D-51). Stories and tasks gain a fourth status alongside `todo`,
+  `in-progress` and `done`: work whose PRD was amended, whose approach was
+  superseded, or that is simply no longer wanted. Terminal like `done`, never
+  reachable from it, and nothing shipped. The reason is one
+  `date — who — why` line in a new `## Dropped` section. Previously the only
+  exit was deleting the file, and a task written against a since-amended PRD
+  stayed `todo` for ever — `/spectacular:next` kept deriving it as *ready* and
+  could recommend implementing it.
+  - A dropped item counts for nothing wherever state is derived: not ready,
+    not blocked, not covering an AC, not holding its story back from done.
+  - Dropping a story drops its tasks with it.
+  - `/spectacular:next` warns on a `todo` item whose `depends_on` names a
+    dropped one — it can never become ready, so it is dropped too or the
+    dependency is re-pointed.
+  - Dropping is a manual edit, like recording an acceptance verdict;
+    `/spectacular:plan` *proposes* drops under its existing gates when a
+    breakdown against an amended PRD or a fix diagnosis leaves work serving
+    nothing. Nothing is ever dropped silently.
+  - Bugs are unchanged: a bug that will not be fixed stays `closed` with a
+    "won't fix" Resolution.
+  - Truth artifacts (PRDs, ADRs, designs) cannot be dropped — they are
+    amended through `changes/`.
+
+### Changed
+
+- **Delivery-scale reading discipline** (D-52) — a 20-PRD product accumulates
+  several hundred stories and tasks, nearly all terminal. No archive directory
+  and no file movement; what narrows is what the skills read.
+  - `/spectacular:plan` no longer reads *all existing stories and tasks* in
+    full. It scans their front matter in bulk — the entire input the
+    dependency graph needs — and opens a body only for items still open and
+    the run's direct `depends_on` neighbours. Terminal items are never
+    body-read. This was the only O(N) body read in the plugin.
+  - `/spectacular:next` scans front matter in one pass per directory rather
+    than file by file, and bounds each action type in its output to ~10
+    instances plus a count. Completeness is over action *types*, never
+    instances — no type is ever truncated to zero.
+- `templates/workspace-claude.md` gains a **Dropping work that is no longer
+  wanted** section, and the `Story done` definition now says a `dropped` task
+  does not hold a story back.
+
 ## 0.13.0 — 2026-08-19
 
 - Team review of draft PRDs (D-50, retro-driven): a PRD can be left at

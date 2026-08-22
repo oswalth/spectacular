@@ -8,6 +8,28 @@ Hand-maintained; every release that changes workspace-facing behavior adds a
 section here — written at release time (step 4 of `docs/release.md`), and
 every section must have a matching entry in `CHANGELOG.md`.
 
+## 0.14.0
+
+- `CLAUDE.md`: add the **Dropping work that is no longer wanted** section
+  immediately before **Reviews**, copied from
+  `templates/workspace-claude.md`; and in **Definitions of Ready and Done**
+  change the `Story done` opening to "all its tasks are done (a `dropped`
+  task does not hold it back)".
+- Stories and tasks: no migration. `dropped` is a new *option*, not a new
+  requirement — existing files are valid as they stand, and the `## Dropped`
+  section is added to a file only at the moment it is dropped (shape in
+  `templates/story.md` / `templates/task.md`).
+- Opportunity, not a migration step: any story or task sitting at `todo` that
+  the team knows will never be delivered can now be retired instead of
+  deleted — set `status: dropped` and add the `## Dropped` line. That is the
+  team's judgment, not a mechanical migration: nothing here decides it for
+  them. Dropping a story drops its tasks, and anything left depending on a
+  dropped item must be dropped too or have its `depends_on` re-pointed —
+  `/spectacular:next` warns about that.
+- PRDs, designs, ADRs, bugs, changes, registry, code repos: nothing. Truth
+  artifacts are amended through `changes/` as before, and a bug that will not
+  be fixed stays `closed` with a "won't fix" Resolution.
+
 ## 0.13.0
 
 - `CLAUDE.md`: in **Commit protocol** replace the "Pushing likewise happens
